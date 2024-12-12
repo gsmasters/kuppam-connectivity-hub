@@ -17,14 +17,21 @@ export const Header = () => {
   ];
 
   return (
-    <header className="bg-primary sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
-        <nav className="flex items-center justify-between">
+    <header className="bg-[#1a4894] sticky top-0 z-50">
+      <div className="container mx-auto px-4">
+        <div className="py-2 border-b border-white/10">
+          <div className="flex justify-end space-x-4 text-white/80 text-sm">
+            <a href="#contact" className="hover:text-white">Contact Us</a>
+            <a href="#rti" className="hover:text-white">RTI</a>
+            <a href="https://meekosam.ap.gov.in/" className="hover:text-white">Grievance</a>
+          </div>
+        </div>
+        <nav className="flex items-center justify-between py-4">
           <div className="flex items-center space-x-4">
-            <img src="/placeholder.svg" alt="Logo" className="h-12 w-12" />
+            <img src="/placeholder.svg" alt="Logo" className="h-16 w-16" />
             <div className="text-white">
-              <h1 className="text-lg font-bold">MPDO Office</h1>
-              <p className="text-sm">Kuppam Mandal</p>
+              <h1 className="text-xl font-bold">MPDO Office</h1>
+              <p className="text-sm text-white/80">Kuppam Mandal</p>
             </div>
           </div>
 
@@ -34,7 +41,7 @@ export const Header = () => {
               <a
                 key={item.label}
                 href={item.href}
-                className="text-white hover:text-gray-200 transition-colors"
+                className="text-white hover:text-white/80 transition-colors"
               >
                 {item.label}
               </a>
