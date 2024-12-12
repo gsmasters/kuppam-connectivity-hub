@@ -2,12 +2,12 @@ import { Building, Mail, Phone, ExternalLink } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="bg-[#1a4894] text-white">
+    <footer className="bg-gray-50 text-gray-600">
       <div className="container mx-auto px-4">
         <div className="py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900">Contact Us</h3>
               <div className="space-y-3">
                 <p className="flex items-center">
                   <Phone className="h-5 w-5 mr-2" />
@@ -76,7 +76,7 @@ export const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="py-4 border-t border-white/10 text-center text-sm">
+        <div className="py-4 border-t border-gray-200 text-center text-sm">
           <p>© 2024 MPDO Office Kuppam Mandal. All rights reserved.</p>
         </div>
       </div>
