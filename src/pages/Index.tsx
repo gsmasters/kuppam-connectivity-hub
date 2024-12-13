@@ -10,7 +10,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <LeadershipBanner />
-      <div> {/* Removed padding and made static */}
+      <div>
         <Header />
         <NotificationTicker />
         <main className="flex-grow">
