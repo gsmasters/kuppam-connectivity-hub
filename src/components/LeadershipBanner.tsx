@@ -1,6 +1,6 @@
 export const LeadershipBanner = () => {
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-primary via-secondary to-accent py-2">
+    <div className="fixed top-0 left-0 right-0 z-10 bg-gradient-to-r from-primary via-secondary to-accent py-2">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <div className="w-64 h-64 overflow-hidden">
