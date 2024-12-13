@@ -14,7 +14,6 @@ export const Header = () => {
     { label: "Departments", href: "/staff" },
     { label: "Programs", href: "/programs" },
     { label: "Documents", href: "/documents" },
-    { label: "Contact", href: "/contact" },
   ];
 
   return (
