@@ -5,23 +5,23 @@ export const LeadershipBanner = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-3">
             <img
-              src="/lovable-uploads/c8094c4f-8fce-4051-bb7b-f3d38178c754.png"
+              src="/lovable-uploads/a42ee3a8-1935-49b6-a93a-0c381891b668.png"
               alt="Chief Minister"
               className="w-16 h-16 object-cover rounded-full border-2 border-primary"
             />
             <div className="text-left">
               <p className="text-sm font-medium text-gray-600">Hon'ble Chief Minister</p>
-              <p className="text-base font-bold text-gray-900">Sri Y.S. Jagan Mohan Reddy</p>
+              <p className="text-base font-bold text-gray-900">Sri N. Chandrababu Naidu</p>
             </div>
           </div>
           <div className="flex items-center space-x-3">
             <div className="text-right">
-              <p className="text-sm font-medium text-gray-600">Hon'ble Minister</p>
-              <p className="text-base font-bold text-gray-900">Sri Audimulapu Suresh</p>
+              <p className="text-sm font-medium text-gray-600">Hon'ble MLA</p>
+              <p className="text-base font-bold text-gray-900">Sri Pawan Kalyan</p>
             </div>
             <img
-              src="/lovable-uploads/57f2b1fb-c86c-4452-9a64-3b33aa4298cc.png"
-              alt="Minister"
+              src="/lovable-uploads/bba7b4cc-8d6d-4f4c-a623-c76ac3eb28bc.png"
+              alt="MLA"
               className="w-16 h-16 object-cover rounded-full border-2 border-primary"
             />
           </div>
