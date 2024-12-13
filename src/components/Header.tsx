@@ -24,7 +24,7 @@ export const Header = () => {
           <div className="flex justify-end space-x-4 text-gray-600 text-sm">
             <a href="/contact" className="hover:text-gray-900">Contact Us</a>
             <a href="/documents" className="hover:text-gray-900">RTI</a>
-            <a href="https://meekosam.ap.gov.in/" className="hover:text-gray-900">Grievance</a>
+            <a href="https://pgrs.ap.gov.in/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900">Grievance</a>
           </div>
         </div>
         <nav className="flex items-center justify-between py-4">
