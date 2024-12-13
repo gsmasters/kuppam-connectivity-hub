@@ -5,16 +5,18 @@ import { NotificationTicker } from "@/components/NotificationTicker";
 import { ProgramsCarousel } from "@/components/ProgramsCarousel";
 import { LeadershipBanner } from "@/components/LeadershipBanner";
 import { PopulationStats } from "@/components/PopulationStats";
+import { QuickLinks } from "@/components/QuickLinks";
 
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <LeadershipBanner />
-      <div>
+      <div className="flex-1">
         <Header />
         <NotificationTicker />
-        <main className="flex-grow">
+        <main>
           <Hero />
+          <QuickLinks />
           <ProgramsCarousel />
           <PopulationStats />
         </main>
