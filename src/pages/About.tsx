@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Baby, GraduationCap, Building2, Users2 } from "lucide-react";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { LeadershipBanner } from "@/components/LeadershipBanner";
 
 const About = () => {
   const religionData = [
@@ -60,6 +61,7 @@ const About = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
+      <LeadershipBanner />
       <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 text-gray-900">About Kuppam</h1>
         

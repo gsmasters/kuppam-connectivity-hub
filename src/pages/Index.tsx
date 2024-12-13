@@ -4,11 +4,13 @@ import { QuickLinks } from "@/components/QuickLinks";
 import { Footer } from "@/components/Footer";
 import { NotificationTicker } from "@/components/NotificationTicker";
 import { ProgramsCarousel } from "@/components/ProgramsCarousel";
+import { LeadershipBanner } from "@/components/LeadershipBanner";
 
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
+      <LeadershipBanner />
       <NotificationTicker />
       <main className="flex-grow">
         <Hero />
