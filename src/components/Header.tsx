@@ -19,12 +19,6 @@ export const Header = () => {
   return (
     <header className="bg-primary shadow-sm z-40">
       <div className="container mx-auto px-4">
-        <div className="py-2 border-b border-white/10">
-          <div className="flex justify-end space-x-4 text-white/90 text-sm">
-            <a href="/documents" className="hover:text-white">RTI</a>
-            <a href="https://pgrs.ap.gov.in/" target="_blank" rel="noopener noreferrer" className="hover:text-white">Grievance</a>
-          </div>
-        </div>
         <nav className="flex items-center justify-between py-4">
           <div className="flex items-center justify-center flex-grow">
             <div className="text-white text-center">
