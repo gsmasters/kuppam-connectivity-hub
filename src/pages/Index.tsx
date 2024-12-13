@@ -10,7 +10,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <LeadershipBanner />
-      <div className="pt-[17rem]"> {/* Adjusted padding to account for LeadershipBanner height */}
+      <div> {/* Removed padding and made static */}
         <Header />
         <NotificationTicker />
         <main className="flex-grow">
