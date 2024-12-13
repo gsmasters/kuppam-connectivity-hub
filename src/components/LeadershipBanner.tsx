@@ -11,13 +11,13 @@ export const LeadershipBanner = () => {
             />
             <div className="text-left">
               <p className="text-sm font-medium text-gray-600">Hon'ble Chief Minister</p>
-              <p className="text-base font-bold text-gray-900">Sri Nara Chandrababu Naidu</p>
+              <p className="text-base font-bold text-gray-900">Sri Y.S. Jagan Mohan Reddy</p>
             </div>
           </div>
           <div className="flex items-center space-x-3">
             <div className="text-right">
               <p className="text-sm font-medium text-gray-600">Hon'ble Minister</p>
-              <p className="text-base font-bold text-gray-900">Sri Konidala Pawan Kalyan</p>
+              <p className="text-base font-bold text-gray-900">Sri Audimulapu Suresh</p>
             </div>
             <img
               src="/lovable-uploads/57f2b1fb-c86c-4452-9a64-3b33aa4298cc.png"

@@ -9,8 +9,8 @@ import { LeadershipBanner } from "@/components/LeadershipBanner";
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
       <LeadershipBanner />
+      <Header />
       <NotificationTicker />
       <main className="flex-grow">
         <Hero />
