@@ -17,7 +17,7 @@ export const Header = () => {
   ];
 
   return (
-    <header className="bg-[#DD4814] shadow-sm sticky top-0 z-50">
+    <header className="bg-primary shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="py-2 border-b border-white/10">
           <div className="flex justify-end space-x-4 text-white/90 text-sm">
@@ -53,7 +53,7 @@ export const Header = () => {
                   <Menu className="h-6 w-6" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-[#DD4814] border-white/10">
+              <DropdownMenuContent align="end" className="w-48 bg-primary border-white/10">
                 {menuItems.map((item) => (
                   <DropdownMenuItem key={item.label} className="text-white/90 hover:text-white focus:text-white focus:bg-white/10">
                     <a href={item.href} className="w-full">
