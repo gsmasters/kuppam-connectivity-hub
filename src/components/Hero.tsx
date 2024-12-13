@@ -42,11 +42,11 @@ export const Hero = () => {
   );
 
   return (
-    <section className="py-16 backdrop-blur-sm bg-gradient-to-b from-[#1A1F2C]/95 to-[#2C2A3C]/95">
+    <section className="bg-white py-8 md:py-12">
       <div className="container mx-auto px-4">
         <Carousel
           plugins={[plugin.current]}
-          className="w-full max-w-6xl mx-auto"
+          className="w-full max-w-5xl mx-auto"
           opts={{
             align: "start",
             loop: true,
@@ -55,24 +55,20 @@ export const Hero = () => {
           <CarouselContent>
             {events.map((event, index) => (
               <CarouselItem key={index}>
-                <Card className="border-none bg-transparent">
+                <Card className="border-none shadow-lg">
                   <CardContent className="p-0">
-                    <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                    <div className="relative">
                       <img
                         src={event.image}
                         alt={event.title}
-                        className="w-full h-[600px] object-cover transform transition-transform duration-700 hover:scale-105"
+                        className="w-full h-[400px] object-cover rounded-t-lg"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent backdrop-blur-[2px]">
-                        <div className="absolute bottom-0 left-0 right-0 p-10">
-                          <p className="text-white/70 mb-2 font-light tracking-wider animate-fade-in">{event.date}</p>
-                          <h3 className="text-4xl font-bold text-white mb-4 tracking-tight animate-fade-in">
-                            {event.title}
-                          </h3>
-                          <p className="text-white/80 text-xl max-w-2xl leading-relaxed animate-fade-in">
-                            {event.description}
-                          </p>
-                        </div>
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
+                        <h3 className="text-2xl font-bold text-white mb-2">
+                          {event.title}
+                        </h3>
+                        <p className="text-white/90 mb-1">{event.date}</p>
+                        <p className="text-white/80">{event.description}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -80,8 +76,8 @@ export const Hero = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="left-4 bg-white/10 hover:bg-white/20 border-none text-white" />
-          <CarouselNext className="right-4 bg-white/10 hover:bg-white/20 border-none text-white" />
+          <CarouselPrevious className="left-2" />
+          <CarouselNext className="right-2" />
         </Carousel>
       </div>
     </section>
