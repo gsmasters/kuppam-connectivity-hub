@@ -1,5 +1,7 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { DepartmentCard } from "@/components/departments/DepartmentCard";
+import { ElectedRepresentatives } from "@/components/departments/ElectedRepresentatives";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Building, Phone, Mail } from "lucide-react";
 import {
@@ -8,6 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Staff = () => {
   const departments = {
@@ -1415,76 +1418,44 @@ const Staff = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold mb-8 text-gray-900">Departments</h1>
           
-          <Accordion type="single" collapsible className="space-y-4">
-            {Object.entries(departments).map(([department, staff]) => (
-              <AccordionItem
-                key={department}
-                value={department}
-                className="bg-white rounded-lg shadow-sm border"
-              >
-                <AccordionTrigger className="px-6 py-4 hover:bg-gray-50">
-                  <div className="flex items-center space-x-2">
-                    <Building className="h-5 w-5 text-blue-900" />
-                    <span className="text-lg font-semibold text-gray-900">{department}</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <ScrollArea className="h-[400px] px-6 py-4">
-                    <div className="space-y-4">
-                      {department === "Elected Representatives" ? (
-                        Object.entries(staff as Record<string, any[]>).map(([title, members]) => (
-                          <div key={title} className="space-y-3">
-                            <h3 className="font-semibold text-gray-700">{title}</h3>
-                            {members.map((member, idx) => (
-                              <div
-                                key={idx}
-                                className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                              >
-                                <h4 className="font-medium text-gray-900">{member.name}</h4>
-                                <p className="text-sm text-gray-600">{member.position}</p>
-                                <div className="mt-2 flex items-center text-gray-600">
-                                  <Phone className="h-4 w-4 mr-2" />
-                                  <span>{member.mobile}</span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ))
-                      ) : (
-                        (staff as any[]).map((member, idx) => (
-                          <div
-                            key={idx}
-                            className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                          >
-                            <h3 className="font-medium text-gray-900">{member.name}</h3>
-                            <p className="text-sm text-gray-600">{member.position}</p>
-                            {member.location && (
-                              <p className="text-sm text-gray-500">{member.location}</p>
-                            )}
-                            <div className="mt-2 space-y-1">
-                              <div className="flex items-center text-gray-600">
-                                <Phone className="h-4 w-4 mr-2" />
-                                <span>{member.mobile}</span>
-                              </div>
-                              {member.email && (
-                                <div className="flex items-center text-gray-600">
-                                  <Mail className="h-4 w-4 mr-2" />
-                                  <span>{member.email}</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </ScrollArea>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <Tabs defaultValue="administration" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+              <TabsTrigger value="administration">Administration</TabsTrigger>
+              <TabsTrigger value="elected">Elected Representatives</TabsTrigger>
+              <TabsTrigger value="mandal">Mandal Officers</TabsTrigger>
+              <TabsTrigger value="sachivalayam">Sachivalayam Staff</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="administration" className="mt-6">
+              <DepartmentCard
+                title="Mandal Office Administration"
+                staff={departments["Mandal Office Administration"]}
+              />
+            </TabsContent>
+            
+            <TabsContent value="elected" className="mt-6">
+              <ElectedRepresentatives
+                data={departments["Elected Representatives"] as any}
+              />
+            </TabsContent>
+            
+            <TabsContent value="mandal" className="mt-6">
+              <DepartmentCard
+                title="Mandal Level Officers"
+                staff={departments["Mandal Level Officers"]}
+              />
+            </TabsContent>
+            
+            <TabsContent value="sachivalayam" className="mt-6">
+              <DepartmentCard
+                title="Sachivalayam Staff"
+                staff={departments["Sachivalayam Staff"]}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
       <Footer />
