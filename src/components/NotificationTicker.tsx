@@ -20,7 +20,7 @@ export const NotificationTicker = () => {
   }, []);
 
   return (
-    <div className="bg-primary py-2 text-white">
+    <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white">
       <div className="container mx-auto px-4">
         <div className="flex items-center space-x-2">
           <span className="font-semibold whitespace-nowrap">Latest Updates:</span>
