@@ -17,7 +17,7 @@ export const Header = () => {
   ];
 
   return (
-    <header className="bg-primary shadow-sm sticky top-0 z-50">
+    <header className="bg-primary shadow-sm sticky top-[4.5rem] z-40">
       <div className="container mx-auto px-4">
         <div className="py-2 border-b border-white/10">
           <div className="flex justify-end space-x-4 text-white/90 text-sm">
