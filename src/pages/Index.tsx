@@ -8,16 +8,18 @@ import { PopulationStats } from "@/components/PopulationStats";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col pt-[4.5rem]">
+    <div className="min-h-screen flex flex-col">
       <LeadershipBanner />
-      <Header />
-      <NotificationTicker />
-      <main className="flex-grow">
-        <Hero />
-        <ProgramsCarousel />
-        <PopulationStats />
-      </main>
-      <Footer />
+      <div className="pt-[17rem]"> {/* Adjusted padding to account for LeadershipBanner height */}
+        <Header />
+        <NotificationTicker />
+        <main className="flex-grow">
+          <Hero />
+          <ProgramsCarousel />
+          <PopulationStats />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 };
