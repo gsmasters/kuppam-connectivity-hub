@@ -8,31 +8,32 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import Autoplay from "embla-carousel-autoplay";
 import { useRef } from "react";
+import { Building, Users, FileText, Target } from "lucide-react";
 
-const events = [
+const highlights = [
   {
-    title: "Gram Sabha Meeting",
-    date: "March 15, 2024",
-    image: "/lovable-uploads/c8094c4f-8fce-4051-bb7b-f3d38178c754.png",
-    description: "Discussion on village development plans and initiatives"
+    title: "About MPDO Office",
+    description: "Dedicated to rural development and community welfare in Kuppam Mandal",
+    icon: Building,
+    color: "text-primary"
   },
   {
-    title: "Rural Development Workshop",
-    date: "March 10, 2024",
-    image: "/lovable-uploads/57f2b1fb-c86c-4452-9a64-3b33aa4298cc.png",
-    description: "Training session on new agricultural techniques"
+    title: "Community Services",
+    description: "Providing essential services and support to rural communities",
+    icon: Users,
+    color: "text-secondary"
   },
   {
-    title: "Community Health Camp",
-    date: "March 5, 2024",
-    image: "/lovable-uploads/a42ee3a8-1935-49b6-a93a-0c381891b668.png",
-    description: "Free health checkup and awareness program"
+    title: "Development Programs",
+    description: "Implementing various schemes for rural development and welfare",
+    icon: FileText,
+    color: "text-accent"
   },
   {
-    title: "Youth Skill Development",
-    date: "March 1, 2024",
-    image: "/lovable-uploads/bba7b4cc-8d6d-4f4c-a623-c76ac3eb28bc.png",
-    description: "Career guidance and skill training workshop"
+    title: "Our Mission",
+    description: "Empowering rural communities through sustainable development initiatives",
+    icon: Target,
+    color: "text-primary"
   }
 ];
 
@@ -53,23 +54,20 @@ export const Hero = () => {
           }}
         >
           <CarouselContent>
-            {events.map((event, index) => (
+            {highlights.map((item, index) => (
               <CarouselItem key={index}>
                 <Card className="border-none shadow-lg">
-                  <CardContent className="p-0">
-                    <div className="relative">
-                      <img
-                        src={event.image}
-                        alt={event.title}
-                        className="w-full h-[400px] object-cover rounded-t-lg"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
-                        <h3 className="text-2xl font-bold text-white mb-2">
-                          {event.title}
-                        </h3>
-                        <p className="text-white/90 mb-1">{event.date}</p>
-                        <p className="text-white/80">{event.description}</p>
+                  <CardContent className="p-8">
+                    <div className="flex flex-col items-center text-center space-y-4">
+                      <div className={`p-4 rounded-full bg-gray-100 ${item.color}`}>
+                        <item.icon className="h-12 w-12" />
                       </div>
+                      <h3 className="text-2xl font-bold text-gray-900">
+                        {item.title}
+                      </h3>
+                      <p className="text-gray-600 text-lg max-w-2xl">
+                        {item.description}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
