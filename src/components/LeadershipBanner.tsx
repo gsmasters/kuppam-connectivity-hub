@@ -4,12 +4,15 @@ export const LeadershipBanner = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-4">
-            <div className="w-24 h-32 overflow-hidden rounded-lg border-2 border-primary shadow-lg">
+            <div className="w-24 h-32 overflow-hidden rounded-lg border-2 border-primary shadow-lg bg-white">
               <img
                 src="/lovable-uploads/57f2b1fb-c86c-4452-9a64-3b33aa4298cc.png"
                 alt="TDP President"
                 className="w-full h-full object-cover object-top"
                 loading="eager"
+                onError={(e) => {
+                  e.currentTarget.src = '/placeholder.svg';
+                }}
               />
             </div>
             <div className="text-left">
@@ -24,12 +27,15 @@ export const LeadershipBanner = () => {
               <p className="text-base font-bold text-gray-900">Sri Pawan Kalyan</p>
               <p className="text-xs text-gray-500">Actor & Political Leader</p>
             </div>
-            <div className="w-24 h-32 overflow-hidden rounded-lg border-2 border-primary shadow-lg">
+            <div className="w-24 h-32 overflow-hidden rounded-lg border-2 border-primary shadow-lg bg-white">
               <img
                 src="/lovable-uploads/bba7b4cc-8d6d-4f4c-a623-c76ac3eb28bc.png"
                 alt="Jana Sena President"
                 className="w-full h-full object-cover object-top"
                 loading="eager"
+                onError={(e) => {
+                  e.currentTarget.src = '/placeholder.svg';
+                }}
               />
             </div>
           </div>
