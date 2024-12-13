@@ -6,28 +6,28 @@ export const LeadershipBanner = () => {
           <div className="flex items-center space-x-4">
             <div className="w-24 h-32 overflow-hidden rounded-lg border-2 border-primary shadow-lg">
               <img
-                src="/lovable-uploads/2e229ff5-9c69-4522-a6c7-5f1489a2e346.png"
-                alt="Chief Minister"
+                src="/lovable-uploads/57f2b1fb-c86c-4452-9a64-3b33aa4298cc.png"
+                alt="TDP President"
                 className="w-full h-full object-cover object-top"
                 loading="eager"
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-600">Hon'ble Chief Minister</p>
-              <p className="text-base font-bold text-gray-900">Sri Y.S. Jagan Mohan Reddy</p>
-              <p className="text-xs text-gray-500">Government of Andhra Pradesh</p>
+              <p className="text-sm font-medium text-gray-600">TDP National President</p>
+              <p className="text-base font-bold text-gray-900">Sri N. Chandrababu Naidu</p>
+              <p className="text-xs text-gray-500">Former Chief Minister of AP</p>
             </div>
           </div>
           <div className="flex items-center space-x-4">
             <div className="text-right">
-              <p className="text-sm font-medium text-gray-600">Hon'ble MLA</p>
-              <p className="text-base font-bold text-gray-900">Sri K.R.J. Bharat</p>
-              <p className="text-xs text-gray-500">Kuppam Constituency</p>
+              <p className="text-sm font-medium text-gray-600">Jana Sena Party President</p>
+              <p className="text-base font-bold text-gray-900">Sri Pawan Kalyan</p>
+              <p className="text-xs text-gray-500">Actor & Political Leader</p>
             </div>
             <div className="w-24 h-32 overflow-hidden rounded-lg border-2 border-primary shadow-lg">
               <img
-                src="/lovable-uploads/fbeccff5-817a-4886-af1f-1637586e1a79.png"
-                alt="MLA"
+                src="/lovable-uploads/bba7b4cc-8d6d-4f4c-a623-c76ac3eb28bc.png"
+                alt="Jana Sena President"
                 className="w-full h-full object-cover object-top"
                 loading="eager"
               />
