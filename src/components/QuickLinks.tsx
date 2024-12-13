@@ -60,21 +60,25 @@ export const QuickLinks = () => {
   ];
 
   return (
-    <section className="py-16 bg-gradient-to-r from-amber-500/10 to-amber-600/20">
+    <section className="py-20 bg-gradient-to-b from-[#2C2A3C] to-[#1A1F2C]">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-[#DD4814]">Quick Access</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-white/90 tracking-tight">
+          Quick Access
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {links.map((link) => (
             <a
               key={link.title}
               href={link.href}
-              className="transform transition-transform hover:scale-105"
+              className="transform transition-all duration-300 hover:translate-y-[-4px]"
             >
-              <Card className="h-full border-t-4 border-t-[#DD4814] bg-white/90 backdrop-blur-sm hover:bg-white transition-colors">
+              <Card className="h-full bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10 transition-all duration-300">
                 <CardHeader>
-                  <link.icon className="h-8 w-8 text-[#DD4814] mb-2" />
-                  <CardTitle className="text-lg text-[#DD4814]">{link.title}</CardTitle>
-                  <CardDescription className="text-gray-600">{link.description}</CardDescription>
+                  <div className="mb-4">
+                    <link.icon className="h-8 w-8 text-[#9b87f5]" />
+                  </div>
+                  <CardTitle className="text-xl text-white/90">{link.title}</CardTitle>
+                  <CardDescription className="text-white/60">{link.description}</CardDescription>
                 </CardHeader>
                 <CardContent></CardContent>
               </Card>

@@ -17,22 +17,22 @@ export const Header = () => {
   ];
 
   return (
-    <header className="bg-primary shadow-sm z-40">
+    <header className="bg-[#1A1F2C]/95 backdrop-blur-md shadow-lg sticky top-0 z-40 border-b border-white/10">
       <div className="container mx-auto px-4">
-        <nav className="flex items-center justify-between py-4">
+        <nav className="flex items-center justify-between py-6">
           <div className="flex items-center justify-center flex-grow">
             <div className="text-white text-center">
-              <p className="text-xl font-bold">MPDO Office Kuppam Mandal</p>
+              <p className="text-2xl font-bold tracking-tight">MPDO Office Kuppam Mandal</p>
             </div>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-6">
+          <div className="hidden md:flex space-x-8">
             {menuItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="text-white/90 hover:text-white transition-colors"
+                className="text-white/70 hover:text-white transition-colors duration-300 text-sm tracking-wide"
               >
                 {item.label}
               </a>
@@ -47,9 +47,9 @@ export const Header = () => {
                   <Menu className="h-6 w-6" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-primary border-white/10">
+              <DropdownMenuContent align="end" className="w-48 bg-[#1A1F2C] border-white/10">
                 {menuItems.map((item) => (
-                  <DropdownMenuItem key={item.label} className="text-white/90 hover:text-white focus:text-white focus:bg-white/10">
+                  <DropdownMenuItem key={item.label} className="text-white/70 hover:text-white focus:text-white focus:bg-white/10">
                     <a href={item.href} className="w-full">
                       {item.label}
                     </a>
