@@ -26,8 +26,7 @@ export const Header = () => {
           </div>
         </div>
         <nav className="flex items-center justify-between py-4">
-          <div className="flex items-center space-x-4">
-            <img src="/placeholder.svg" alt="Logo" className="h-12 w-12" />
+          <div className="flex items-center justify-center flex-grow">
             <div className="text-white text-center">
               <p className="text-xl font-bold">MPDO Office Kuppam Mandal</p>
             </div>
