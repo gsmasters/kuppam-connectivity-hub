@@ -11,7 +11,7 @@ export const Header = () => {
   const menuItems = [
     { label: "Home", href: "/" },
     { label: "About Us", href: "/about" },
-    { label: "Staff Directory", href: "/staff" },
+    { label: "Departments", href: "/staff" },
     { label: "Programs", href: "/programs" },
     { label: "Documents", href: "/documents" },
     { label: "Contact", href: "/contact" },
