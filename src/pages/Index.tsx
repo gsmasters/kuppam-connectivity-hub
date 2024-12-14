@@ -5,7 +5,6 @@ import { NotificationTicker } from "@/components/NotificationTicker";
 import { ProgramsCarousel } from "@/components/ProgramsCarousel";
 import { LeadershipBanner } from "@/components/LeadershipBanner";
 import { PopulationStats } from "@/components/PopulationStats";
-import { ContactBar } from "@/components/ContactBar";
 
 const Index = () => {
   return (
@@ -20,7 +19,6 @@ const Index = () => {
           <PopulationStats />
         </main>
         <Footer />
-        <ContactBar />
       </div>
     </div>
   );

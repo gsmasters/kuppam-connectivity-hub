@@ -8,7 +8,7 @@ export const ContactBar = () => {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-[#221F26] text-white z-50 overflow-hidden">
+    <div className="fixed bottom-0 left-0 w-full bg-[#E9C46A] text-black z-50 overflow-hidden">
       <div className="flex whitespace-nowrap animate-slide">
         {/* Duplicate the contacts to create a seamless loop */}
         {[...contacts, ...contacts].map((contact, index) => (
