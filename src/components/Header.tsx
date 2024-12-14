@@ -17,7 +17,7 @@ export const Header = () => {
   ];
 
   return (
-    <header className="bg-primary shadow-sm z-40">
+    <header className="bg-primary shadow-sm z-40 relative">
       <div className="container mx-auto px-4">
         <nav className="flex items-center justify-between py-4">
           <div className="flex items-center justify-center flex-grow">
@@ -60,6 +60,8 @@ export const Header = () => {
           </div>
         </nav>
       </div>
+      {/* Yellow scroll indicator */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-[#E9C46A]"></div>
     </header>
   );
 };
