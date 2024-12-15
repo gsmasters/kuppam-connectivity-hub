@@ -15,8 +15,10 @@ export const ContentManager = () => {
     sections,
     content,
     unsavedChanges,
+    isDraft,
     handleContentChange,
     handleSave,
+    handlePublish,
     refreshContent
   } = useContentManagement();
 
@@ -74,7 +76,9 @@ export const ContentManager = () => {
         onBack={() => setSelectedSection(null)}
         onContentChange={handleContentChange}
         onSave={handleSave}
+        onPublish={handlePublish}
         saving={saving}
+        isDraft={isDraft[selectedSection.id]}
         hasUnsavedChanges={unsavedChanges[selectedSection.id]}
       />
     );

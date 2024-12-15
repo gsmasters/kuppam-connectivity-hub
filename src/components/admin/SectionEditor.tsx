@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { EditorView } from "./EditorView";
+import { PreviewDialog } from "./PreviewDialog";
 
 interface Section {
   id: string;
@@ -17,7 +18,9 @@ interface SectionEditorProps {
   onBack: () => void;
   onContentChange: (sectionId: string, content: any) => void;
   onSave: (sectionId: string) => void;
+  onPublish: (sectionId: string) => void;
   saving: boolean;
+  isDraft: boolean;
   hasUnsavedChanges: boolean;
 }
 
@@ -27,7 +30,9 @@ export const SectionEditor = ({
   onBack,
   onContentChange,
   onSave,
+  onPublish,
   saving,
+  isDraft,
   hasUnsavedChanges
 }: SectionEditorProps) => {
   return (
@@ -46,6 +51,14 @@ export const SectionEditor = ({
             <p className="text-sm text-muted-foreground">{section.description}</p>
           </div>
         </div>
+        <div className="flex items-center gap-2">
+          {isDraft && (
+            <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded">
+              Draft
+            </span>
+          )}
+          <PreviewDialog content={content || ""} />
+        </div>
       </div>
 
       <EditorView
@@ -56,7 +69,9 @@ export const SectionEditor = ({
         existingContent={content || ""}
         onContentChange={onContentChange}
         onSave={() => onSave(section.id)}
+        onPublish={() => onPublish(section.id)}
         saving={saving}
+        isDraft={isDraft}
         hasUnsavedChanges={hasUnsavedChanges}
       />
     </div>

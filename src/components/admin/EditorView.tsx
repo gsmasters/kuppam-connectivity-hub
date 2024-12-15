@@ -16,7 +16,9 @@ interface EditorViewProps {
   existingContent: any;
   onContentChange: (sectionId: string, content: any) => void;
   onSave: () => void;
+  onPublish: () => void;
   saving: boolean;
+  isDraft: boolean;
   hasUnsavedChanges: boolean;
 }
 
@@ -28,7 +30,9 @@ export const EditorView = ({
   existingContent,
   onContentChange,
   onSave,
+  onPublish,
   saving,
+  isDraft,
   hasUnsavedChanges,
 }: EditorViewProps) => {
   const [uploading, setUploading] = useState(false);
@@ -165,20 +169,30 @@ export const EditorView = ({
       <CardHeader>
         <CardTitle>Edit Content</CardTitle>
         <CardDescription>
-          Make changes to your content and publish when ready
+          Make changes to your content and save as draft or publish when ready
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {renderEditor()}
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
           <Button
             onClick={onSave}
             disabled={saving || !hasUnsavedChanges}
+            variant="outline"
             className="gap-2"
           >
             {saving && <Loader2 className="h-4 w-4 animate-spin" />}
             <Save className="h-4 w-4" />
-            Publish Changes
+            Save as Draft
+          </Button>
+          <Button
+            onClick={onPublish}
+            disabled={saving || !hasUnsavedChanges}
+            className="gap-2"
+          >
+            {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+            <Upload className="h-4 w-4" />
+            Publish
           </Button>
         </div>
       </CardContent>
