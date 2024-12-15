@@ -44,27 +44,22 @@ export const ContentManager = () => {
     }
   ];
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
   const handleContentChange = (section: string, newContent: string) => {
-    console.log('Content changed for section:', section); // Debug log
+    console.log('Content changed for section:', section);
     setPreviewContent(newContent);
     markContentChanged(section);
   };
 
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Content Management</h2>
-        <PreviewDialog content={previewContent} />
-      </div>
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center p-8">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      );
+    }
 
+    return (
       <Tabs defaultValue="home">
         <TabsList className="grid w-full grid-cols-3">
           {sections.map((page) => (
@@ -77,7 +72,7 @@ export const ContentManager = () => {
         {sections.map((page) => (
           <TabsContent key={page.id} value={page.id} className="space-y-4">
             {page.sections.map((section) => {
-              console.log(`Rendering section ${section.id} with content:`, content[section.id]); // Debug log
+              console.log(`Rendering section ${section.id} with content:`, content[section.id]);
               return (
                 <ContentSection
                   key={section.id}
@@ -96,6 +91,16 @@ export const ContentManager = () => {
           </TabsContent>
         ))}
       </Tabs>
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Content Management</h2>
+        <PreviewDialog content={previewContent} />
+      </div>
+      {renderContent()}
     </div>
   );
 };
