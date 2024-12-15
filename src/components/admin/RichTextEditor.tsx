@@ -4,6 +4,8 @@ import Image from '@tiptap/extension-image';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
+import Link from '@tiptap/extension-link';
+import TextAlign from '@tiptap/extension-text-align';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from 'react';
@@ -20,7 +22,7 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
-  Link
+  Link as LinkIcon
 } from 'lucide-react';
 
 interface RichTextEditorProps {
@@ -42,6 +44,15 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
       TextStyle,
       Color,
       Highlight,
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: 'text-blue-500 underline',
+        },
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
     ],
     content: content,
     onUpdate: ({ editor }) => {
@@ -189,7 +200,7 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
             size="sm"
             onClick={addLink}
           >
-            <Link className="h-4 w-4" />
+            <LinkIcon className="h-4 w-4" />
           </Button>
         </div>
       </div>
