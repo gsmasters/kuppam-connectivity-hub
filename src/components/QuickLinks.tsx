@@ -5,10 +5,18 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Building, Users, Info, FileText, Calendar, BookOpen, HelpCircle, ExternalLink } from "lucide-react";
+import { Building, Users, Calendar } from "lucide-react";
+
+interface QuickLink {
+  title: string;
+  description: string;
+  icon: React.ComponentType<any>;
+  href: string;
+  external?: boolean;
+}
 
 export const QuickLinks = () => {
-  const links = [
+  const links: QuickLink[] = [
     {
       title: "About Us",
       description: "Learn about our roles and responsibilities",
