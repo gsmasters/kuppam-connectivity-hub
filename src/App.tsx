@@ -8,7 +8,7 @@ import { ContactBar } from "@/components/ContactBar";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Departments from "./pages/Departments";
-import { DashboardTabs } from "@/components/admin/dashboard/DashboardTabs";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient({
@@ -30,7 +30,7 @@ const App = () => {
             <Route path="/" element={<Index />} />
             <Route path="/about-us" element={<About />} />
             <Route path="/departments" element={<Departments />} />
-            <Route path="/admin/dashboard" element={<DashboardTabs />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
           <ContactBar />
         </BrowserRouter>

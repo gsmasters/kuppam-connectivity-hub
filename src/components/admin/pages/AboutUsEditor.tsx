@@ -1,10 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RichTextEditor } from "../RichTextEditor";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Skeleton } from "@/components/ui/skeleton";
-import { EditorActions } from "../editor/EditorActions";
-import { useState } from "react";
+import { RichTextEditor } from "../RichTextEditor";
+import { Button } from "@/components/ui/button";
+import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 
 interface SectionContent {
@@ -15,14 +14,12 @@ interface SectionContent {
   };
   version: number;
   is_published: boolean;
-  is_draft: boolean;
   created_at: string;
   updated_at: string;
 }
 
 export const AboutUsEditor = () => {
   const [content, setContent] = useState("");
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const { data: sectionData, isLoading } = useQuery({
@@ -68,7 +65,7 @@ export const AboutUsEditor = () => {
         sectionId = pageSections[0].id;
       }
 
-      // Then get the content, handling the case where no content exists yet
+      // Then get the content
       const { data: contentData, error: contentError } = await supabase
         .from('section_content')
         .select('*')
@@ -84,7 +81,6 @@ export const AboutUsEditor = () => {
 
       console.log('Content fetched successfully:', contentData);
       
-      // Handle case where no content exists yet
       if (!contentData || contentData.length === 0) {
         return { sectionId, content: "" };
       }
@@ -98,12 +94,7 @@ export const AboutUsEditor = () => {
     retry: 1
   });
 
-  const handleContentChange = (newContent: string) => {
-    setContent(newContent);
-    setHasUnsavedChanges(true);
-  };
-
-  const handleSave = async (isDraft: boolean = true) => {
+  const handleSave = async () => {
     if (!sectionData?.sectionId) return;
 
     setSaving(true);
@@ -123,17 +114,15 @@ export const AboutUsEditor = () => {
           section_id: sectionData.sectionId,
           content: { content },
           version: newVersion,
-          is_draft: isDraft,
-          is_published: !isDraft
+          is_published: true
         });
 
       if (error) throw error;
 
-      toast.success(isDraft ? "Saved as draft" : "Changes published");
-      setHasUnsavedChanges(false);
+      toast.success("Content published successfully");
     } catch (error) {
       console.error('Error saving content:', error);
-      toast.error("Failed to save changes");
+      toast.error("Failed to save content");
     } finally {
       setSaving(false);
     }
@@ -141,34 +130,29 @@ export const AboutUsEditor = () => {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Edit About Us Page</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Skeleton className="h-[400px] w-full" />
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Edit About Us Page</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <RichTextEditor
-          content={content || sectionData?.content || ""}
-          onChange={handleContentChange}
-        />
-        <EditorActions
-          onSave={() => handleSave(true)}
-          onPublish={() => handleSave(false)}
-          saving={saving}
-          hasUnsavedChanges={hasUnsavedChanges}
-        />
-      </CardContent>
-    </Card>
+    <div className="space-y-4">
+      <RichTextEditor
+        content={content || sectionData?.content || ""}
+        onChange={setContent}
+      />
+      <div className="flex justify-end">
+        <Button 
+          onClick={handleSave}
+          disabled={saving}
+          className="gap-2"
+        >
+          {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+          <Save className="h-4 w-4" />
+          Publish Changes
+        </Button>
+      </div>
+    </div>
   );
 };
