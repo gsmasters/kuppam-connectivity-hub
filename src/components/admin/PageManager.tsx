@@ -19,7 +19,8 @@ export const PageManager = () => {
   const [editingPage, setEditingPage] = useState<Page | null>(null);
   const [newPage, setNewPage] = useState(false);
   const [pageName, setPageName] = useState("");
-  const [pageContent, setPageContent] = useState("");
+  // Update the type to handle JSON content
+  const [pageContent, setPageContent] = useState<any>("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
