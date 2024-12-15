@@ -11,16 +11,16 @@ const About = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('section_content')
-        .select('content')
+        .select(`
+          content,
+          page_sections!inner (
+            page,
+            section
+          )
+        `)
         .eq('is_published', true)
-        .inner join('page_sections', { 
-          foreignTable: 'page_sections',
-          conditions: [
-            { column: 'section_content.section_id', equals: { foreignColumn: 'id' } },
-            { column: 'page_sections.page', equals: 'about' },
-            { column: 'page_sections.section', equals: 'main' }
-          ]
-        })
+        .eq('page_sections.page', 'about')
+        .eq('page_sections.section', 'main')
         .single();
 
       if (error) throw error;
