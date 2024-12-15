@@ -11,6 +11,13 @@ interface Representative {
   representative_type: 'MPP' | 'ZPTC' | 'Sarpanch' | 'MPTC';
 }
 
+interface GroupedRepresentatives {
+  MPP: Representative[];
+  ZPTC: Representative[];
+  Sarpanch: Representative[];
+  MPTC: Representative[];
+}
+
 export const RepresentativesList = () => {
   const { data: representatives, isLoading } = useQuery({
     queryKey: ["elected-representatives"],
@@ -33,26 +40,21 @@ export const RepresentativesList = () => {
     );
   }
 
-  // Group representatives by type
-  const groupedRepresentatives = representatives?.reduce((acc: Record<string, Representative[]>, rep) => {
-    if (!acc[rep.representative_type]) {
-      acc[rep.representative_type] = [];
-    }
-    acc[rep.representative_type].push(rep);
-    return acc;
-  }, {
+  // Initialize the grouped representatives with empty arrays for each type
+  const initialGroups: GroupedRepresentatives = {
     MPP: [],
     ZPTC: [],
     Sarpanch: [],
     MPTC: []
-  });
+  };
+
+  // Group representatives by type, ensuring all required groups exist
+  const groupedRepresentatives = representatives?.reduce((acc: GroupedRepresentatives, rep) => {
+    acc[rep.representative_type].push(rep);
+    return acc;
+  }, initialGroups);
 
   return (
-    <ElectedRepresentatives data={groupedRepresentatives || {
-      MPP: [],
-      ZPTC: [],
-      Sarpanch: [],
-      MPTC: []
-    }} />
+    <ElectedRepresentatives data={groupedRepresentatives || initialGroups} />
   );
 };
