@@ -1,13 +1,12 @@
 import { ExternalLink, Info, MessageSquare } from "lucide-react";
 import { FooterLink } from "./footer/FooterLink";
 import { FooterSection } from "./footer/FooterSection";
-import { FooterCopyright } from "./footer/FooterCopyright";
 
 export const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white py-6">
+    <footer className="bg-gray-900 text-white py-4">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <FooterSection title="Important Links">
             <FooterLink href="https://panchayat.gov.in/" icon={ExternalLink}>
               Ministry of Panchayati Raj
@@ -47,7 +46,6 @@ export const Footer = () => {
             </FooterLink>
           </FooterSection>
         </div>
-        <FooterCopyright />
       </div>
     </footer>
   );
