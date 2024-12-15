@@ -5,6 +5,16 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
+interface SectionContentResponse {
+  content: {
+    content: string;
+  };
+  page_sections: {
+    page: string;
+    section: string;
+  };
+}
+
 const About = () => {
   const { data: aboutContent, isLoading } = useQuery({
     queryKey: ['about-content'],
@@ -24,7 +34,7 @@ const About = () => {
         .single();
 
       if (error) throw error;
-      return data?.content?.content || '';
+      return (data as SectionContentResponse)?.content?.content || '';
     }
   });
 
