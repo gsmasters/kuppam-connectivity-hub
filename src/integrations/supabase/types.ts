@@ -52,6 +52,8 @@ export type Database = {
           end_date: string | null
           id: string
           message: string
+          position: string | null
+          priority: Database["public"]["Enums"]["notification_priority"] | null
           start_date: string
           updated_at: string
         }
@@ -61,6 +63,8 @@ export type Database = {
           end_date?: string | null
           id?: string
           message: string
+          position?: string | null
+          priority?: Database["public"]["Enums"]["notification_priority"] | null
           start_date?: string
           updated_at?: string
         }
@@ -70,6 +74,8 @@ export type Database = {
           end_date?: string | null
           id?: string
           message?: string
+          position?: string | null
+          priority?: Database["public"]["Enums"]["notification_priority"] | null
           start_date?: string
           updated_at?: string
         }
@@ -460,6 +466,7 @@ export type Database = {
         | "gallery"
         | "pricing"
         | "faq"
+      notification_priority: "low" | "medium" | "high"
       representative_type: "MPP" | "ZPTC" | "Sarpanch" | "MPTC"
       section_type:
         | "hero"
