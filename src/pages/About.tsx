@@ -12,6 +12,24 @@ interface SectionContent {
   version: number;
 }
 
+const defaultContent = `MPDO: Mandal Parishad Development Officer
+A Mandal Parishad Development Officer (MPDO), also known as a block development officer (BDO), is responsible for a number of tasks, including:
+
+Managing gram panchayats
+An MPDO in KUPPAM mandal manages 29 gram panchayats. 
+
+Inspecting gram panchayats
+An MPDO inspects all gram panchayats in their mandal every quarter. This includes physically verifying the properties of the gram panchayat. 
+
+Reconciling accounts
+An MPDO reconciles gram panchayat accounts with the local sub-treasury on a regular basis. 
+
+Ensuring regular activities
+An MPDO keeps a close watch on the villages in their jurisdiction to maintain regular activities like sanitation, drinking water, street lights etc.
+
+Mgnregs
+MPDO is a programming officer for MGREGS a central scheme for 100 days employment generation programme.`;
+
 const About = () => {
   const { toast } = useToast();
   const { data: aboutContent, isLoading, error, refetch } = useQuery({
@@ -51,7 +69,7 @@ const About = () => {
           .from('section_content')
           .insert({
             section_id: newSection.id,
-            content: 'Welcome to our About page. This content can be edited from the admin dashboard.',
+            content: defaultContent,
             version: 1,
             is_published: true,
             is_draft: false
@@ -59,7 +77,7 @@ const About = () => {
 
         if (contentError) throw contentError;
         
-        return 'Welcome to our About page. This content can be edited from the admin dashboard.';
+        return defaultContent;
       }
 
       const sectionId = pageSections[0].id;
@@ -76,8 +94,19 @@ const About = () => {
 
       if (contentError) {
         if (contentError.code === 'PGRST116') {
-          console.log('No published content found for about page');
-          return ''; // Return empty content if no published content exists
+          // If no published content exists, create initial content
+          const { error: insertError } = await supabase
+            .from('section_content')
+            .insert({
+              section_id: sectionId,
+              content: defaultContent,
+              version: 1,
+              is_published: true,
+              is_draft: false
+            });
+
+          if (insertError) throw insertError;
+          return defaultContent;
         }
         console.error('Error fetching section content:', contentError);
         throw contentError;
