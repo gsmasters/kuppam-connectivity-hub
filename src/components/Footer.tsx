@@ -80,6 +80,28 @@ export const Footer = () => {
                     NITI Aayog
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="https://digitalpanchayat.ap.gov.in/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-primary flex items-center"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Digital Panchayat AP
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://appanchayats.ap.gov.in/APPRPortal/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-primary flex items-center"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    AP Panchayat Portal
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
