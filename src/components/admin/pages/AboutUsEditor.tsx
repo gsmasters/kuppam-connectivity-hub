@@ -7,6 +7,19 @@ import { EditorActions } from "../editor/EditorActions";
 import { useState } from "react";
 import { toast } from "sonner";
 
+interface SectionContent {
+  id: string;
+  section_id: string;
+  content: {
+    content: string;
+  };
+  version: number;
+  is_published: boolean;
+  is_draft: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export const AboutUsEditor = () => {
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -15,25 +28,37 @@ export const AboutUsEditor = () => {
   const { data: sectionData, isLoading } = useQuery({
     queryKey: ['about-section'],
     queryFn: async () => {
-      const { data: sections } = await supabase
+      console.log('Fetching about page content...');
+      
+      const { data: pageSections } = await supabase
         .from('page_sections')
         .select('id')
         .eq('page', 'about-us')
-        .eq('section', 'main')
-        .single();
+        .eq('section', 'main');
 
-      if (!sections) throw new Error('Section not found');
+      if (!pageSections || pageSections.length === 0) {
+        throw new Error('Section not found');
+      }
 
-      const { data: content } = await supabase
+      const sectionId = pageSections[0].id;
+
+      const { data: contentData, error: contentError } = await supabase
         .from('section_content')
         .select('*')
-        .eq('section_id', sections.id)
+        .eq('section_id', sectionId)
         .eq('is_published', true)
         .order('version', { ascending: false })
         .limit(1)
         .single();
 
-      return { sectionId: sections.id, content: content?.content?.content || "" };
+      if (contentError) {
+        console.error('Error fetching section content:', contentError);
+        throw contentError;
+      }
+
+      console.log('Content fetched successfully:', contentData);
+      const typedContent = contentData as SectionContent;
+      return { sectionId: sectionId, content: typedContent?.content?.content || "" };
     }
   });
 
