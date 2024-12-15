@@ -1,16 +1,13 @@
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save, X, Plus, Eye, ArrowUp, ArrowDown, Trash2 } from "lucide-react";
-import { RichTextEditor } from "../RichTextEditor";
-import { PreviewDialog } from "../PreviewDialog";
+import { Card, CardContent } from "@/components/ui/card";
 import { Page } from "@/types/content";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { toast } from "sonner";
+import { PageFormHeader } from "./form/PageFormHeader";
+import { PageFormFields } from "./form/PageFormFields";
+import { Button } from "@/components/ui/button";
+import { Plus, Eye, ArrowUp, ArrowDown, Trash2 } from "lucide-react";
 
 interface PageFormValues {
   pageName: string;
@@ -78,80 +75,22 @@ export const PageForm = ({
     <div className="grid grid-cols-12 gap-6">
       <div className="col-span-9">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>
-              {editingPage ? "Edit Page" : "Create New Page"}
-            </CardTitle>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={onCancel}
-                className="gap-2"
-              >
-                <X className="h-4 w-4" />
-                Cancel
-              </Button>
-              <Button
-                onClick={form.handleSubmit(handleSubmit)}
-                className="gap-2"
-              >
-                <Save className="h-4 w-4" />
-                {editingPage ? "Update" : "Create"}
-              </Button>
-              {pageContent && (
-                <PreviewDialog content={pageContent} />
-              )}
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="pt-6 space-y-4">
+            <PageFormHeader
+              editingPage={editingPage}
+              pageContent={pageContent}
+              onCancel={onCancel}
+              onSubmit={form.handleSubmit(handleSubmit)}
+            />
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="pageName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Page Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="Enter page name" />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                {!isEditing && templates && templates.length > 0 && (
-                  <FormField
-                    control={form.control}
-                    name="templateId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Choose a Template</FormLabel>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            {templates.map((template) => (
-                              <div key={template.id} className="flex items-center space-x-2">
-                                <RadioGroupItem value={template.id} id={template.id} />
-                                <Label htmlFor={template.id}>{template.name}</Label>
-                              </div>
-                            ))}
-                          </RadioGroup>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                )}
-
-                <ScrollArea className="h-[600px] rounded-md border">
+              <form onSubmit={form.handleSubmit(handleSubmit)}>
+                <ScrollArea className="h-[600px]">
                   <div className="p-4 space-y-4">
-                    <RichTextEditor
-                      content={pageContent}
-                      onChange={(content) => {
-                        form.setValue('pageContent', content);
-                        onPageContentChange(content);
-                      }}
+                    <PageFormFields
+                      form={form}
+                      templates={templates}
+                      isEditing={isEditing}
+                      onPageContentChange={onPageContentChange}
                     />
                   </div>
                 </ScrollArea>
@@ -163,10 +102,8 @@ export const PageForm = ({
       
       <div className="col-span-3">
         <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Add Sections</CardTitle>
-          </CardHeader>
           <CardContent>
+            <h3 className="text-lg font-semibold mb-4">Add Sections</h3>
             <div className="space-y-2">
               {sections.map((section) => (
                 <Button
@@ -175,6 +112,7 @@ export const PageForm = ({
                   className="w-full justify-start text-left"
                   onClick={() => {
                     // Handle adding section
+                    console.log(`Adding section: ${section.type}`);
                   }}
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -186,12 +124,9 @@ export const PageForm = ({
         </Card>
 
         <Card className="mt-4">
-          <CardHeader>
-            <CardTitle className="text-lg">Page Sections</CardTitle>
-          </CardHeader>
           <CardContent>
+            <h3 className="text-lg font-semibold mb-4">Page Sections</h3>
             <div className="space-y-2">
-              {/* Example section items */}
               <div className="flex items-center justify-between p-2 border rounded-md">
                 <span>Hero Section</span>
                 <div className="flex gap-1">
