@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ContactBar } from "@/components/ContactBar";
 import { NotificationTicker } from "@/components/NotificationTicker";
+import { LeadershipBanner } from "@/components/LeadershipBanner";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Departments from "./pages/Departments";
@@ -30,6 +31,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <NotificationTicker />
+          <LeadershipBanner />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about-us" element={<About />} />

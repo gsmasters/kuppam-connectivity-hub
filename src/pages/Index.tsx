@@ -8,7 +8,6 @@ import { PopulationStats } from "@/components/PopulationStats";
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <LeadershipBanner />
       <div>
         <Header />
         <main className="flex-grow">
