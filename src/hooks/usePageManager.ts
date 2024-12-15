@@ -143,20 +143,35 @@ export const usePageManager = () => {
     setEditingPage(page);
     setPageName(page.name);
     
-    const { data, error } = await supabase
-      .from("section_content")
-      .select("content")
-      .eq("section_id", page.id)
-      .eq("is_published", true)
-      .order("version", { ascending: false })
-      .limit(1)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from("section_content")
+        .select("content")
+        .eq("section_id", page.id)
+        .eq("is_published", true)
+        .order("version", { ascending: false })
+        .limit(1);
 
-    if (error) {
+      if (error) {
+        throw error;
+      }
+
+      // If no content exists, set empty content
+      if (!data || data.length === 0) {
+        setPageContent("");
+        return;
+      }
+
+      // Use the first result if it exists
+      setPageContent(data[0]?.content || "");
+    } catch (error) {
       console.error("Error fetching content:", error);
       setPageContent("");
-    } else {
-      setPageContent(data?.content || "");
+      toast({
+        title: "Warning",
+        description: "Could not load existing content",
+        variant: "destructive",
+      });
     }
   };
 
