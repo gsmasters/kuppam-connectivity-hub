@@ -1,3 +1,4 @@
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,14 @@ import { Page } from "@/types/content";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { toast } from "sonner";
+
+interface PageFormValues {
+  pageName: string;
+  pageContent: string;
+  templateId?: string;
+}
 
 interface PageFormProps {
   isEditing: boolean;
@@ -36,6 +45,27 @@ export const PageForm = ({
   onCancel,
   editingPage
 }: PageFormProps) => {
+  const form = useForm<PageFormValues>({
+    defaultValues: {
+      pageName: pageName,
+      pageContent: pageContent,
+      templateId: selectedTemplate || undefined
+    }
+  });
+
+  const handleSubmit = (data: PageFormValues) => {
+    if (!data.pageName.trim()) {
+      toast.error("Page name is required");
+      return;
+    }
+    onPageNameChange(data.pageName);
+    onPageContentChange(data.pageContent);
+    if (data.templateId) {
+      onTemplateChange(data.templateId);
+    }
+    onSave();
+  };
+
   const sections = [
     { type: 'hero', label: 'Hero Section' },
     { type: 'content', label: 'Content Block' },
@@ -62,8 +92,7 @@ export const PageForm = ({
                 Cancel
               </Button>
               <Button
-                onClick={onSave}
-                disabled={!pageName.trim()}
+                onClick={form.handleSubmit(handleSubmit)}
                 className="gap-2"
               >
                 <Save className="h-4 w-4" />
@@ -75,35 +104,59 @@ export const PageForm = ({
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Input
-              placeholder="Page name"
-              value={pageName}
-              onChange={(e) => onPageNameChange(e.target.value)}
-            />
-            {!isEditing && templates && templates.length > 0 && (
-              <div className="space-y-4">
-                <Label>Choose a Template</Label>
-                <RadioGroup
-                  value={selectedTemplate || undefined}
-                  onValueChange={onTemplateChange}
-                >
-                  {templates.map((template) => (
-                    <div key={template.id} className="flex items-center space-x-2">
-                      <RadioGroupItem value={template.id} id={template.id} />
-                      <Label htmlFor={template.id}>{template.name}</Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div>
-            )}
-            <ScrollArea className="h-[600px] rounded-md border">
-              <div className="p-4 space-y-4">
-                <RichTextEditor
-                  content={pageContent}
-                  onChange={onPageContentChange}
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="pageName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Page Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Enter page name" />
+                      </FormControl>
+                    </FormItem>
+                  )}
                 />
-              </div>
-            </ScrollArea>
+
+                {!isEditing && templates && templates.length > 0 && (
+                  <FormField
+                    control={form.control}
+                    name="templateId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Choose a Template</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            {templates.map((template) => (
+                              <div key={template.id} className="flex items-center space-x-2">
+                                <RadioGroupItem value={template.id} id={template.id} />
+                                <Label htmlFor={template.id}>{template.name}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                <ScrollArea className="h-[600px] rounded-md border">
+                  <div className="p-4 space-y-4">
+                    <RichTextEditor
+                      content={pageContent}
+                      onChange={(content) => {
+                        form.setValue('pageContent', content);
+                        onPageContentChange(content);
+                      }}
+                    />
+                  </div>
+                </ScrollArea>
+              </form>
+            </Form>
           </CardContent>
         </Card>
       </div>
