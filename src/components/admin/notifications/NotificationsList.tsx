@@ -15,6 +15,8 @@ interface Notification {
   end_date: string | null;
   priority: 'low' | 'medium' | 'high';
   position: 'top' | 'bottom';
+  created_at: string;
+  updated_at: string;
 }
 
 export const NotificationsList = () => {
@@ -50,7 +52,15 @@ export const NotificationsList = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setNotifications(data || []);
+      
+      // Ensure the data matches our Notification type
+      const typedNotifications = (data || []).map(notification => ({
+        ...notification,
+        position: notification.position as 'top' | 'bottom',
+        priority: notification.priority as 'low' | 'medium' | 'high'
+      }));
+      
+      setNotifications(typedNotifications);
     } catch (error) {
       console.error('Error loading notifications:', error);
       toast.error("Failed to load notifications");
