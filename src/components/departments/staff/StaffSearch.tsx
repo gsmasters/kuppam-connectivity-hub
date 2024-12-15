@@ -16,6 +16,7 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
     setMounted(true);
   }, []);
 
+  // Early return with basic input if not mounted
   if (!mounted) {
     return (
       <div className="relative max-w-sm">
@@ -31,6 +32,9 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
     );
   }
 
+  // Ensure suggestions is always an array
+  const validSuggestions = Array.isArray(suggestions) ? suggestions : [];
+
   return (
     <div className="relative max-w-sm">
       <Command className="rounded-lg border shadow-md">
@@ -45,11 +49,11 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
         />
         {open && searchQuery && (
           <CommandList>
-            {!suggestions?.length ? (
+            {!validSuggestions.length ? (
               <CommandEmpty>No results found.</CommandEmpty>
             ) : (
               <CommandGroup heading="Suggestions">
-                {suggestions.map((suggestion) => (
+                {validSuggestions.map((suggestion) => (
                   suggestion && (
                     <CommandItem
                       key={suggestion}
