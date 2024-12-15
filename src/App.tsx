@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,7 +11,6 @@ import Staff from "./pages/Staff";
 import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import { AdminLayout } from "./components/admin/AdminLayout";
-import { useState } from "react";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient({
