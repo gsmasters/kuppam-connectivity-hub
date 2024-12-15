@@ -1,6 +1,6 @@
 import { Toggle } from "@/components/ui/toggle";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Editor, Level } from '@tiptap/react';
+import { Editor } from '@tiptap/react';
 import {
   Bold, Italic, Strikethrough, List, ListOrdered,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
@@ -23,13 +23,13 @@ export const EditorToolbar = ({ editor, onImageUpload }: EditorToolbarProps) => 
     if (value === 'p') {
       editor.chain().focus().setParagraph().run();
     } else {
-      const level = parseInt(value.replace('h', '')) as Level;
-      editor.chain().focus().toggleHeading({ level }).run();
+      const level = parseInt(value.replace('h', ''));
+      editor.chain().focus().toggleHeading({ level: level as 1 | 2 | 3 | 4 | 5 | 6 }).run();
     }
   };
 
-  const insertTable = () => {
-    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
+  const handleInsertTable = () => {
+    editor.chain().focus().insertTable?.({ rows: 3, cols: 3, withHeaderRow: true }).run();
   };
 
   return (
@@ -147,7 +147,7 @@ export const EditorToolbar = ({ editor, onImageUpload }: EditorToolbarProps) => 
         <Toggle
           size="sm"
           pressed={editor.isActive('table')}
-          onPressedChange={insertTable}
+          onPressedChange={handleInsertTable}
         >
           <Table className="h-4 w-4" />
         </Toggle>
