@@ -4,6 +4,7 @@ export interface BaseStaffMember {
   mobile?: string;
   created_at: string;
   updated_at: string;
+  is_working?: boolean;
 }
 
 export type StaffType = 
@@ -21,7 +22,6 @@ export interface MandalStaff extends BaseStaffMember {
   position: string;
   department?: string;
   staff_type: StaffType;
-  is_working?: boolean;
 }
 
 export interface SachivalayamStaff extends BaseStaffMember {
