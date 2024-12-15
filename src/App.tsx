@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ContactBar } from "@/components/ContactBar";
 import Index from "./pages/Index";
 import About from "./pages/About";
-import Staff from "./pages/Staff";
+import Departments from "./pages/Departments";
 import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import StaffPage from "./pages/admin/Staff";
@@ -32,7 +32,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
-            <Route path="/staff" element={<Staff />} />
+            <Route path="/departments" element={<Departments />} />
             <Route path="/admin/login" element={<Login />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="dashboard" element={<Dashboard />} />
