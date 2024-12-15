@@ -40,9 +40,16 @@ export const PageManager = () => {
           onTemplateChange={setSelectedTemplate}
           onSave={() => {
             if (editingPage) {
-              updatePage.mutate();
+              updatePage.mutate({
+                pageId: editingPage.id,
+                pageName: pageName,
+                pageContent: pageContent
+              });
             } else {
-              createPage.mutate();
+              createPage.mutate({
+                pageName: pageName,
+                selectedTemplate: selectedTemplate
+              });
             }
           }}
           onCancel={handleCancel}
