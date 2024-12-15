@@ -30,26 +30,28 @@ export const AboutUsEditor = () => {
     queryFn: async () => {
       console.log('Fetching about page content...');
       
-      const { data: pageSections } = await supabase
+      // First get the section ID
+      const { data: pageSections, error: sectionError } = await supabase
         .from('page_sections')
         .select('id')
         .eq('page', 'about-us')
         .eq('section', 'main');
 
+      if (sectionError) throw sectionError;
       if (!pageSections || pageSections.length === 0) {
         throw new Error('Section not found');
       }
 
       const sectionId = pageSections[0].id;
 
+      // Then get the content, handling the case where no content exists yet
       const { data: contentData, error: contentError } = await supabase
         .from('section_content')
         .select('*')
         .eq('section_id', sectionId)
         .eq('is_published', true)
         .order('version', { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1);
 
       if (contentError) {
         console.error('Error fetching section content:', contentError);
@@ -57,8 +59,16 @@ export const AboutUsEditor = () => {
       }
 
       console.log('Content fetched successfully:', contentData);
-      const typedContent = contentData as SectionContent;
-      return { sectionId: sectionId, content: typedContent?.content?.content || "" };
+      // Handle case where no content exists yet
+      if (!contentData || contentData.length === 0) {
+        return { sectionId, content: "" };
+      }
+
+      const typedContent = contentData[0] as SectionContent;
+      return { 
+        sectionId, 
+        content: typedContent?.content?.content || "" 
+      };
     }
   });
 
