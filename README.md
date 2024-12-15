@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Welcome to Kuppam Connectivity Hub
 
 ## Project info
 
@@ -10,7 +10,7 @@ There are several ways of editing your application.
 
 **Use Lovable**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1e0b6fb7-2368-4d7b-b6e8-d0380654680c) and start prompting.
+Simply visit the [Kuppam Connectivity Hub](https://lovable.dev/projects/1e0b6fb7-2368-4d7b-b6e8-d0380654680c) and start prompting.
 
 Changes made via Lovable will be committed automatically to this repo.
 
