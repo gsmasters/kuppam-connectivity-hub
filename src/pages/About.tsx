@@ -117,7 +117,7 @@ const About = () => {
 
       console.log('Content fetched successfully:', contentData);
       const typedContent = contentData as SectionContent;
-      return typedContent.content.content || defaultContent;
+      return typedContent.content.content;
     },
     staleTime: 1000 * 60, // Cache for 1 minute
     retry: 1,
@@ -175,7 +175,7 @@ const About = () => {
           </div>
         ) : (
           <div className="prose max-w-none">
-            {typeof aboutContent === 'string' && aboutContent.split('\n').map((paragraph, index) => (
+            {aboutContent.split('\n').map((paragraph, index) => (
               <p key={index} className="text-lg text-gray-700 mt-4">
                 {paragraph}
               </p>
