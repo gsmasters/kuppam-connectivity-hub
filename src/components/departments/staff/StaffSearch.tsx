@@ -54,9 +54,11 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
           }}
           className="h-9"
         />
-        {open && shouldShowSuggestions && (
+        {open && (
           <CommandList>
-            {validSuggestions.length === 0 ? (
+            {!shouldShowSuggestions ? (
+              <CommandEmpty>Start typing to search...</CommandEmpty>
+            ) : validSuggestions.length === 0 ? (
               <CommandEmpty>No results found.</CommandEmpty>
             ) : (
               <CommandGroup heading="Suggestions">
