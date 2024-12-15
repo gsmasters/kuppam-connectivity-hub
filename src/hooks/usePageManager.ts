@@ -48,7 +48,29 @@ export const usePageManager = () => {
   const handleEdit = async (page: Page) => {
     setEditingPage(page);
     setPageName(page.name);
-    await loadPageContent(page);
+    
+    // Load the page content from section_content
+    const { data: sections } = await supabase
+      .from("page_sections")
+      .select("id")
+      .eq("page", page.id)
+      .eq("section", "content")
+      .single();
+
+    if (sections) {
+      const { data: content } = await supabase
+        .from("section_content")
+        .select("content")
+        .eq("section_id", sections.id)
+        .eq("is_published", true)
+        .order("version", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (content && typeof content.content === 'object' && content.content !== null) {
+        setPageContent(content.content.content || "");
+      }
+    }
   };
 
   const handleCancel = () => {
