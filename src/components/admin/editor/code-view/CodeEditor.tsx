@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CodeViewToolbar } from "./CodeViewToolbar";
 
 interface CodeEditorProps {
@@ -9,6 +9,13 @@ interface CodeEditorProps {
 export const CodeEditor = ({ editor, onContentChange }: CodeEditorProps) => {
   const [codeType, setCodeType] = useState<'html' | 'css'>('html');
   const [cssContent, setCssContent] = useState('');
+
+  useEffect(() => {
+    // Extract CSS when component mounts or HTML content changes
+    if (editor) {
+      setCssContent(extractCSS(editor.getHTML()));
+    }
+  }, [editor]);
 
   const extractCSS = (html: string): string => {
     const styleTagRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
@@ -43,8 +50,19 @@ export const CodeEditor = ({ editor, onContentChange }: CodeEditorProps) => {
   };
 
   const getCodeContent = () => {
-    const html = editor?.getHTML() || '';
-    return codeType === 'html' ? html : extractCSS(html);
+    if (!editor) return '';
+    return codeType === 'html' ? editor.getHTML() : cssContent;
+  };
+
+  const handleContentChange = (content: string) => {
+    if (codeType === 'html') {
+      editor?.commands.setContent(content);
+      onContentChange(content);
+      // Update CSS content when HTML changes
+      setCssContent(extractCSS(content));
+    } else {
+      handleCSSChange(content);
+    }
   };
 
   return (
@@ -55,16 +73,9 @@ export const CodeEditor = ({ editor, onContentChange }: CodeEditorProps) => {
         getCodeContent={getCodeContent}
       />
       <textarea
-        value={codeType === 'html' ? editor.getHTML() : cssContent || extractCSS(editor.getHTML())}
-        onChange={(e) => {
-          if (codeType === 'html') {
-            editor.commands.setContent(e.target.value);
-            onContentChange(e.target.value);
-          } else {
-            handleCSSChange(e.target.value);
-          }
-        }}
-        className="w-full h-[400px] font-mono text-sm p-4"
+        value={getCodeContent()}
+        onChange={(e) => handleContentChange(e.target.value)}
+        className="w-full h-[400px] font-mono text-sm p-4 bg-background"
         placeholder={codeType === 'css' ? '/* CSS styles will appear here */' : '<!-- HTML content -->'}
       />
     </div>
