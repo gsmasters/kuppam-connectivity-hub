@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Loader2, Save, Upload } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2, Save, Upload, AlertCircle } from "lucide-react";
 import { RichTextEditor } from "./RichTextEditor";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface EditorViewProps {
   sectionId: string;
@@ -31,8 +31,8 @@ export const EditorView = ({
   saving,
   hasUnsavedChanges,
 }: EditorViewProps) => {
-  const [newContent, setNewContent] = useState("");
   const [uploading, setUploading] = useState(false);
+  const { toast } = useToast();
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -47,11 +47,19 @@ export const EditorView = ({
         await new Promise((resolve) => {
           img.onload = () => {
             if (layoutWidth && img.width !== layoutWidth) {
-              alert(`Image width must be ${layoutWidth}px`);
+              toast({
+                title: "Invalid Image Size",
+                description: `Image width must be ${layoutWidth}px`,
+                variant: "destructive"
+              });
               return;
             }
             if (layoutHeight && img.height !== layoutHeight) {
-              alert(`Image height must be ${layoutHeight}px`);
+              toast({
+                title: "Invalid Image Size",
+                description: `Image height must be ${layoutHeight}px`,
+                variant: "destructive"
+              });
               return;
             }
             resolve(true);
@@ -70,11 +78,36 @@ export const EditorView = ({
         .getPublicUrl(data.path);
 
       onContentChange(sectionId, { url: publicUrl });
+      
+      toast({
+        title: "Success",
+        description: "Image uploaded successfully"
+      });
     } catch (error) {
       console.error('Error uploading image:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive"
+      });
     } finally {
       setUploading(false);
     }
+  };
+
+  const renderContentSizeAlert = () => {
+    if (!layoutWidth && !layoutHeight) return null;
+
+    return (
+      <Alert className="mb-4">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          Recommended dimensions: 
+          {layoutWidth && ` Width: ${layoutWidth}px`}
+          {layoutHeight && ` Height: ${layoutHeight}px`}
+        </AlertDescription>
+      </Alert>
+    );
   };
 
   const renderEditor = () => {
@@ -82,6 +115,7 @@ export const EditorView = ({
       case 'image':
         return (
           <div className="space-y-4">
+            {renderContentSizeAlert()}
             {existingContent?.url && (
               <img 
                 src={existingContent.url} 
@@ -98,56 +132,28 @@ export const EditorView = ({
               />
               {uploading && <Loader2 className="h-4 w-4 animate-spin" />}
             </div>
-            {(layoutWidth || layoutHeight) && (
-              <p className="text-sm text-muted-foreground">
-                Required dimensions: {layoutWidth && `${layoutWidth}px width`} {layoutHeight && `${layoutHeight}px height`}
-              </p>
-            )}
           </div>
         );
 
       case 'text':
       case 'hero':
+      case 'stats':
+      case 'programs':
+      case 'staff':
         return (
-          <Tabs defaultValue="existing" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="existing">Edit Existing Content</TabsTrigger>
-              <TabsTrigger value="new">Add New Content</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="existing">
-              <RichTextEditor
-                content={existingContent}
-                onChange={(content) => onContentChange(sectionId, content)}
-              />
-            </TabsContent>
-
-            <TabsContent value="new">
-              <RichTextEditor
-                content={newContent}
-                onChange={setNewContent}
-              />
-              <div className="mt-4 flex justify-end">
-                <Button
-                  onClick={() => {
-                    const combinedContent = `${existingContent}\n${newContent}`;
-                    onContentChange(sectionId, combinedContent);
-                    setNewContent("");
-                  }}
-                  disabled={!newContent.trim()}
-                >
-                  Add to Existing Content
-                </Button>
-              </div>
-            </TabsContent>
-          </Tabs>
+          <div className="space-y-4">
+            {renderContentSizeAlert()}
+            <RichTextEditor
+              content={existingContent || ""}
+              onChange={(content) => onContentChange(sectionId, content)}
+            />
+          </div>
         );
 
-      // Add more cases for other content types as needed
       default:
         return (
           <RichTextEditor
-            content={existingContent}
+            content={existingContent || ""}
             onChange={(content) => onContentChange(sectionId, content)}
           />
         );

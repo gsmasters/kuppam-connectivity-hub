@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Eye, Loader2, Save } from "lucide-react";
-import { PreviewDialog } from "./PreviewDialog";
+import { ArrowLeft } from "lucide-react";
 import { EditorView } from "./EditorView";
 
 interface Section {
@@ -46,11 +45,6 @@ export const SectionEditor = ({
             <h2 className="text-2xl font-bold">{section.title}</h2>
             <p className="text-sm text-muted-foreground">{section.description}</p>
           </div>
-        </div>
-        <div className="flex gap-2">
-          {content && (
-            <PreviewDialog content={content} />
-          )}
         </div>
       </div>
 
