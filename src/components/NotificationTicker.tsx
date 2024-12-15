@@ -78,16 +78,29 @@ export const NotificationTicker = () => {
     return null; // Don't show the ticker if there are no notifications
   }
 
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high':
+        return 'from-red-500 via-red-600 to-red-700';
+      case 'medium':
+        return 'from-amber-400 via-amber-500 to-[#DD4814]';
+      case 'low':
+        return 'from-green-500 via-green-600 to-green-700';
+      default:
+        return 'from-amber-400 via-amber-500 to-[#DD4814]';
+    }
+  };
+
   return (
-    <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white">
+    <div className={`bg-gradient-to-r ${getPriorityColor(notifications[currentIndex]?.priority)} py-2 text-white transition-all duration-500`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center space-x-2">
           <span className="font-semibold whitespace-nowrap">Latest Updates:</span>
           <div className="overflow-hidden flex-1">
-            <div className="animate-[slide_20s_linear_infinite]">
+            <div className="animate-slide">
               <p className="flex items-center space-x-2">
                 <ArrowRight className="h-4 w-4" />
-                <span>{notifications[currentIndex]?.message}</span>
+                <span className="font-medium">{notifications[currentIndex]?.message}</span>
               </p>
             </div>
           </div>
