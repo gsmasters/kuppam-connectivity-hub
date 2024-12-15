@@ -16,7 +16,7 @@ export const Header = () => {
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0">
-                <Link to="/" className="text-xl font-bold">MyApp</Link>
+                <Link to="/" className="text-xl font-bold">MPDO Office</Link>
               </div>
               <div className="hidden sm:ml-6 sm:flex">
                 {navigation.map((item) => (
