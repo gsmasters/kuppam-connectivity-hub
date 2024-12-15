@@ -3,10 +3,13 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 interface StaffSearchProps {
   searchQuery: string;
   onSearchChange: (value: string) => void;
-  suggestions: string[];
+  suggestions?: string[];
 }
 
 export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: StaffSearchProps) => {
+  // Ensure we always have a valid array of suggestions
+  const validSuggestions = Array.isArray(suggestions) ? suggestions : [];
+  
   return (
     <div className="relative max-w-sm">
       <Command className="rounded-lg border shadow-md" shouldFilter={false}>
@@ -16,16 +19,16 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
           onValueChange={onSearchChange}
           className="h-9"
         />
-        {searchQuery && suggestions && (
+        {searchQuery && (
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            {suggestions.length > 0 && (
+            {validSuggestions.length > 0 && (
               <CommandGroup heading="Suggestions">
-                {suggestions.map((suggestion) => (
+                {validSuggestions.map((suggestion) => (
                   <CommandItem
                     key={suggestion}
                     value={suggestion}
-                    onSelect={onSearchChange}
+                    onSelect={(value) => onSearchChange(value)}
                   >
                     {suggestion}
                   </CommandItem>

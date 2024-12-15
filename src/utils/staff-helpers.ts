@@ -13,29 +13,30 @@ export function isElectedRepresentative(staff: StaffMember): staff is ElectedRep
 }
 
 export const getSearchSuggestions = (allStaff: StaffMember[] | undefined, searchQuery: string): string[] => {
-  if (!allStaff || !searchQuery) return [];
+  if (!allStaff?.length || !searchQuery?.trim()) return [];
   
   const suggestions = new Set<string>();
   
   allStaff.forEach(member => {
     if (!member) return;
 
-    if (member.name) suggestions.add(member.name);
-    if (member.mobile) suggestions.add(member.mobile);
+    // Only add non-null/undefined values
+    if (member.name?.trim()) suggestions.add(member.name.trim());
+    if (member.mobile?.trim()) suggestions.add(member.mobile.trim());
     
     if (isMandalStaff(member)) {
-      if (member.department) suggestions.add(member.department);
-      if (member.position) suggestions.add(member.position);
+      if (member.department?.trim()) suggestions.add(member.department.trim());
+      if (member.position?.trim()) suggestions.add(member.position.trim());
     }
     
     if (isSachivalayamStaff(member)) {
-      if (member.designation) suggestions.add(member.designation);
-      if (member.secretariat_name) suggestions.add(member.secretariat_name);
+      if (member.designation?.trim()) suggestions.add(member.designation.trim());
+      if (member.secretariat_name?.trim()) suggestions.add(member.secretariat_name.trim());
     }
     
     if (isElectedRepresentative(member)) {
-      if (member.position) suggestions.add(member.position);
-      if (member.representative_type) suggestions.add(member.representative_type);
+      if (member.position?.trim()) suggestions.add(member.position.trim());
+      if (member.representative_type?.trim()) suggestions.add(member.representative_type.trim());
     }
   });
   
@@ -47,17 +48,23 @@ export const getSearchSuggestions = (allStaff: StaffMember[] | undefined, search
 };
 
 export const filterStaff = (staff: StaffMember[] | null | undefined, searchQuery: string): StaffMember[] => {
-  if (!staff) return [];
-  if (!searchQuery.trim()) return staff;
+  if (!staff?.length) return [];
+  if (!searchQuery?.trim()) return staff;
 
   const query = searchQuery.toLowerCase().trim();
   return staff.filter(member => {
     if (!member) return false;
 
-    const baseFields = [member.name, member.mobile];
+    const baseFields = [
+      member.name, 
+      member.mobile
+    ].filter(Boolean);
     
     if (isMandalStaff(member)) {
-      baseFields.push(member.position, member.department || '');
+      baseFields.push(
+        member.position,
+        member.department || ''
+      );
     }
     
     if (isSachivalayamStaff(member)) {
