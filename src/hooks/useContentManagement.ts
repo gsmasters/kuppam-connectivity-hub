@@ -20,13 +20,11 @@ export const useContentManagement = () => {
       
       const contentMap: Record<string, any> = {};
       data?.forEach(item => {
-        if (!contentMap[item.section]) {
-          contentMap[item.section] = {};
-        }
         contentMap[item.section] = item.content;
       });
       
       setContent(contentMap);
+      console.log('Loaded content:', contentMap); // Debug log
     } catch (error) {
       console.error('Error loading content:', error);
       toast({
@@ -106,6 +104,35 @@ export const useContentManagement = () => {
     }));
   };
 
+  // Subscribe to real-time changes
+  useEffect(() => {
+    const channel = supabase
+      .channel('staff_content_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'staff_content'
+        },
+        (payload) => {
+          console.log('Real-time update received:', payload); // Debug log
+          if (payload.new) {
+            setContent(prev => ({
+              ...prev,
+              [payload.new.section]: payload.new.content
+            }));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // Load initial content
   useEffect(() => {
     loadContent();
   }, []);

@@ -53,6 +53,7 @@ export const ContentManager = () => {
   }
 
   const handleContentChange = (section: string, newContent: string) => {
+    console.log('Content changed for section:', section); // Debug log
     setPreviewContent(newContent);
     markContentChanged(section);
   };
@@ -75,20 +76,23 @@ export const ContentManager = () => {
 
         {sections.map((page) => (
           <TabsContent key={page.id} value={page.id} className="space-y-4">
-            {page.sections.map((section) => (
-              <ContentSection
-                key={section.id}
-                title={section.label}
-                description={`Edit ${section.label.toLowerCase()} content`}
-                content={content[section.id] || ""}
-                saving={saving}
-                hasUnsavedChanges={unsavedChanges[section.id]}
-                onContentChange={(newContent) => 
-                  handleContentChange(section.id, newContent)
-                }
-                onSave={() => saveContent(section.id, previewContent)}
-              />
-            ))}
+            {page.sections.map((section) => {
+              console.log(`Rendering section ${section.id} with content:`, content[section.id]); // Debug log
+              return (
+                <ContentSection
+                  key={section.id}
+                  title={section.label}
+                  description={`Edit ${section.label.toLowerCase()} content`}
+                  content={content[section.id] || ""}
+                  saving={saving}
+                  hasUnsavedChanges={unsavedChanges[section.id]}
+                  onContentChange={(newContent) => 
+                    handleContentChange(section.id, newContent)
+                  }
+                  onSave={() => saveContent(section.id, previewContent)}
+                />
+              );
+            })}
           </TabsContent>
         ))}
       </Tabs>
