@@ -18,9 +18,17 @@ interface StaffGridProps {
   title: string;
   description: string;
   isRepresentative?: boolean;
+  showDepartment?: boolean;
 }
 
-export const StaffGrid = ({ staff, isLoading, title, description, isRepresentative }: StaffGridProps) => {
+export const StaffGrid = ({ 
+  staff, 
+  isLoading, 
+  title, 
+  description, 
+  isRepresentative,
+  showDepartment 
+}: StaffGridProps) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-12">
@@ -38,8 +46,15 @@ export const StaffGrid = ({ staff, isLoading, title, description, isRepresentati
     );
   }
 
-  // Group representatives by type if needed
-  const groupedStaff = isRepresentative
+  // Group staff by department if showDepartment is true
+  const groupedStaff = showDepartment
+    ? staff.reduce((acc: Record<string, StaffMember[]>, member) => {
+        const dept = member.department || 'Other';
+        if (!acc[dept]) acc[dept] = [];
+        acc[dept].push(member);
+        return acc;
+      }, {})
+    : isRepresentative
     ? staff.reduce((acc: Record<string, StaffMember[]>, member) => {
         const type = member.representative_type || 'Other';
         if (!acc[type]) acc[type] = [];
@@ -58,10 +73,10 @@ export const StaffGrid = ({ staff, isLoading, title, description, isRepresentati
         </p>
       </div>
 
-      {isRepresentative ? (
-        Object.entries(groupedStaff).map(([type, members]) => (
-          <div key={type} className="space-y-4">
-            <h4 className="text-lg font-medium capitalize">{type.replace('_', ' ')}</h4>
+      {(showDepartment || isRepresentative) ? (
+        Object.entries(groupedStaff).map(([group, members]) => (
+          <div key={group} className="space-y-4">
+            <h4 className="text-lg font-medium capitalize">{group.replace('_', ' ')}</h4>
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
               {members.map((member) => (
                 <ContactCard key={member.id} member={member} />

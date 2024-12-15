@@ -21,24 +21,22 @@ interface StaffMember {
 export const StaffContactList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   
-  // Query for mandal officers with deduplication
-  const { data: mandalOfficers, isLoading: isLoadingOfficers } = useQuery({
-    queryKey: ["staff", "mandal_officer"],
+  // Query for mandal office staff
+  const { data: mandalOfficeStaff, isLoading: isLoadingMandal } = useQuery({
+    queryKey: ["staff", "mandal_office"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("staff")
         .select("*")
-        .eq("staff_type", "mandal_officer")
-        .order("name");
+        .eq("staff_type", "mandal_office")
+        .order("department", { ascending: true })
+        .order("position");
       if (error) throw error;
-      // Remove duplicates based on name and position
-      return Array.from(new Map(data.map(item => 
-        [`${item.name}-${item.position}`, item]
-      )).values());
+      return data;
     },
   });
 
-  // Query for sachivalayam staff with deduplication
+  // Query for sachivalayam staff
   const { data: sachivalayamStaff, isLoading: isLoadingSachivalayam } = useQuery({
     queryKey: ["sachivalayam-staff"],
     queryFn: async () => {
@@ -47,14 +45,11 @@ export const StaffContactList = () => {
         .select("*")
         .order("name");
       if (error) throw error;
-      // Remove duplicates based on name and designation
-      return Array.from(new Map(data.map(item => 
-        [`${item.name}-${item.designation}`, item]
-      )).values());
+      return data;
     },
   });
 
-  // Query for elected representatives with deduplication
+  // Query for elected representatives
   const { data: electedRepresentatives, isLoading: isLoadingRepresentatives } = useQuery({
     queryKey: ["elected-representatives"],
     queryFn: async () => {
@@ -63,14 +58,11 @@ export const StaffContactList = () => {
         .select("*")
         .order("representative_type");
       if (error) throw error;
-      // Remove duplicates based on name and position
-      return Array.from(new Map(data.map(item => 
-        [`${item.name}-${item.position}`, item]
-      )).values());
+      return data;
     },
   });
 
-  // Enhanced search function that checks all relevant fields
+  // Enhanced search function
   const filterStaff = (staff: StaffMember[] | null) => {
     if (!staff) return [];
     if (!searchQuery.trim()) return staff;
@@ -92,9 +84,9 @@ export const StaffContactList = () => {
     });
   };
 
-  // Calculate total unique staff count
+  // Calculate total staff count
   const totalStaffCount = (
-    (mandalOfficers?.length || 0) +
+    (mandalOfficeStaff?.length || 0) +
     (sachivalayamStaff?.length || 0) +
     (electedRepresentatives?.length || 0)
   );
@@ -106,7 +98,7 @@ export const StaffContactList = () => {
           <div>
             <CardTitle className="text-3xl font-bold tracking-tight">Staff Directory</CardTitle>
             <CardDescription className="mt-2">
-              Browse and search through all department staff and elected representatives
+              Browse and search through mandal office staff, sachivalayam staff, and elected representatives
             </CardDescription>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
@@ -130,7 +122,7 @@ export const StaffContactList = () => {
         <Tabs defaultValue="mandal" className="space-y-6">
           <StaffTabs 
             counts={{
-              mandal: mandalOfficers?.length || 0,
+              mandal: mandalOfficeStaff?.length || 0,
               sachivalayam: sachivalayamStaff?.length || 0,
               representatives: electedRepresentatives?.length || 0
             }}
@@ -138,10 +130,11 @@ export const StaffContactList = () => {
 
           <TabsContent value="mandal" className="mt-0 space-y-6">
             <StaffGrid 
-              title="Mandal Officers"
-              description="Key officials managing mandal-level operations"
-              staff={filterStaff(mandalOfficers)} 
-              isLoading={isLoadingOfficers}
+              title="Mandal Office Staff"
+              description="Key officials and staff members working in the mandal office"
+              staff={filterStaff(mandalOfficeStaff)} 
+              isLoading={isLoadingMandal}
+              showDepartment
             />
           </TabsContent>
 
