@@ -81,9 +81,22 @@ export const NotificationTicker = () => {
   const currentNotification = notifications[currentIndex];
   const isTopPosition = currentNotification?.position !== 'bottom';
 
+  const getPriorityGradient = (priority: 'low' | 'medium' | 'high') => {
+    switch (priority) {
+      case 'high':
+        return 'from-red-500 via-red-600 to-red-700';
+      case 'medium':
+        return 'from-amber-400 via-amber-500 to-[#DD4814]';
+      case 'low':
+        return 'from-green-500 via-green-600 to-green-700';
+      default:
+        return 'from-amber-400 via-amber-500 to-[#DD4814]';
+    }
+  };
+
   return (
     <div 
-      className={`bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white fixed w-full z-50 ${
+      className={`bg-gradient-to-r ${getPriorityGradient(currentNotification?.priority || 'medium')} py-2 text-white fixed w-full z-50 ${
         isTopPosition ? 'top-0' : 'bottom-0'
       }`}
     >
