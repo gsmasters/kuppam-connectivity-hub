@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +13,6 @@ export const NotificationTicker = () => {
         .from("notifications")
         .select("*")
         .eq("active", true)
-        .gte("end_date", new Date().toISOString())
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -24,28 +23,37 @@ export const NotificationTicker = () => {
   useEffect(() => {
     if (notifications.length <= 1) return;
 
-    const timer = setInterval(() => {
+    const interval = setInterval(() => {
       setCurrentIndex((current) =>
         current === notifications.length - 1 ? 0 : current + 1
       );
     }, 5000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(interval);
   }, [notifications.length]);
 
   if (notifications.length === 0) return null;
 
   return (
-    <div className="bg-primary py-3 text-white shadow-md w-full z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-          <span className="font-semibold whitespace-nowrap flex-shrink-0">Latest Updates:</span>
-          <div className="overflow-hidden flex-1">
-            <div className="animate-marquee whitespace-nowrap">
-              <p className="flex items-center space-x-2">
-                <ArrowRight className="h-4 w-4 flex-shrink-0" />
-                <span>{notifications[currentIndex]?.message}</span>
-              </p>
+    <div className="w-full bg-primary border-t border-b border-primary/20">
+      <div className="container mx-auto">
+        <div className="relative overflow-hidden py-2 px-4">
+          <div className="flex items-center gap-4">
+            <span className="font-semibold text-white whitespace-nowrap">
+              Latest Updates:
+            </span>
+            <div className="overflow-hidden flex-1">
+              <div className="animate-marquee inline-flex items-center gap-8 whitespace-nowrap">
+                {notifications.map((notification, index) => (
+                  <div
+                    key={notification.id}
+                    className="inline-flex items-center gap-2 text-white"
+                  >
+                    <ArrowRight className="h-4 w-4 flex-shrink-0" />
+                    <span>{notification.message}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
