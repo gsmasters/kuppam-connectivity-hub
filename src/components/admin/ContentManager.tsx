@@ -5,6 +5,7 @@ import { SectionEditor } from "./SectionEditor";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Section } from "@/types/content";
 
 export const ContentManager = () => {
   const {
