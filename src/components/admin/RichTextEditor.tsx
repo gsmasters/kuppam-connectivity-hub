@@ -76,8 +76,6 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     if (imageUrl) {
       editor.chain().focus().setImage({ 
         src: imageUrl,
-        width: imageWidth,
-        height: imageHeight,
       }).run();
     }
   };
