@@ -1,93 +1,26 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { Search, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { useState } from "react";
 import { StaffTabs } from "./staff/StaffTabs";
 import { StaffGrid } from "./staff/StaffGrid";
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { StaffMember, MandalStaff, SachivalayamStaff, ElectedRepresentative } from "@/types/staff";
-
-function isMandalStaff(staff: StaffMember): staff is MandalStaff {
-  return 'staff_type' in staff && 'position' in staff && !('representative_type' in staff);
-}
-
-function isSachivalayamStaff(staff: StaffMember): staff is SachivalayamStaff {
-  return 'secretariat_name' in staff && 'designation' in staff;
-}
-
-function isElectedRepresentative(staff: StaffMember): staff is ElectedRepresentative {
-  return 'representative_type' in staff;
-}
+import { StaffSearch } from "./staff/StaffSearch";
+import { useStaffDirectory } from "@/hooks/useStaffDirectory";
+import { filterStaff, getSearchSuggestions } from "@/utils/staff-helpers";
+import { StaffMember } from "@/types/staff";
 
 export const StaffContactList = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  
-  // Query for mandal office staff
-  const { data: mandalOfficeStaff, isLoading: isLoadingMandalOffice } = useQuery({
-    queryKey: ["staff", "mandal_office"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("staff")
-        .select("*")
-        .eq("staff_type", "mandal_office")
-        .order("department", { ascending: true })
-        .order("position");
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  // Query for mandal level officers
-  const { data: mandalOfficers, isLoading: isLoadingMandalOfficers } = useQuery({
-    queryKey: ["staff", "mandal_officer"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("staff")
-        .select("*")
-        .eq("staff_type", "mandal_officer")
-        .order("department", { ascending: true })
-        .order("position");
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  // Query for sachivalayam staff
-  const { data: sachivalayamStaff, isLoading: isLoadingSachivalayam } = useQuery({
-    queryKey: ["sachivalayam-staff"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("sachivalayam_staff")
-        .select("*")
-        .order("name");
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  // Query for elected representatives
-  const { data: electedRepresentatives, isLoading: isLoadingRepresentatives } = useQuery({
-    queryKey: ["elected-representatives"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("elected_representatives")
-        .select("*")
-        .order("representative_type");
-      if (error) throw error;
-      return data;
-    },
-  });
+  const {
+    mandalOfficeStaff,
+    mandalOfficers,
+    sachivalayamStaff,
+    electedRepresentatives,
+    isLoadingMandalOffice,
+    isLoadingMandalOfficers,
+    isLoadingSachivalayam,
+    isLoadingRepresentatives,
+  } = useStaffDirectory();
 
   // Combine all staff data for search suggestions
   const allStaff = [
@@ -96,72 +29,6 @@ export const StaffContactList = () => {
     ...(sachivalayamStaff || []),
     ...(electedRepresentatives || [])
   ];
-
-  // Enhanced search function
-  const filterStaff = (staff: StaffMember[] | null) => {
-    if (!staff) return [];
-    if (!searchQuery.trim()) return staff;
-
-    const query = searchQuery.toLowerCase().trim();
-    return staff.filter(member => {
-      const baseFields = [member.name, member.mobile];
-      
-      if (isMandalStaff(member)) {
-        baseFields.push(member.position, member.department || '');
-      }
-      
-      if (isSachivalayamStaff(member)) {
-        baseFields.push(
-          member.designation,
-          member.secretariat_name,
-          member.secretariat_code || ''
-        );
-      }
-      
-      if (isElectedRepresentative(member)) {
-        baseFields.push(
-          member.position,
-          member.representative_type,
-          member.gram_panchayat || '',
-          member.panchayat_name || ''
-        );
-      }
-      
-      return baseFields.some(field => 
-        field?.toLowerCase().includes(query)
-      );
-    });
-  };
-
-  // Get unique search suggestions
-  const getSearchSuggestions = () => {
-    const suggestions = new Set<string>();
-    allStaff.forEach(member => {
-      if (member.name) suggestions.add(member.name);
-      if (member.mobile) suggestions.add(member.mobile);
-      
-      if (isMandalStaff(member)) {
-        if (member.department) suggestions.add(member.department);
-        if (member.position) suggestions.add(member.position);
-      }
-      
-      if (isSachivalayamStaff(member)) {
-        if (member.designation) suggestions.add(member.designation);
-        if (member.secretariat_name) suggestions.add(member.secretariat_name);
-      }
-      
-      if (isElectedRepresentative(member)) {
-        if (member.position) suggestions.add(member.position);
-        if (member.representative_type) suggestions.add(member.representative_type);
-      }
-    });
-    
-    return Array.from(suggestions)
-      .filter(suggestion => 
-        suggestion.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      .slice(0, 10); // Limit to 10 suggestions
-  };
 
   // Calculate total staff count (only working staff)
   const totalWorkingStaff = (
@@ -188,33 +55,11 @@ export const StaffContactList = () => {
             </span>
           </div>
         </div>
-        <div className="relative max-w-sm">
-          <Command className="rounded-lg border shadow-md">
-            <CommandInput
-              placeholder="Search by name, position, department..."
-              value={searchQuery}
-              onValueChange={setSearchQuery}
-              className="h-9"
-            />
-            {searchQuery && (
-              <CommandList>
-                <CommandEmpty>No results found.</CommandEmpty>
-                <CommandGroup heading="Suggestions">
-                  {getSearchSuggestions().map((suggestion) => (
-                    <CommandItem
-                      key={suggestion}
-                      onSelect={(value) => {
-                        setSearchQuery(value);
-                      }}
-                    >
-                      {suggestion}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            )}
-          </Command>
-        </div>
+        <StaffSearch
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          suggestions={getSearchSuggestions(allStaff, searchQuery)}
+        />
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="mandal_office" className="space-y-6">
@@ -231,7 +76,7 @@ export const StaffContactList = () => {
             <StaffGrid 
               title="Mandal Office Staff"
               description="Key officials and staff members working in the mandal office"
-              staff={filterStaff(mandalOfficeStaff)} 
+              staff={filterStaff(mandalOfficeStaff, searchQuery)} 
               isLoading={isLoadingMandalOffice}
               showDepartment
               totalCount={mandalOfficeStaff?.length || 0}
@@ -243,7 +88,7 @@ export const StaffContactList = () => {
             <StaffGrid 
               title="Mandal Level Officers"
               description="Officers working at the mandal level across different departments"
-              staff={filterStaff(mandalOfficers)} 
+              staff={filterStaff(mandalOfficers, searchQuery)} 
               isLoading={isLoadingMandalOfficers}
               showDepartment
               totalCount={mandalOfficers?.length || 0}
@@ -255,7 +100,7 @@ export const StaffContactList = () => {
             <StaffGrid 
               title="Sachivalayam Staff"
               description="Staff members working in various secretariats"
-              staff={filterStaff(sachivalayamStaff)} 
+              staff={filterStaff(sachivalayamStaff, searchQuery)} 
               isLoading={isLoadingSachivalayam}
             />
           </TabsContent>
@@ -264,7 +109,7 @@ export const StaffContactList = () => {
             <StaffGrid 
               title="Elected Representatives"
               description="Elected officials serving the mandal"
-              staff={filterStaff(electedRepresentatives)} 
+              staff={filterStaff(electedRepresentatives, searchQuery)} 
               isLoading={isLoadingRepresentatives}
               isRepresentative
             />
