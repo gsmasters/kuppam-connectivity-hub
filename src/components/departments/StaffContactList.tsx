@@ -21,7 +21,7 @@ interface StaffMember {
 export const StaffContactList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   
-  // Queries for different staff types
+  // Query for mandal officers with deduplication
   const { data: mandalOfficers, isLoading: isLoadingOfficers } = useQuery({
     queryKey: ["staff", "mandal_officer"],
     queryFn: async () => {
@@ -31,10 +31,14 @@ export const StaffContactList = () => {
         .eq("staff_type", "mandal_officer")
         .order("name");
       if (error) throw error;
-      return data;
+      // Remove duplicates based on name and position
+      return Array.from(new Map(data.map(item => 
+        [`${item.name}-${item.position}`, item]
+      )).values());
     },
   });
 
+  // Query for sachivalayam staff with deduplication
   const { data: sachivalayamStaff, isLoading: isLoadingSachivalayam } = useQuery({
     queryKey: ["sachivalayam-staff"],
     queryFn: async () => {
@@ -43,10 +47,14 @@ export const StaffContactList = () => {
         .select("*")
         .order("name");
       if (error) throw error;
-      return data;
+      // Remove duplicates based on name and designation
+      return Array.from(new Map(data.map(item => 
+        [`${item.name}-${item.designation}`, item]
+      )).values());
     },
   });
 
+  // Query for elected representatives with deduplication
   const { data: electedRepresentatives, isLoading: isLoadingRepresentatives } = useQuery({
     queryKey: ["elected-representatives"],
     queryFn: async () => {
@@ -55,21 +63,41 @@ export const StaffContactList = () => {
         .select("*")
         .order("representative_type");
       if (error) throw error;
-      return data;
+      // Remove duplicates based on name and position
+      return Array.from(new Map(data.map(item => 
+        [`${item.name}-${item.position}`, item]
+      )).values());
     },
   });
 
+  // Enhanced search function that checks all relevant fields
   const filterStaff = (staff: StaffMember[] | null) => {
     if (!staff) return [];
-    return staff.filter(member => 
-      member.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.department?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.position?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.designation?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.mobile?.includes(searchQuery) ||
-      member.secretariat_name?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    if (!searchQuery.trim()) return staff;
+
+    const query = searchQuery.toLowerCase().trim();
+    return staff.filter(member => {
+      const searchFields = [
+        member.name,
+        member.position,
+        member.designation,
+        member.department,
+        member.secretariat_name,
+        member.mobile
+      ];
+      
+      return searchFields.some(field => 
+        field?.toLowerCase().includes(query)
+      );
+    });
   };
+
+  // Calculate total unique staff count
+  const totalStaffCount = (
+    (mandalOfficers?.length || 0) +
+    (sachivalayamStaff?.length || 0) +
+    (electedRepresentatives?.length || 0)
+  );
 
   return (
     <Card className="shadow-lg border-none">
@@ -84,18 +112,14 @@ export const StaffContactList = () => {
           <div className="flex items-center gap-2 text-muted-foreground">
             <Users className="h-5 w-5" />
             <span className="font-medium">
-              Total Staff: {
-                (mandalOfficers?.length || 0) +
-                (sachivalayamStaff?.length || 0) +
-                (electedRepresentatives?.length || 0)
-              }
+              Total Staff: {totalStaffCount}
             </span>
           </div>
         </div>
         <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Search staff..."
+            placeholder="Search by name, position, department..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 bg-white border-gray-200"
