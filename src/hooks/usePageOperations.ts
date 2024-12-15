@@ -1,8 +1,10 @@
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Page } from "@/types/content";
+import { Page, SectionType } from "@/types/content";
+import { createPageSection } from "./page-operations/createPageSection";
+import { createSectionContent } from "./page-operations/createSectionContent";
+import { createPageOrder } from "./page-operations/createPageOrder";
 
 export const usePageOperations = () => {
   const queryClient = useQueryClient();
@@ -21,31 +23,14 @@ export const usePageOperations = () => {
       if (pageError) throw pageError;
 
       // Create initial page section
-      const { data: section, error: sectionError } = await supabase
-        .from("page_sections")
-        .insert({
-          page: newPage.id,
-          section: 'content',
-          title: 'Main Content',
-          content_type: 'text',
-          section_type: 'content'
-        })
-        .select()
-        .single();
+      const section = await createPageSection(
+        newPage.id,
+        'content' as SectionType,
+        'Main Content',
+        'text'
+      );
 
-      if (sectionError) throw sectionError;
-
-      // Create initial content for the section
-      const { error: contentError } = await supabase
-        .from('section_content')
-        .insert({
-          section_id: section.id,
-          content: "",
-          version: 1,
-          is_published: true
-        });
-
-      if (contentError) throw contentError;
+      await createSectionContent(section.id);
 
       if (selectedTemplate) {
         const { data: templates } = await supabase
@@ -55,45 +40,19 @@ export const usePageOperations = () => {
         const template = templates?.find(t => t.id === selectedTemplate);
         
         if (template) {
-          const sections = template.sections as string[];
+          const sections = template.sections as SectionType[];
           
           for (let i = 0; i < sections.length; i++) {
             const sectionType = sections[i];
-            const { data: templateSection, error: templateSectionError } = await supabase
-              .from("page_sections")
-              .insert({
-                page: newPage.id,
-                section: sectionType,
-                title: sectionType.charAt(0).toUpperCase() + sectionType.slice(1),
-                content_type: sectionType === 'hero' ? 'hero' : 'text',
-                section_type: sectionType
-              })
-              .select()
-              .single();
+            const templateSection = await createPageSection(
+              newPage.id,
+              sectionType,
+              sectionType.charAt(0).toUpperCase() + sectionType.slice(1),
+              sectionType === 'hero' ? 'hero' : 'text'
+            );
 
-            if (templateSectionError) throw templateSectionError;
-
-            // Create initial content for template section
-            const { error: templateContentError } = await supabase
-              .from('section_content')
-              .insert({
-                section_id: templateSection.id,
-                content: "",
-                version: 1,
-                is_published: true
-              });
-
-            if (templateContentError) throw templateContentError;
-
-            const { error: orderError } = await supabase
-              .from("page_sections_order")
-              .insert({
-                page_id: newPage.id,
-                section_id: templateSection.id,
-                order_index: i
-              });
-
-            if (orderError) throw orderError;
+            await createSectionContent(templateSection.id);
+            await createPageOrder(newPage.id, templateSection.id, i);
           }
         }
       }
@@ -119,7 +78,6 @@ export const usePageOperations = () => {
     mutationFn: async ({ pageId, pageName, pageContent }: { pageId: string; pageName: string; pageContent: any }) => {
       const slug = pageName.toLowerCase().replace(/\s+/g, "-");
       
-      // Update page name and slug
       const { error: pageError } = await supabase
         .from("pages")
         .update({ name: pageName, slug })
@@ -127,7 +85,6 @@ export const usePageOperations = () => {
 
       if (pageError) throw pageError;
 
-      // Get or create a page section for this page
       const { data: existingSection } = await supabase
         .from("page_sections")
         .select()
@@ -138,25 +95,17 @@ export const usePageOperations = () => {
       let sectionId;
       
       if (!existingSection) {
-        const { data: newSection, error: sectionError } = await supabase
-          .from("page_sections")
-          .insert({
-            page: pageId,
-            section: "content",
-            title: "Main Content",
-            content_type: "text",
-            section_type: "content"
-          })
-          .select()
-          .single();
-
-        if (sectionError) throw sectionError;
-        sectionId = newSection.id;
+        const section = await createPageSection(
+          pageId,
+          'content' as SectionType,
+          'Main Content',
+          'text'
+        );
+        sectionId = section.id;
       } else {
         sectionId = existingSection.id;
       }
 
-      // Get current version
       const { data: currentVersionData } = await supabase
         .from('section_content')
         .select('version')
@@ -168,17 +117,7 @@ export const usePageOperations = () => {
         ? currentVersionData[0].version + 1 
         : 1;
 
-      // Insert new content version
-      const { error: contentError } = await supabase
-        .from('section_content')
-        .insert({
-          section_id: sectionId,
-          content: pageContent,
-          version: newVersion,
-          is_published: true
-        });
-
-      if (contentError) throw contentError;
+      await createSectionContent(sectionId, pageContent, newVersion, true);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages"] });
