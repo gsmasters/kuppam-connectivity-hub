@@ -455,6 +455,11 @@ export type Database = {
         | "stats"
         | "programs"
         | "staff"
+        | "features"
+        | "testimonials"
+        | "gallery"
+        | "pricing"
+        | "faq"
       representative_type: "MPP" | "ZPTC" | "Sarpanch" | "MPTC"
       section_type:
         | "hero"
