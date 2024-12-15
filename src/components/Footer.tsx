@@ -11,24 +11,51 @@ export const Footer = () => {
               <ul className="space-y-2">
                 <li>
                   <a
-                    href="https://appanchayats.ap.gov.in/APPRPortal/"
+                    href="https://panchayat.gov.in/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-primary flex items-center"
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
-                    Panchayat Raj Portal
+                    Ministry of Panchayati Raj
                   </a>
                 </li>
                 <li>
                   <a
-                    href="https://digitalpanchayat.ap.gov.in/"
+                    href="https://egramswaraj.gov.in/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-primary flex items-center"
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
-                    Digital Panchayat
+                    eGramSwaraj
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://nrega.nic.in/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-primary flex items-center"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    NREGA National Portal
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4 text-primary">Important Links</h3>
+              <ul className="space-y-2">
+                <li>
+                  <a
+                    href="https://rd.ap.gov.in/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-primary flex items-center"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Rural Development
                   </a>
                 </li>
                 <li>
@@ -40,33 +67,6 @@ export const Footer = () => {
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
                     AP Government Portal
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4 text-primary">Important Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a
-                    href="https://nrega.ap.gov.in/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-primary flex items-center"
-                  >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    NREGA Portal
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://rd.ap.gov.in/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-primary flex items-center"
-                  >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Rural Development
                   </a>
                 </li>
               </ul>
