@@ -16,6 +16,8 @@ import { toast } from "sonner";
 import { EditorToolbar } from './editor/EditorToolbar';
 import { EditorContentWrapper } from './editor/EditorContent';
 import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Copy } from "lucide-react";
 
 interface RichTextEditorProps {
   content: string;
@@ -24,6 +26,7 @@ interface RichTextEditorProps {
 
 export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   const [isCodeView, setIsCodeView] = useState(false);
+  const [codeType, setCodeType] = useState<'html' | 'css'>('html');
   const lowlight = createLowlight(common)
 
   const editor = useEditor({
@@ -66,10 +69,6 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     },
   });
 
-  if (!editor) {
-    return null;
-  }
-
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -85,12 +84,35 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
         .from('content-images')
         .getPublicUrl(data.path);
 
-      editor.chain().focus().setImage({ src: publicUrl }).run();
+      editor?.chain().focus().setImage({ src: publicUrl }).run();
       toast.success('Image uploaded successfully');
     } catch (error) {
       console.error('Error uploading image:', error);
       toast.error('Failed to upload image');
     }
+  };
+
+  const extractCSS = (html: string): string => {
+    const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+    const matches = [...html.matchAll(styleRegex)];
+    return matches.map(match => match[1]).join('\n\n') || '/* No CSS styles found */';
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success('Copied to clipboard!');
+    }).catch(() => {
+      toast.error('Failed to copy to clipboard');
+    });
+  };
+
+  if (!editor) {
+    return null;
+  }
+
+  const getCodeContent = () => {
+    const html = editor.getHTML();
+    return codeType === 'html' ? html : extractCSS(html);
   };
 
   return (
@@ -102,14 +124,47 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
         onViewChange={setIsCodeView}
       />
       {isCodeView ? (
-        <textarea
-          value={editor.getHTML()}
-          onChange={(e) => {
-            editor.commands.setContent(e.target.value);
-            onChange(e.target.value);
-          }}
-          className="w-full h-[400px] font-mono text-sm p-4 border-t"
-        />
+        <div className="border-t">
+          <div className="flex items-center justify-between p-2 bg-muted">
+            <div className="flex gap-2">
+              <Button
+                variant={codeType === 'html' ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setCodeType('html')}
+              >
+                HTML
+              </Button>
+              <Button
+                variant={codeType === 'css' ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setCodeType('css')}
+              >
+                CSS
+              </Button>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => copyToClipboard(getCodeContent())}
+            >
+              <Copy className="h-4 w-4" />
+              Copy {codeType.toUpperCase()}
+            </Button>
+          </div>
+          <textarea
+            value={getCodeContent()}
+            onChange={(e) => {
+              if (codeType === 'html') {
+                editor.commands.setContent(e.target.value);
+                onChange(e.target.value);
+              }
+            }}
+            readOnly={codeType === 'css'}
+            className="w-full h-[400px] font-mono text-sm p-4 font-mono"
+            placeholder={codeType === 'css' ? '/* CSS styles will appear here */' : '<!-- HTML content -->'}
+          />
+        </div>
       ) : (
         <EditorContentWrapper editor={editor} />
       )}
