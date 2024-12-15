@@ -9,6 +9,8 @@ import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+import { lowlight } from 'lowlight'
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { EditorToolbar } from './editor/EditorToolbar';
@@ -22,7 +24,9 @@ interface RichTextEditorProps {
 export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        codeBlock: false,
+      }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
@@ -45,6 +49,12 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
       TableRow,
       TableHeader,
       TableCell,
+      CodeBlockLowlight.configure({
+        lowlight,
+        HTMLAttributes: {
+          class: 'rounded-md bg-muted p-4 my-4',
+        },
+      }),
     ],
     content,
     onUpdate: ({ editor }) => {

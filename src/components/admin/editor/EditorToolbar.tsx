@@ -5,7 +5,7 @@ import {
   Bold, Italic, Strikethrough, List, ListOrdered,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
   Quote, Table, Link as LinkIcon, Image as ImageIcon,
-  Code, Undo, Redo, Palette
+  Code, FileCode, Palette, Undo, Redo
 } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
 
@@ -30,6 +30,14 @@ export const EditorToolbar = ({ editor, onImageUpload }: EditorToolbarProps) => 
 
   const handleInsertTable = () => {
     editor.chain().focus().insertTable?.({ rows: 3, cols: 3, withHeaderRow: true }).run();
+  };
+
+  const insertHTMLCode = () => {
+    editor.chain().focus().setCodeBlock({ language: 'html' }).insertContent('<div>\n  <!-- Your HTML here -->\n</div>').run();
+  };
+
+  const insertCSSCode = () => {
+    editor.chain().focus().setCodeBlock({ language: 'css' }).insertContent('.your-class {\n  /* Your CSS here */\n}').run();
   };
 
   return (
@@ -158,6 +166,24 @@ export const EditorToolbar = ({ editor, onImageUpload }: EditorToolbarProps) => 
           onPressedChange={() => editor.chain().focus().toggleCode().run()}
         >
           <Code className="h-4 w-4" />
+        </Toggle>
+
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('codeBlock', { language: 'html' })}
+          onPressedChange={insertHTMLCode}
+        >
+          <FileCode className="h-4 w-4" />
+          <span className="ml-1 text-xs">HTML</span>
+        </Toggle>
+
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('codeBlock', { language: 'css' })}
+          onPressedChange={insertCSSCode}
+        >
+          <Palette className="h-4 w-4" />
+          <span className="ml-1 text-xs">CSS</span>
         </Toggle>
 
         <label className="cursor-pointer">
