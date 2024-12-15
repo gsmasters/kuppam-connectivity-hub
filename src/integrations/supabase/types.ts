@@ -39,6 +39,83 @@ export type Database = {
         }
         Relationships: []
       }
+      page_sections: {
+        Row: {
+          content_type: Database["public"]["Enums"]["content_type"]
+          created_at: string
+          description: string | null
+          id: string
+          layout_height: number | null
+          layout_width: number | null
+          page: string
+          section: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content_type: Database["public"]["Enums"]["content_type"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          layout_height?: number | null
+          layout_width?: number | null
+          page: string
+          section: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content_type?: Database["public"]["Enums"]["content_type"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          layout_height?: number | null
+          layout_width?: number | null
+          page?: string
+          section?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      section_content: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          is_published: boolean | null
+          section_id: string | null
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          id?: string
+          is_published?: boolean | null
+          section_id?: string | null
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          is_published?: boolean | null
+          section_id?: string | null
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "section_content_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "page_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       staff_content: {
         Row: {
           content: Json
@@ -133,7 +210,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      content_type:
+        | "text"
+        | "image"
+        | "table"
+        | "hero"
+        | "stats"
+        | "programs"
+        | "staff"
     }
     CompositeTypes: {
       [_ in never]: never
