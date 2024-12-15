@@ -31,9 +31,7 @@ export const Header = () => {
           </div>
         </div>
       </div>
-      <div className="w-full">
-        <NotificationTicker />
-      </div>
+      <NotificationTicker />
     </header>
   );
 };
