@@ -8,11 +8,17 @@ import { useState } from "react";
 
 // Define the hierarchy order
 const POSITION_HIERARCHY = [
+  "Mandal Parishad Development Officer",
+  "MPDO",
   "Revenue Divisional Officer",
+  "RDO",
   "Mandal Revenue Officer",
+  "MRO",
   "Deputy Tahsildar",
   "Senior Assistant",
   "Junior Assistant",
+  "Office Subordinate",
+  "Attender",
   "Office Subordinate",
   // Add other positions in order of hierarchy
 ];
@@ -23,11 +29,28 @@ export const MandalOfficeStaff = () => {
 
   const sortByHierarchy = (staffList: any[]) => {
     return [...staffList].sort((a, b) => {
-      const posA = POSITION_HIERARCHY.indexOf(a.position);
-      const posB = POSITION_HIERARCHY.indexOf(b.position);
+      // Normalize positions by converting to uppercase and removing extra spaces
+      const normalizePosition = (pos: string) => pos.trim().toUpperCase();
+      
+      // Get positions from the hierarchy list (checking both full and abbreviated forms)
+      const getPosIndex = (position: string) => {
+        const normalizedPos = normalizePosition(position);
+        return POSITION_HIERARCHY.findIndex(p => 
+          normalizePosition(p) === normalizedPos ||
+          normalizePosition(p).includes(normalizedPos) ||
+          normalizedPos.includes(normalizePosition(p))
+        );
+      };
+
+      const posA = getPosIndex(a.position);
+      const posB = getPosIndex(b.position);
+
+      // If neither position is found in hierarchy, sort alphabetically
       if (posA === -1 && posB === -1) return a.position.localeCompare(b.position);
+      // If only one position is not found, put it at the end
       if (posA === -1) return 1;
       if (posB === -1) return -1;
+      // Sort by hierarchy position
       return posA - posB;
     });
   };
