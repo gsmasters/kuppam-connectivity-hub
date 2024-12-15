@@ -7,10 +7,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Loader2, Eye } from "lucide-react";
+import { Loader2, Eye, Save } from "lucide-react";
 import { RichTextEditor } from "./RichTextEditor";
 import {
   Dialog,
@@ -23,9 +24,11 @@ import {
 export const ContentManager = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [content, setContent] = useState<Record<string, any>>({});
   const [previewContent, setPreviewContent] = useState<string>("");
   const [showPreview, setShowPreview] = useState(false);
+  const [unsavedChanges, setUnsavedChanges] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     loadContent();
@@ -62,6 +65,7 @@ export const ContentManager = () => {
   };
 
   const saveContent = async (page: string, section: string, newContent: string) => {
+    setSaving(true);
     try {
       const { error } = await supabase
         .from('website_content')
@@ -77,18 +81,43 @@ export const ContentManager = () => {
 
       toast({
         title: "Success",
-        description: "Content updated successfully",
+        description: "Content published successfully",
       });
 
-      await loadContent();
+      // Update local content state
+      setContent(prev => ({
+        ...prev,
+        [page]: {
+          ...prev[page],
+          [section]: newContent
+        }
+      }));
+
+      // Clear unsaved changes flag
+      setUnsavedChanges(prev => ({
+        ...prev,
+        [`${page}-${section}`]: false
+      }));
+
     } catch (error) {
       console.error('Error saving content:', error);
       toast({
         title: "Error",
-        description: "Failed to save content",
+        description: "Failed to publish content",
         variant: "destructive",
       });
+    } finally {
+      setSaving(false);
     }
+  };
+
+  const handleContentChange = (page: string, section: string, newContent: string) => {
+    setPreviewContent(newContent);
+    // Mark this section as having unsaved changes
+    setUnsavedChanges(prev => ({
+      ...prev,
+      [`${page}-${section}`]: true
+    }));
   };
 
   const pages = [
@@ -167,12 +196,20 @@ export const ContentManager = () => {
                 <CardContent>
                   <RichTextEditor
                     content={content[page.id]?.[section.id] || ""}
-                    onChange={(newContent) => {
-                      setPreviewContent(newContent);
-                      saveContent(page.id, section.id, newContent);
-                    }}
+                    onChange={(newContent) => handleContentChange(page.id, section.id, newContent)}
                   />
                 </CardContent>
+                <CardFooter className="flex justify-end">
+                  <Button 
+                    onClick={() => saveContent(page.id, section.id, previewContent)}
+                    disabled={saving || !unsavedChanges[`${page.id}-${section.id}`]}
+                    className="gap-2"
+                  >
+                    {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+                    <Save className="h-4 w-4" />
+                    Publish Changes
+                  </Button>
+                </CardFooter>
               </Card>
             ))}
           </TabsContent>
