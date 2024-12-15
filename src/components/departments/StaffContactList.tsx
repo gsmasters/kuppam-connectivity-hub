@@ -22,7 +22,6 @@ export const StaffContactList = () => {
     isLoadingRepresentatives,
   } = useStaffDirectory();
 
-  // Combine all staff data for search suggestions
   const allStaff = [
     ...(mandalOfficeStaff || []),
     ...(mandalOfficers || []),
@@ -30,7 +29,6 @@ export const StaffContactList = () => {
     ...(electedRepresentatives || [])
   ];
 
-  // Calculate total staff count (only working staff)
   const totalWorkingStaff = (
     (mandalOfficeStaff?.filter(s => s.is_working !== false).length || 0) +
     (mandalOfficers?.filter(s => s.is_working !== false).length || 0) +
@@ -44,7 +42,7 @@ export const StaffContactList = () => {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-3xl font-bold tracking-tight">Staff Directory</CardTitle>
-            <CardDescription className="mt-2">
+            <CardDescription className="mt-2 text-base">
               Browse and search through mandal office staff, mandal level officers, sachivalayam staff, and elected representatives
             </CardDescription>
           </div>

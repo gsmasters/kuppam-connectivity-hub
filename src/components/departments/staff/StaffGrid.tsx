@@ -41,7 +41,6 @@ export const StaffGrid = ({
     );
   }
 
-  // Group staff by department if showDepartment is true, using the predefined DEPARTMENTS array
   const groupedStaff = showDepartment
     ? staff.reduce((acc: Record<string, StaffMember[]>, member) => {
         const dept = 'department' in member ? 
@@ -62,28 +61,25 @@ export const StaffGrid = ({
 
   return (
     <div className="space-y-8">
-      <div className="border-b pb-4">
-        <h3 className="text-xl font-semibold">{title}</h3>
+      <div className="border-b pb-6">
+        <h3 className="text-2xl font-bold text-gray-900">{title}</h3>
         <p className="text-muted-foreground mt-1">{description}</p>
-        <div className="flex gap-4 mt-2">
-          {totalCount !== undefined && (
-            <p className="text-sm text-primary font-medium">
-              Total Staff: {totalCount}
-            </p>
-          )}
-          {workingCount !== undefined && (
-            <p className="text-sm text-green-600 font-medium">
-              Working Staff: {workingCount}
-            </p>
-          )}
-        </div>
+        {workingCount !== undefined && (
+          <div className="flex items-center gap-2 mt-3">
+            <span className="text-sm font-medium">Working Staff:</span>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              {workingCount}
+            </span>
+            <span className="text-sm text-muted-foreground">out of {totalCount}</span>
+          </div>
+        )}
       </div>
 
       {(showDepartment || isRepresentative) ? (
         Object.entries(groupedStaff).map(([group, members]) => (
           <div key={group} className="space-y-4">
             <h4 className="text-lg font-medium capitalize">{group}</h4>
-            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
               {members.map((member, index) => (
                 <ContactCard key={member.id} member={member} index={index + 1} />
               ))}
@@ -91,7 +87,7 @@ export const StaffGrid = ({
           </div>
         ))
       ) : (
-        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
           {staff.map((member, index) => (
             <ContactCard key={member.id} member={member} index={index + 1} />
           ))}

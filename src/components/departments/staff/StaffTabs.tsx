@@ -11,52 +11,49 @@ interface StaffTabsProps {
 }
 
 export const StaffTabs = ({ counts }: StaffTabsProps) => (
-  <TabsList className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-muted/50 p-1">
+  <TabsList className="inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-muted/50 p-1">
     <TabsTrigger 
       value="mandal_office" 
-      className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
+      className="flex items-center gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
     >
-      <Building2 className="h-4 w-4" />
-      <span className="hidden sm:inline">Mandal Office Staff</span>
-      <span className="sm:hidden">Office</span>
-      <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
-        {counts.mandal_office}
-      </span>
+      <Building2 className="h-5 w-5" />
+      <div className="flex flex-col items-start">
+        <span className="text-sm font-medium">Office</span>
+        <span className="text-xs text-muted-foreground">{counts.mandal_office}</span>
+      </div>
     </TabsTrigger>
     
     <TabsTrigger 
       value="mandal_officers" 
-      className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
+      className="flex items-center gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
     >
-      <Users className="h-4 w-4" />
-      <span className="hidden sm:inline">Mandal Level Officers</span>
-      <span className="sm:hidden">Officers</span>
-      <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
-        {counts.mandal_officers}
-      </span>
+      <Users className="h-5 w-5" />
+      <div className="flex flex-col items-start">
+        <span className="text-sm font-medium">Officers</span>
+        <span className="text-xs text-muted-foreground">{counts.mandal_officers}</span>
+      </div>
     </TabsTrigger>
     
     <TabsTrigger 
       value="sachivalayam" 
-      className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
+      className="flex items-center gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
     >
-      <MapPin className="h-4 w-4" />
-      <span className="hidden sm:inline">Sachivalayam</span>
-      <span className="sm:hidden">Sach.</span>
-      <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
-        {counts.sachivalayam}
-      </span>
+      <MapPin className="h-5 w-5" />
+      <div className="flex flex-col items-start">
+        <span className="text-sm font-medium">Sach.</span>
+        <span className="text-xs text-muted-foreground">{counts.sachivalayam}</span>
+      </div>
     </TabsTrigger>
     
     <TabsTrigger 
       value="representatives" 
-      className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
+      className="flex items-center gap-2 px-4 py-2.5 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
     >
-      <UserCheck className="h-4 w-4" />
-      <span>Representatives</span>
-      <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
-        {counts.representatives}
-      </span>
+      <UserCheck className="h-5 w-5" />
+      <div className="flex flex-col items-start">
+        <span className="text-sm font-medium">Reps.</span>
+        <span className="text-xs text-muted-foreground">{counts.representatives}</span>
+      </div>
     </TabsTrigger>
   </TabsList>
 );

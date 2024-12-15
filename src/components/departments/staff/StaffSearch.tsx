@@ -11,40 +11,36 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   
-  // Ensure component is mounted before showing suggestions
   useEffect(() => {
     setMounted(true);
     return () => setMounted(false);
   }, []);
 
-  // Early return with basic input if not mounted
   if (!mounted) {
     return (
-      <div className="relative max-w-sm">
-        <Command className="rounded-lg border shadow-md">
+      <div className="relative w-full max-w-xl mx-auto">
+        <Command className="rounded-xl border shadow-sm bg-white">
           <CommandInput
             placeholder="Search by name, position, department..."
             value={searchQuery}
             onValueChange={onSearchChange}
-            className="h-9"
+            className="h-12 text-base"
           />
         </Command>
       </div>
     );
   }
 
-  // Ensure suggestions is always an array and filter out any undefined/null/empty values
   const validSuggestions = (Array.isArray(suggestions) ? suggestions : [])
     .filter((suggestion): suggestion is string => 
       typeof suggestion === 'string' && suggestion.trim().length > 0
     );
 
-  // Only show suggestions if search query is not empty and at least 1 character
   const shouldShowSuggestions = searchQuery.trim().length >= 1;
 
   return (
-    <div className="relative max-w-sm">
-      <Command className="rounded-lg border shadow-md">
+    <div className="relative w-full max-w-xl mx-auto">
+      <Command className="rounded-xl border shadow-sm bg-white">
         <CommandInput
           placeholder="Search by name, position, department..."
           value={searchQuery}
@@ -52,16 +48,20 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
             onSearchChange(value);
             setOpen(true);
           }}
-          className="h-9"
+          className="h-12 text-base"
         />
         {open && (
-          <CommandList>
+          <CommandList className="absolute w-full bg-white border-t rounded-b-xl shadow-lg">
             {!shouldShowSuggestions ? (
-              <CommandEmpty>Start typing to search...</CommandEmpty>
+              <CommandEmpty className="p-4 text-sm text-muted-foreground">
+                Start typing to search...
+              </CommandEmpty>
             ) : validSuggestions.length === 0 ? (
-              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandEmpty className="p-4 text-sm text-muted-foreground">
+                No results found.
+              </CommandEmpty>
             ) : (
-              <CommandGroup heading="Suggestions">
+              <CommandGroup heading="Suggestions" className="p-2">
                 {validSuggestions.map((suggestion, index) => (
                   <CommandItem
                     key={`${suggestion}-${index}`}
@@ -70,6 +70,7 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
                       onSearchChange(value);
                       setOpen(false);
                     }}
+                    className="cursor-pointer hover:bg-gray-100 rounded-lg"
                   >
                     {suggestion}
                   </CommandItem>
