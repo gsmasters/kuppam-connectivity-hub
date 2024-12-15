@@ -8,11 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
+import { RichTextEditor } from "./RichTextEditor";
 
 export const ContentManager = () => {
   const { toast } = useToast();
@@ -139,14 +137,12 @@ export const ContentManager = () => {
                   <CardDescription>Edit {section.label.toLowerCase()} content</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Textarea
-                    className="min-h-[200px]"
-                    placeholder={`Enter ${section.label.toLowerCase()} content...`}
-                    value={JSON.stringify(content[page.id]?.[section.id] || {}, null, 2)}
-                    onChange={(e) => {
+                  <RichTextEditor
+                    content={JSON.stringify(content[page.id]?.[section.id] || {})}
+                    onChange={(newContent) => {
                       try {
-                        const newContent = JSON.parse(e.target.value);
-                        saveContent(page.id, section.id, newContent);
+                        const parsedContent = JSON.parse(newContent);
+                        saveContent(page.id, section.id, parsedContent);
                       } catch (error) {
                         console.error('Invalid JSON:', error);
                       }
