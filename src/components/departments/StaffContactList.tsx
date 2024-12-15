@@ -56,7 +56,8 @@ export const StaffContactList = () => {
         .eq("staff_type", "revenue")
         .order("name");
       if (error) throw error;
-      return data;
+      // Filter out entries with null values in critical fields
+      return data?.filter(staff => staff.name && staff.position) || [];
     },
   });
 
@@ -69,7 +70,8 @@ export const StaffContactList = () => {
         .eq("staff_type", "education")
         .order("name");
       if (error) throw error;
-      return data;
+      // Filter out entries with null values in critical fields
+      return data?.filter(staff => staff.name && staff.position) || [];
     },
   });
 

@@ -19,7 +19,7 @@ interface ContactCardProps {
 export const ContactCard = ({ member }: ContactCardProps) => (
   <div className="group p-6 bg-white rounded-xl border border-border/50 hover:border-primary/20 transition-all duration-300 hover:shadow-lg">
     <div className="flex justify-between items-start gap-4">
-      <div className="space-y-3">
+      <div className="space-y-3 flex-grow">
         <div>
           <h4 className="font-semibold text-lg text-gray-900 group-hover:text-primary transition-colors">
             {member.name}
@@ -47,17 +47,19 @@ export const ContactCard = ({ member }: ContactCardProps) => (
             {member.secretariat_name}
           </div>
         )}
+
+        {member.mobile && (
+          <div className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
+            <Phone className="h-4 w-4" />
+            <a
+              href={`tel:${member.mobile}`}
+              className="text-sm font-medium hover:underline"
+            >
+              {member.mobile}
+            </a>
+          </div>
+        )}
       </div>
-      
-      {member.mobile && (
-        <a
-          href={`tel:${member.mobile}`}
-          className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors rounded-lg px-3 py-2 hover:bg-primary/5"
-        >
-          <Phone className="h-4 w-4" />
-          <span className="text-sm font-medium">{member.mobile}</span>
-        </a>
-      )}
     </div>
   </div>
 );

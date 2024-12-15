@@ -62,7 +62,7 @@ export const StaffGrid = ({ staff, isLoading, title, description, isRepresentati
         Object.entries(groupedStaff).map(([type, members]) => (
           <div key={type} className="space-y-4">
             <h4 className="text-lg font-medium capitalize">{type.replace('_', ' ')}</h4>
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
               {members.map((member) => (
                 <ContactCard key={member.id} member={member} />
               ))}
@@ -70,7 +70,7 @@ export const StaffGrid = ({ staff, isLoading, title, description, isRepresentati
           </div>
         ))
       ) : (
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
           {staff.map((member) => (
             <ContactCard key={member.id} member={member} />
           ))}
