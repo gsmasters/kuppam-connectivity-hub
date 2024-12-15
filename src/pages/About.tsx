@@ -4,19 +4,17 @@ import { LeadershipBanner } from "@/components/LeadershipBanner";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
-interface SectionContentResponse {
-  content: {
-    content: string;
-  };
-  page_sections: {
-    page: string;
-    section: string;
-  };
+interface SectionContent {
+  content: string;
+  version: number;
 }
 
 const About = () => {
-  const { data: aboutContent, isLoading, error } = useQuery({
+  const { toast } = useToast();
+  const { data: aboutContent, isLoading, error, refetch } = useQuery({
     queryKey: ['about-content'],
     queryFn: async () => {
       console.log('Fetching about page content...');
@@ -34,8 +32,34 @@ const About = () => {
       }
 
       if (!pageSections || pageSections.length === 0) {
-        console.log('No page section found for about page');
-        return ''; // Return empty content if no section exists
+        // If no section exists, create one
+        const { data: newSection, error: createError } = await supabase
+          .from('page_sections')
+          .insert({
+            page: 'about',
+            section: 'main',
+            title: 'About Us',
+            content_type: 'text'
+          })
+          .select()
+          .single();
+
+        if (createError) throw createError;
+        
+        // Create initial content
+        const { error: contentError } = await supabase
+          .from('section_content')
+          .insert({
+            section_id: newSection.id,
+            content: 'Welcome to our About page. This content can be edited from the admin dashboard.',
+            version: 1,
+            is_published: true,
+            is_draft: false
+          });
+
+        if (contentError) throw contentError;
+        
+        return 'Welcome to our About page. This content can be edited from the admin dashboard.';
       }
 
       const sectionId = pageSections[0].id;
@@ -43,9 +67,7 @@ const About = () => {
       // Then get the latest published content for this section
       const { data: contentData, error: contentError } = await supabase
         .from('section_content')
-        .select(`
-          content
-        `)
+        .select<'*', SectionContent>('content, version')
         .eq('section_id', sectionId)
         .eq('is_published', true)
         .order('version', { ascending: false })
@@ -62,11 +84,38 @@ const About = () => {
       }
 
       console.log('Content fetched successfully:', contentData);
-      return contentData?.content || '';
+      return contentData.content;
     },
     staleTime: 1000 * 60, // Cache for 1 minute
     retry: 1,
   });
+
+  useEffect(() => {
+    // Set up real-time subscription for content updates
+    const channel = supabase
+      .channel('about-content-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'section_content'
+        },
+        (payload) => {
+          console.log('Content update received:', payload);
+          refetch();
+          toast({
+            title: "Content Updated",
+            description: "The page content has been updated.",
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetch, toast]);
 
   if (error) {
     console.error('Error in about page query:', error);
@@ -94,7 +143,7 @@ const About = () => {
           </div>
         ) : (
           <div className="prose max-w-none">
-            {aboutContent.split('\n').map((paragraph, index) => (
+            {typeof aboutContent === 'string' && aboutContent.split('\n').map((paragraph, index) => (
               <p key={index} className="text-lg text-gray-700 mt-4">
                 {paragraph}
               </p>
