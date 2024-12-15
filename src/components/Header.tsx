@@ -45,7 +45,7 @@ export const Header = () => {
       </div>
       
       {/* Notification Ticker */}
-      <div className="relative w-full overflow-hidden">
+      <div className="w-full">
         <NotificationTicker />
       </div>
     </header>

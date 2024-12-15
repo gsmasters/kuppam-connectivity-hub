@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 /**
  * NotificationTicker Component
- * Displays a scrolling ticker of notifications at the top of the page
+ * Displays latest updates in a scrollable ticker format
  * Features:
- * - Continuous horizontal scrolling
- * - Auto-rotation of multiple notifications
+ * - Horizontal scrolling with custom scrollbar
  * - Real-time updates via React Query
+ * - Auto-rotation of notifications
  */
 export const NotificationTicker = () => {
-  // State to track current notification index
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Fetch active notifications from Supabase
@@ -30,7 +30,7 @@ export const NotificationTicker = () => {
     },
   });
 
-  // Auto-rotate notifications every 5 seconds if there are multiple
+  // Auto-rotate notifications every 5 seconds
   useEffect(() => {
     if (notifications.length <= 1) return;
 
@@ -43,38 +43,29 @@ export const NotificationTicker = () => {
     return () => clearInterval(interval);
   }, [notifications.length]);
 
-  // Don't render anything if there are no notifications
   if (notifications.length === 0) return null;
 
   return (
-    <div className="w-full bg-primary/90 border-t border-b border-primary/20 overflow-hidden">
+    <div className="w-full bg-primary/95 border-t border-b border-primary/20">
       <div className="container mx-auto">
-        <div className="relative py-2 px-4">
-          <div className="flex items-center gap-4">
-            {/* Fixed label */}
+        <ScrollArea className="w-full" orientation="horizontal">
+          <div className="flex items-center gap-4 py-2 px-4 min-w-full">
             <span className="font-semibold text-white whitespace-nowrap flex-shrink-0">
               Latest Updates:
             </span>
-            
-            {/* Scrolling notifications container */}
-            <div className="overflow-hidden flex-1">
-              <div 
-                className="animate-marquee inline-flex items-center gap-8 whitespace-nowrap"
-                style={{ animation: 'marquee 20s linear infinite' }}
-              >
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className="inline-flex items-center gap-2 text-white"
-                  >
-                    <ArrowRight className="h-4 w-4 flex-shrink-0" />
-                    <span className="text-sm">{notification.message}</span>
-                  </div>
-                ))}
-              </div>
+            <div className="flex items-center gap-8">
+              {notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className="inline-flex items-center gap-2 text-white whitespace-nowrap"
+                >
+                  <ArrowRight className="h-4 w-4 flex-shrink-0" />
+                  <span className="text-sm">{notification.message}</span>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        </ScrollArea>
       </div>
     </div>
   );
