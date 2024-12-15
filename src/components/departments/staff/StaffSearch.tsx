@@ -14,6 +14,7 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
   // Ensure component is mounted before showing suggestions
   useEffect(() => {
     setMounted(true);
+    return () => setMounted(false);
   }, []);
 
   // Early return with basic input if not mounted
@@ -32,8 +33,11 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
     );
   }
 
-  // Ensure suggestions is always an array
-  const validSuggestions = Array.isArray(suggestions) ? suggestions : [];
+  // Ensure suggestions is always an array and filter out any undefined/null values
+  const validSuggestions = (Array.isArray(suggestions) ? suggestions : [])
+    .filter((suggestion): suggestion is string => 
+      typeof suggestion === 'string' && suggestion.trim().length > 0
+    );
 
   // Only show suggestions if search query is at least 1 character
   const shouldShowSuggestions = searchQuery.length >= 1;
@@ -57,18 +61,16 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
             ) : (
               <CommandGroup heading="Suggestions">
                 {validSuggestions.map((suggestion) => (
-                  suggestion && (
-                    <CommandItem
-                      key={suggestion}
-                      value={suggestion}
-                      onSelect={(value) => {
-                        onSearchChange(value);
-                        setOpen(false);
-                      }}
-                    >
-                      {suggestion}
-                    </CommandItem>
-                  )
+                  <CommandItem
+                    key={suggestion}
+                    value={suggestion}
+                    onSelect={(value) => {
+                      onSearchChange(value);
+                      setOpen(false);
+                    }}
+                  >
+                    {suggestion}
+                  </CommandItem>
                 ))}
               </CommandGroup>
             )}
