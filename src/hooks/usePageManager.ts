@@ -9,6 +9,7 @@ export const usePageManager = () => {
   const [newPage, setNewPage] = useState(false);
   const [pageName, setPageName] = useState("");
   const [pageContent, setPageContent] = useState<any>("");
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -24,36 +25,73 @@ export const usePageManager = () => {
     },
   });
 
+  const { data: templates } = useQuery({
+    queryKey: ["page-templates"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("page_templates")
+        .select("*")
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const createPage = useMutation({
     mutationFn: async () => {
       const slug = pageName.toLowerCase().replace(/\s+/g, "-");
-      const { error: pageError } = await supabase
+      
+      // First create the page
+      const { data: newPage, error: pageError } = await supabase
         .from("pages")
-        .insert([{ name: pageName, slug }]);
+        .insert([{ name: pageName, slug }])
+        .select()
+        .single();
+
       if (pageError) throw pageError;
 
-      const { data: newPage, error: fetchError } = await supabase
-        .from("pages")
-        .select("*")
-        .eq("slug", slug)
-        .single();
-      if (fetchError) throw fetchError;
+      // If a template was selected, create the sections
+      if (selectedTemplate && templates) {
+        const template = templates.find(t => t.id === selectedTemplate);
+        if (template) {
+          const sections = template.sections as string[];
+          
+          // Create sections based on template
+          for (let i = 0; i < sections.length; i++) {
+            const sectionType = sections[i];
+            const { data: section, error: sectionError } = await supabase
+              .from("page_sections")
+              .insert({
+                page: newPage.id,
+                section: sectionType,
+                title: sectionType.charAt(0).toUpperCase() + sectionType.slice(1),
+                content_type: sectionType === 'hero' ? 'hero' : 'text',
+              })
+              .select()
+              .single();
 
-      const { error: contentError } = await supabase
-        .from("section_content")
-        .insert([{
-          section_id: newPage.id,
-          content: pageContent,
-          is_published: true,
-          version: 1
-        }]);
-      if (contentError) throw contentError;
+            if (sectionError) throw sectionError;
+
+            // Create section order
+            const { error: orderError } = await supabase
+              .from("page_sections_order")
+              .insert({
+                page_id: newPage.id,
+                section_id: section.id,
+                order_index: i
+              });
+
+            if (orderError) throw orderError;
+          }
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages"] });
       setNewPage(false);
       setPageName("");
       setPageContent("");
+      setSelectedTemplate(null);
       toast({
         title: "Success",
         description: "Page created successfully",
@@ -78,17 +116,8 @@ export const usePageManager = () => {
         .from("pages")
         .update({ name: pageName, slug })
         .eq("id", editingPage.id);
-      if (pageError) throw pageError;
 
-      const { error: contentError } = await supabase
-        .from("section_content")
-        .insert([{
-          section_id: editingPage.id,
-          content: pageContent,
-          is_published: true,
-          version: 1
-        }]);
-      if (contentError) throw contentError;
+      if (pageError) throw pageError;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages"] });
@@ -136,6 +165,7 @@ export const usePageManager = () => {
     setNewPage(false);
     setPageName("");
     setPageContent("");
+    setSelectedTemplate(null);
   };
 
   return {
@@ -145,9 +175,12 @@ export const usePageManager = () => {
     newPage,
     pageName,
     pageContent,
+    templates,
+    selectedTemplate,
     setNewPage,
     setPageName,
     setPageContent,
+    setSelectedTemplate,
     createPage,
     updatePage,
     handleEdit,

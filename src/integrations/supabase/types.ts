@@ -114,6 +114,75 @@ export type Database = {
         }
         Relationships: []
       }
+      page_sections_order: {
+        Row: {
+          created_at: string
+          id: string
+          order_index: number
+          page_id: string
+          section_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_index: number
+          page_id: string
+          section_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_index?: number
+          page_id?: string
+          section_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_sections_order_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "page_sections_order_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "page_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      page_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          sections: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          sections?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          sections?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pages: {
         Row: {
           created_at: string

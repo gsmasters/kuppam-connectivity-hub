@@ -6,13 +6,18 @@ import { RichTextEditor } from "../RichTextEditor";
 import { PreviewDialog } from "../PreviewDialog";
 import { Page } from "@/types/content";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 interface PageFormProps {
   isEditing: boolean;
   pageName: string;
   pageContent: any;
+  templates?: any[];
+  selectedTemplate: string | null;
   onPageNameChange: (name: string) => void;
   onPageContentChange: (content: any) => void;
+  onTemplateChange: (templateId: string) => void;
   onSave: () => void;
   onCancel: () => void;
   editingPage: Page | null;
@@ -22,8 +27,11 @@ export const PageForm = ({
   isEditing,
   pageName,
   pageContent,
+  templates,
+  selectedTemplate,
   onPageNameChange,
   onPageContentChange,
+  onTemplateChange,
   onSave,
   onCancel,
   editingPage
@@ -72,6 +80,22 @@ export const PageForm = ({
               value={pageName}
               onChange={(e) => onPageNameChange(e.target.value)}
             />
+            {!isEditing && templates && templates.length > 0 && (
+              <div className="space-y-4">
+                <Label>Choose a Template</Label>
+                <RadioGroup
+                  value={selectedTemplate || undefined}
+                  onValueChange={onTemplateChange}
+                >
+                  {templates.map((template) => (
+                    <div key={template.id} className="flex items-center space-x-2">
+                      <RadioGroupItem value={template.id} id={template.id} />
+                      <Label htmlFor={template.id}>{template.name}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+            )}
             <ScrollArea className="h-[600px] rounded-md border">
               <div className="p-4 space-y-4">
                 <RichTextEditor
