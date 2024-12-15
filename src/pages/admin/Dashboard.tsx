@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ContentManager } from "@/components/admin/ContentManager";
+import { PageManager } from "@/components/admin/PageManager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   FileText, 
@@ -11,7 +12,8 @@ import {
   Settings,
   Bell,
   Calendar,
-  Image
+  Image,
+  Layout
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -67,10 +69,14 @@ const Dashboard = () => {
       </div>
 
       <Tabs defaultValue="content" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="content" className="gap-2">
             <FileText className="h-4 w-4" />
             Content Management
+          </TabsTrigger>
+          <TabsTrigger value="pages" className="gap-2">
+            <Layout className="h-4 w-4" />
+            Pages
           </TabsTrigger>
           <TabsTrigger value="quick-access" className="gap-2">
             <Settings className="h-4 w-4" />
@@ -80,6 +86,10 @@ const Dashboard = () => {
 
         <TabsContent value="content">
           <ContentManager />
+        </TabsContent>
+
+        <TabsContent value="pages">
+          <PageManager />
         </TabsContent>
 
         <TabsContent value="quick-access">
