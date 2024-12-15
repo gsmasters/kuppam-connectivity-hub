@@ -6,9 +6,11 @@ interface StaffSearchProps {
   suggestions?: string[];
 }
 
-export const StaffSearch = ({ searchQuery, onSearchChange, suggestions }: StaffSearchProps) => {
-  // Ensure we always have a valid array of suggestions
-  const validSuggestions = suggestions?.filter(Boolean) ?? [];
+export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: StaffSearchProps) => {
+  // Filter out any null/undefined/empty values and ensure unique values
+  const validSuggestions = Array.from(new Set(
+    suggestions.filter(Boolean).map(s => s.trim()).filter(Boolean)
+  ));
   
   return (
     <div className="relative max-w-sm">
@@ -29,7 +31,9 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions }: StaffS
                   <CommandItem
                     key={suggestion}
                     value={suggestion}
-                    onSelect={onSearchChange}
+                    onSelect={(value) => {
+                      onSearchChange(value);
+                    }}
                   >
                     {suggestion}
                   </CommandItem>
