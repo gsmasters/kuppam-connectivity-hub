@@ -8,7 +8,7 @@ import { Edit2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
-const NotificationsList = () => {
+export const NotificationsList = () => {
   const queryClient = useQueryClient();
   const [selectedNotification, setSelectedNotification] = useState(null);
 
@@ -101,5 +101,3 @@ const NotificationsList = () => {
     />
   );
 };
-
-export default NotificationsList;
