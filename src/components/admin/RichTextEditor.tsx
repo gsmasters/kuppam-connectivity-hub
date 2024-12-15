@@ -27,6 +27,7 @@ interface RichTextEditorProps {
 export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   const [isCodeView, setIsCodeView] = useState(false);
   const [codeType, setCodeType] = useState<'html' | 'css'>('html');
+  const [cssContent, setCssContent] = useState('');
   const lowlight = createLowlight(common)
 
   const editor = useEditor({
@@ -93,19 +94,16 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   };
 
   const extractCSS = (html: string): string => {
-    // Extract both inline styles and style tags
     const styleTagRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
     const inlineStyleRegex = /style="([^"]*)"/gi;
     
     let css = '';
     
-    // Extract styles from style tags
     const styleTagMatches = [...html.matchAll(styleTagRegex)];
     if (styleTagMatches.length > 0) {
       css += styleTagMatches.map(match => match[1]).join('\n\n');
     }
     
-    // Extract inline styles
     const inlineStyles = [...html.matchAll(inlineStyleRegex)];
     if (inlineStyles.length > 0) {
       if (css) css += '\n\n/* Inline Styles */\n';
@@ -126,6 +124,16 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
       console.error('Failed to copy:', err);
       toast.error('Failed to copy to clipboard');
     }
+  };
+
+  const handleCSSChange = (newCSS: string) => {
+    setCssContent(newCSS);
+    // Update the HTML content with the new CSS
+    const html = editor?.getHTML() || '';
+    const styleTagRegex = /<style[^>]*>[\s\S]*?<\/style>/gi;
+    const updatedHtml = html.replace(styleTagRegex, '') + `\n<style>\n${newCSS}\n</style>`;
+    editor?.commands.setContent(updatedHtml);
+    onChange(updatedHtml);
   };
 
   if (!editor) {
@@ -175,14 +183,15 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
             </Button>
           </div>
           <textarea
-            value={getCodeContent()}
+            value={codeType === 'html' ? editor.getHTML() : cssContent || extractCSS(editor.getHTML())}
             onChange={(e) => {
               if (codeType === 'html') {
                 editor.commands.setContent(e.target.value);
                 onChange(e.target.value);
+              } else {
+                handleCSSChange(e.target.value);
               }
             }}
-            readOnly={codeType === 'css'}
             className="w-full h-[400px] font-mono text-sm p-4"
             placeholder={codeType === 'css' ? '/* CSS styles will appear here */' : '<!-- HTML content -->'}
           />
