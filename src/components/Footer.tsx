@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Info, MessageSquare } from "lucide-react";
 
 export const Footer = () => {
   return (
@@ -106,27 +106,26 @@ export const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="py-4 border-t border-gray-800 text-center text-sm">
-          <div className="flex justify-center space-x-4 mb-4">
-            <a 
-              href="/documents" 
-              className="hover:text-primary flex items-center gap-2"
-            >
-              <Info className="h-4 w-4" />
-              RTI
-            </a>
-            <a 
-              href="https://pgrs.ap.gov.in/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="hover:text-primary flex items-center gap-2"
-            >
-              <MessageSquare className="h-4 w-4" />
-              Grievance
-            </a>
-          </div>
-          <p>© 2024 MPDO Office Kuppam Mandal. All rights reserved.</p>
+      <div className="py-4 border-t border-gray-800 text-center text-sm">
+        <div className="flex justify-center space-x-4 mb-4">
+          <a 
+            href="/documents" 
+            className="hover:text-primary flex items-center gap-2"
+          >
+            <Info className="h-4 w-4" />
+            RTI
+          </a>
+          <a 
+            href="https://pgrs.ap.gov.in/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="hover:text-primary flex items-center gap-2"
+          >
+            <MessageSquare className="h-4 w-4" />
+            Grievance
+          </a>
         </div>
+        <p>© 2024 MPDO Office Kuppam Mandal. All rights reserved.</p>
       </div>
     </footer>
   );
