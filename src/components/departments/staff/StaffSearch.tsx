@@ -35,8 +35,8 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
   // Ensure suggestions is always an array
   const validSuggestions = Array.isArray(suggestions) ? suggestions : [];
 
-  // Only show suggestions if search query is at least 2 characters
-  const shouldShowSuggestions = searchQuery.length >= 2;
+  // Only show suggestions if search query is at least 1 character
+  const shouldShowSuggestions = searchQuery.length >= 1;
 
   return (
     <div className="relative max-w-sm">
@@ -46,7 +46,7 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
           value={searchQuery}
           onValueChange={(value) => {
             onSearchChange(value);
-            setOpen(value.length >= 2);
+            setOpen(value.length >= 1);
           }}
           className="h-9"
         />
