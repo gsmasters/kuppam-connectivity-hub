@@ -13,7 +13,7 @@ const Staff = () => {
           name: "P.SAI LAHARI",
           position: "MPDO",
           mobile: "9491071391",
-          email: "mpdo@example.com",
+          email: "kuppam.brgf@gmail.com",
           location: "Kuppam"
         },
         {
@@ -50,11 +50,6 @@ const Staff = () => {
           name: "Shaik Mahaboob Basha",
           position: "Mandal Educational Officer",
           mobile: "9481108991"
-        },
-        {
-          name: "Sri.Rajaram",
-          position: "Mandal Educational Officer 2",
-          mobile: "9441862325"
         }
       ]
     },
@@ -156,11 +151,6 @@ const Staff = () => {
         name: "H M Aswini",
         position: "MPP President",
         mobile: "9949408783"
-      },
-      {
-        name: "Suguna",
-        position: "MPP Member",
-        mobile: "9550133403"
       }
     ],
     ZPTC: [
