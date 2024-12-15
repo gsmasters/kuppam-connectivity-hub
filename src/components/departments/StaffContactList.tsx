@@ -2,11 +2,19 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
 import { Search, Users } from "lucide-react";
 import { useState } from "react";
 import { StaffTabs } from "./staff/StaffTabs";
 import { StaffGrid } from "./staff/StaffGrid";
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 
 interface StaffMember {
   id: string;
@@ -21,6 +29,7 @@ interface StaffMember {
 
 export const StaffContactList = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   
   // Query for mandal office staff
   const { data: mandalOfficeStaff, isLoading: isLoadingMandalOffice } = useQuery({
@@ -78,6 +87,14 @@ export const StaffContactList = () => {
     },
   });
 
+  // Combine all staff data for search suggestions
+  const allStaff = [
+    ...(mandalOfficeStaff || []),
+    ...(mandalOfficers || []),
+    ...(sachivalayamStaff || []),
+    ...(electedRepresentatives || [])
+  ];
+
   // Enhanced search function
   const filterStaff = (staff: StaffMember[] | null) => {
     if (!staff) return [];
@@ -98,6 +115,23 @@ export const StaffContactList = () => {
         field?.toLowerCase().includes(query)
       );
     });
+  };
+
+  // Get unique search suggestions
+  const getSearchSuggestions = () => {
+    const suggestions = new Set<string>();
+    allStaff.forEach(member => {
+      if (member.name) suggestions.add(member.name);
+      if (member.department) suggestions.add(member.department);
+      if (member.position) suggestions.add(member.position);
+      if (member.designation) suggestions.add(member.designation);
+      if (member.secretariat_name) suggestions.add(member.secretariat_name);
+    });
+    return Array.from(suggestions)
+      .filter(suggestion => 
+        suggestion.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .slice(0, 10); // Limit to 10 suggestions
   };
 
   // Calculate total staff count (only working staff)
@@ -126,13 +160,31 @@ export const StaffContactList = () => {
           </div>
         </div>
         <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Search by name, position, department..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-white border-gray-200"
-          />
+          <Command className="rounded-lg border shadow-md">
+            <CommandInput
+              placeholder="Search by name, position, department..."
+              value={searchQuery}
+              onValueChange={setSearchQuery}
+              className="h-9"
+            />
+            {searchQuery && (
+              <CommandList>
+                <CommandEmpty>No results found.</CommandEmpty>
+                <CommandGroup heading="Suggestions">
+                  {getSearchSuggestions().map((suggestion) => (
+                    <CommandItem
+                      key={suggestion}
+                      onSelect={(value) => {
+                        setSearchQuery(value);
+                      }}
+                    >
+                      {suggestion}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            )}
+          </Command>
         </div>
       </CardHeader>
       <CardContent>
