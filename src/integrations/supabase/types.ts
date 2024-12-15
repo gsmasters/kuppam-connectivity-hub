@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      elected_representatives: {
+        Row: {
+          created_at: string | null
+          gram_panchayat: string | null
+          id: string
+          mobile: string | null
+          name: string
+          panchayat_name: string | null
+          position: string
+          representative_type: Database["public"]["Enums"]["representative_type"]
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          gram_panchayat?: string | null
+          id?: string
+          mobile?: string | null
+          name: string
+          panchayat_name?: string | null
+          position: string
+          representative_type: Database["public"]["Enums"]["representative_type"]
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          gram_panchayat?: string | null
+          id?: string
+          mobile?: string | null
+          name?: string
+          panchayat_name?: string | null
+          position?: string
+          representative_type?: Database["public"]["Enums"]["representative_type"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           active: boolean | null
@@ -102,6 +138,42 @@ export type Database = {
         }
         Relationships: []
       }
+      sachivalayam_staff: {
+        Row: {
+          cfms: string | null
+          created_at: string | null
+          designation: string
+          id: string
+          mobile: string | null
+          name: string
+          secretariat_code: string | null
+          secretariat_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          cfms?: string | null
+          created_at?: string | null
+          designation: string
+          id?: string
+          mobile?: string | null
+          name: string
+          secretariat_code?: string | null
+          secretariat_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          cfms?: string | null
+          created_at?: string | null
+          designation?: string
+          id?: string
+          mobile?: string | null
+          name?: string
+          secretariat_code?: string | null
+          secretariat_name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       section_content: {
         Row: {
           content: Json
@@ -139,6 +211,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      staff: {
+        Row: {
+          created_at: string | null
+          department: string | null
+          id: string
+          is_working: boolean | null
+          mobile: string | null
+          name: string
+          position: string
+          staff_type: Database["public"]["Enums"]["staff_type"]
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          department?: string | null
+          id?: string
+          is_working?: boolean | null
+          mobile?: string | null
+          name: string
+          position: string
+          staff_type: Database["public"]["Enums"]["staff_type"]
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          department?: string | null
+          id?: string
+          is_working?: boolean | null
+          mobile?: string | null
+          name?: string
+          position?: string
+          staff_type?: Database["public"]["Enums"]["staff_type"]
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       staff_content: {
         Row: {
@@ -242,6 +350,13 @@ export type Database = {
         | "stats"
         | "programs"
         | "staff"
+      representative_type: "MPP" | "ZPTC" | "Sarpanch" | "MPTC"
+      staff_type:
+        | "mandal_office"
+        | "panchayat_secretary"
+        | "elected_representative"
+        | "sachivalayam"
+        | "mandal_officer"
     }
     CompositeTypes: {
       [_ in never]: never
