@@ -100,9 +100,13 @@ export const StaffContactList = () => {
     });
   };
 
-  // Calculate working staff count
-  const mandalOfficeWorkingCount = mandalOfficeStaff?.filter(staff => staff.is_working !== false).length || 0;
-  const mandalOfficersWorkingCount = mandalOfficers?.filter(staff => staff.is_working !== false).length || 0;
+  // Calculate total staff count (only working staff)
+  const totalWorkingStaff = (
+    (mandalOfficeStaff?.filter(s => s.is_working !== false).length || 0) +
+    (mandalOfficers?.filter(s => s.is_working !== false).length || 0) +
+    (sachivalayamStaff?.length || 0) +
+    (electedRepresentatives?.length || 0)
+  );
 
   return (
     <Card className="shadow-lg border-none">
@@ -117,7 +121,7 @@ export const StaffContactList = () => {
           <div className="flex items-center gap-2 text-muted-foreground">
             <Users className="h-5 w-5" />
             <span className="font-medium">
-              Total Staff: {(mandalOfficeStaff?.length || 0) + (mandalOfficers?.length || 0)}
+              Total Working Staff: {totalWorkingStaff}
             </span>
           </div>
         </div>
@@ -135,8 +139,8 @@ export const StaffContactList = () => {
         <Tabs defaultValue="mandal_office" className="space-y-6">
           <StaffTabs 
             counts={{
-              mandal_office: mandalOfficeStaff?.length || 0,
-              mandal_officers: mandalOfficers?.length || 0,
+              mandal_office: mandalOfficeStaff?.filter(s => s.is_working !== false).length || 0,
+              mandal_officers: mandalOfficers?.filter(s => s.is_working !== false).length || 0,
               sachivalayam: sachivalayamStaff?.length || 0,
               representatives: electedRepresentatives?.length || 0
             }}
@@ -150,7 +154,7 @@ export const StaffContactList = () => {
               isLoading={isLoadingMandalOffice}
               showDepartment
               totalCount={mandalOfficeStaff?.length || 0}
-              workingCount={mandalOfficeWorkingCount}
+              workingCount={mandalOfficeStaff?.filter(s => s.is_working !== false).length || 0}
             />
           </TabsContent>
 
@@ -162,7 +166,7 @@ export const StaffContactList = () => {
               isLoading={isLoadingMandalOfficers}
               showDepartment
               totalCount={mandalOfficers?.length || 0}
-              workingCount={mandalOfficersWorkingCount}
+              workingCount={mandalOfficers?.filter(s => s.is_working !== false).length || 0}
             />
           </TabsContent>
 
