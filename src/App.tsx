@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Departments from "./pages/Departments";
 import Login from "./pages/admin/Login";
+import Dashboard from "./pages/admin/Dashboard";
 import { AdminLayout } from "./components/admin/AdminLayout";
 
 const App = () => {
@@ -32,7 +33,9 @@ const App = () => {
             <Route path="/about-us" element={<About />} />
             <Route path="/departments" element={<Departments />} />
             <Route path="/admin/login" element={<Login />} />
-            <Route path="/admin" element={<AdminLayout />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="dashboard" element={<Dashboard />} />
+            </Route>
           </Routes>
           <ContactBar />
         </BrowserRouter>
