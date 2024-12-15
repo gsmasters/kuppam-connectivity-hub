@@ -14,9 +14,9 @@ export const FooterLink = ({ href, icon: Icon, children, external = true }: Foot
         href={href}
         target={external ? "_blank" : undefined}
         rel={external ? "noopener noreferrer" : undefined}
-        className="hover:text-primary flex items-center group transition-colors duration-200"
+        className="hover:text-primary flex items-center group transition-colors duration-200 text-sm"
       >
-        <Icon className="h-5 w-5 mr-3 group-hover:text-primary transition-colors duration-200" />
+        <Icon className="h-4 w-4 mr-2 group-hover:text-primary transition-colors duration-200" />
         <span>{children}</span>
       </a>
     </li>
