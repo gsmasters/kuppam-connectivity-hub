@@ -24,13 +24,14 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
   useEffect(() => {
     if (notificationId && open) {
       loadNotification();
-    } else {
+    } else if (!open) {
       resetForm();
     }
   }, [notificationId, open]);
 
   const loadNotification = async () => {
     try {
+      console.log('Loading notification:', notificationId);
       const { data, error } = await supabase
         .from('notifications')
         .select('*')
@@ -39,6 +40,7 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
 
       if (error) throw error;
 
+      console.log('Loaded notification data:', data);
       if (data) {
         setMessage(data.message);
         setPriority(data.priority as "low" | "medium" | "high");
@@ -58,28 +60,29 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
     setSaving(true);
 
     try {
+      const notificationData = {
+        message,
+        priority,
+        position,
+        active,
+        updated_at: new Date().toISOString(),
+      };
+
       if (notificationId) {
+        console.log('Updating notification:', notificationId, notificationData);
         const { error } = await supabase
           .from('notifications')
-          .update({
-            message,
-            priority,
-            position,
-            active,
-            updated_at: new Date().toISOString(),
-          })
+          .update(notificationData)
           .eq('id', notificationId);
 
         if (error) throw error;
         toast.success("Notification updated successfully");
       } else {
+        console.log('Creating new notification:', notificationData);
         const { error } = await supabase
           .from('notifications')
           .insert({
-            message,
-            priority,
-            position,
-            active,
+            ...notificationData,
             start_date: new Date().toISOString(),
           });
 
