@@ -59,30 +59,20 @@ export const StaffContactList = () => {
           suggestions={getSearchSuggestions(allStaff, searchQuery)}
         />
       </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="mandal_office" className="space-y-6">
-          <StaffTabs 
-            counts={{
-              mandal_office: mandalOfficeStaff?.filter(s => s.is_working !== false).length || 0,
-              mandal_officers: mandalOfficers?.filter(s => s.is_working !== false).length || 0,
-              sachivalayam: sachivalayamStaff?.length || 0,
-              representatives: electedRepresentatives?.length || 0
-            }}
-          />
-
-          <TabsContent value="mandal_office" className="mt-0 space-y-6">
-            <StaffGrid 
-              title="Mandal Office Staff"
-              description="Key officials and staff members working in the mandal office"
-              staff={filterStaff(mandalOfficeStaff, searchQuery)} 
-              isLoading={isLoadingMandalOffice}
-              showDepartment
-              totalCount={mandalOfficeStaff?.length || 0}
-              workingCount={mandalOfficeStaff?.filter(s => s.is_working !== false).length || 0}
+      <CardContent className="px-0 sm:px-6">
+        <Tabs defaultValue="mandal_officers" className="space-y-6">
+          <div className="px-4 sm:px-0">
+            <StaffTabs 
+              counts={{
+                mandal_office: mandalOfficeStaff?.filter(s => s.is_working !== false).length || 0,
+                mandal_officers: mandalOfficers?.filter(s => s.is_working !== false).length || 0,
+                sachivalayam: sachivalayamStaff?.length || 0,
+                representatives: electedRepresentatives?.length || 0
+              }}
             />
-          </TabsContent>
+          </div>
 
-          <TabsContent value="mandal_officers" className="mt-0 space-y-6">
+          <TabsContent value="mandal_officers" className="mt-6 space-y-6 px-4 sm:px-0">
             <StaffGrid 
               title="Mandal Level Officers"
               description="Officers working at the mandal level across different departments"
@@ -94,7 +84,7 @@ export const StaffContactList = () => {
             />
           </TabsContent>
 
-          <TabsContent value="sachivalayam" className="mt-0 space-y-6">
+          <TabsContent value="sachivalayam" className="mt-6 space-y-6 px-4 sm:px-0">
             <StaffGrid 
               title="Sachivalayam Staff"
               description="Staff members working in various secretariats"
@@ -103,7 +93,7 @@ export const StaffContactList = () => {
             />
           </TabsContent>
 
-          <TabsContent value="representatives" className="mt-0 space-y-6">
+          <TabsContent value="representatives" className="mt-6 space-y-6 px-4 sm:px-0">
             <StaffGrid 
               title="Elected Representatives"
               description="Elected officials serving the mandal"
