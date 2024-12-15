@@ -5,6 +5,12 @@ import { Page } from "@/types/content";
 import { usePageContent } from "./usePageContent";
 import { usePageOperations } from "./usePageOperations";
 
+interface SectionContent {
+  content: {
+    content: string;
+  };
+}
+
 export const usePageManager = () => {
   const [editingPage, setEditingPage] = useState<Page | null>(null);
   const [newPage, setNewPage] = useState(false);
@@ -67,8 +73,11 @@ export const usePageManager = () => {
         .limit(1)
         .single();
 
-      if (content && typeof content.content === 'object' && content.content !== null) {
-        setPageContent(content.content.content || "");
+      if (content) {
+        const typedContent = content as SectionContent;
+        if (typedContent.content && typeof typedContent.content === 'object' && 'content' in typedContent.content) {
+          setPageContent(typedContent.content.content || "");
+        }
       }
     }
   };
