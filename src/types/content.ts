@@ -1,8 +1,11 @@
+export type SectionType = 'hero' | 'content' | 'programs' | 'stats' | 'staff' | 'contact' | 'about';
+
 export interface Section {
   id: string;
   title: string;
   description: string | null;
   content_type: 'text' | 'image' | 'table' | 'hero' | 'stats' | 'programs' | 'staff';
+  section_type: SectionType;
   layout_width: number | null;
   layout_height: number | null;
 }

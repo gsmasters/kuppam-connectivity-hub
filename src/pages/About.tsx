@@ -63,7 +63,8 @@ const About = () => {
             page: 'about',
             section: 'main',
             title: 'About Us',
-            content_type: 'text'
+            content_type: 'text',
+            section_type: 'about'
           })
           .select()
           .single();
@@ -119,7 +120,7 @@ const About = () => {
       const typedContent = contentData as SectionContent;
       return typedContent.content.content;
     },
-    staleTime: 1000 * 60, // Cache for 1 minute
+    staleTime: 1000 * 60,
     retry: 1,
   });
 

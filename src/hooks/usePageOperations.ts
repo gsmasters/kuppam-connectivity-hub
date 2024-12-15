@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Page } from "@/types/content";
 
 export const usePageOperations = () => {
   const queryClient = useQueryClient();
@@ -25,7 +27,8 @@ export const usePageOperations = () => {
           page: newPage.id,
           section: 'content',
           title: 'Main Content',
-          content_type: 'text'
+          content_type: 'text',
+          section_type: 'content'
         })
         .select()
         .single();
@@ -63,6 +66,7 @@ export const usePageOperations = () => {
                 section: sectionType,
                 title: sectionType.charAt(0).toUpperCase() + sectionType.slice(1),
                 content_type: sectionType === 'hero' ? 'hero' : 'text',
+                section_type: sectionType
               })
               .select()
               .single();
@@ -140,7 +144,8 @@ export const usePageOperations = () => {
             page: pageId,
             section: "content",
             title: "Main Content",
-            content_type: "text"
+            content_type: "text",
+            section_type: "content"
           })
           .select()
           .single();
