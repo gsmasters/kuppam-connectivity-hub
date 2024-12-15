@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { format } from "date-fns";
 
 interface Notification {
@@ -53,7 +53,6 @@ export const NotificationsList = () => {
 
       if (error) throw error;
       
-      // Ensure the data matches our Notification type
       const typedNotifications = (data || []).map(notification => ({
         ...notification,
         position: notification.position as 'top' | 'bottom',
@@ -123,7 +122,21 @@ export const NotificationsList = () => {
                 {notification.priority}
               </Badge>
             </TableCell>
-            <TableCell className="capitalize">{notification.position}</TableCell>
+            <TableCell>
+              <div className="flex items-center gap-2">
+                {notification.position === 'top' ? (
+                  <Badge variant="outline" className="flex items-center gap-1">
+                    <ArrowUp className="h-3 w-3" />
+                    Top Scroll
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="flex items-center gap-1">
+                    <ArrowDown className="h-3 w-3" />
+                    Bottom Scroll
+                  </Badge>
+                )}
+              </div>
+            </TableCell>
             <TableCell>
               <Badge variant={notification.active ? "default" : "secondary"}>
                 {notification.active ? "Active" : "Inactive"}
