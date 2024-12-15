@@ -54,35 +54,54 @@ export const EditorView = ({
       case 'programs':
       case 'staff':
         return (
-          <div className="space-y-4">
-            <RichTextEditor
-              content={existingContent || ""}
-              onChange={(content) => onContentChange(sectionId, content)}
-            />
-            <div className="flex flex-wrap gap-2 p-2 border-t">
-              <div className="text-sm text-muted-foreground">
-                Quick Formatting:
+          <Tabs defaultValue="editor" className="w-full">
+            <TabsList className="mb-4">
+              <TabsTrigger value="editor">Editor</TabsTrigger>
+              <TabsTrigger value="code">Code View</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="editor">
+              <div className="space-y-4">
+                <RichTextEditor
+                  content={existingContent || ""}
+                  onChange={(content) => onContentChange(sectionId, content)}
+                />
+                <div className="flex flex-wrap gap-2 p-2 border-t">
+                  <div className="text-sm text-muted-foreground">
+                    Quick Formatting:
+                  </div>
+                  <button
+                    onClick={() => onContentChange(sectionId, existingContent + "<h2>New Heading</h2>")}
+                    className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
+                  >
+                    Add Heading
+                  </button>
+                  <button
+                    onClick={() => onContentChange(sectionId, existingContent + "<ul><li>New List Item</li></ul>")}
+                    className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
+                  >
+                    Add List
+                  </button>
+                  <button
+                    onClick={() => onContentChange(sectionId, existingContent + "<hr />")}
+                    className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
+                  >
+                    Add Divider
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={() => onContentChange(sectionId, existingContent + "<h2>New Heading</h2>")}
-                className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
-              >
-                Add Heading
-              </button>
-              <button
-                onClick={() => onContentChange(sectionId, existingContent + "<ul><li>New List Item</li></ul>")}
-                className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
-              >
-                Add List
-              </button>
-              <button
-                onClick={() => onContentChange(sectionId, existingContent + "<hr />")}
-                className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
-              >
-                Add Divider
-              </button>
-            </div>
-          </div>
+            </TabsContent>
+            
+            <TabsContent value="code">
+              <div className="space-y-4">
+                <textarea
+                  value={existingContent || ""}
+                  onChange={(e) => onContentChange(sectionId, e.target.value)}
+                  className="w-full h-[400px] font-mono text-sm p-4 border rounded-md"
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
         );
 
       default:
