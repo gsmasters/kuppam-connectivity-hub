@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Building, Users, Info, Phone, FileText, Calendar, BookOpen, HelpCircle } from "lucide-react";
+import { Building, Users, Info, FileText, Calendar, BookOpen, HelpCircle, ExternalLink } from "lucide-react";
 
 export const QuickLinks = () => {
   const links = [
@@ -28,34 +28,39 @@ export const QuickLinks = () => {
       href: "/",
     },
     {
-      title: "Documents",
-      description: "Access important forms and documents",
-      icon: FileText,
-      href: "#documents",
+      title: "AP Panchayat Raj",
+      description: "Access AP Panchayat Raj Portal",
+      icon: ExternalLink,
+      href: "https://appanchayats.ap.gov.in/APPRPortal/",
+      external: true,
     },
     {
-      title: "News & Updates",
-      description: "Stay informed about latest developments",
-      icon: Info,
-      href: "#news",
+      title: "Digital Panchayat",
+      description: "Visit Digital Panchayat Portal",
+      icon: ExternalLink,
+      href: "https://digitalpanchayat.ap.gov.in/",
+      external: true,
     },
     {
-      title: "RTI",
-      description: "Right to Information Act portal",
-      icon: BookOpen,
-      href: "#rti",
+      title: "AP Government",
+      description: "Official AP Government Portal",
+      icon: ExternalLink,
+      href: "https://www.ap.gov.in/",
+      external: true,
     },
     {
-      title: "Grievance",
-      description: "Submit and track your grievances",
-      icon: HelpCircle,
-      href: "https://meekosam.ap.gov.in/",
+      title: "NREGA AP",
+      description: "MGNREGA Portal of AP",
+      icon: ExternalLink,
+      href: "https://nrega.ap.gov.in/",
+      external: true,
     },
     {
-      title: "Contact Us",
-      description: "Get in touch with our office",
-      icon: Phone,
-      href: "#contact",
+      title: "Rural Development",
+      description: "AP Rural Development Department",
+      icon: ExternalLink,
+      href: "https://rd.ap.gov.in/",
+      external: true,
     },
   ];
 
@@ -68,6 +73,8 @@ export const QuickLinks = () => {
             <a
               key={link.title}
               href={link.href}
+              target={link.external ? "_blank" : "_self"}
+              rel={link.external ? "noopener noreferrer" : undefined}
               className="transform transition-transform hover:scale-105"
             >
               <Card className="h-full border-t-4 border-t-[#DD4814] bg-white/90 backdrop-blur-sm hover:bg-white transition-colors">
