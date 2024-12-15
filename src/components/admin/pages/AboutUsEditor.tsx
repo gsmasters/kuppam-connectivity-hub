@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 
-interface SectionContent {
+interface DatabaseSectionContent {
   id: string;
   section_id: string;
   content: {
@@ -14,6 +14,7 @@ interface SectionContent {
   };
   version: number;
   is_published: boolean;
+  is_draft: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -85,7 +86,7 @@ export const AboutUsEditor = () => {
         return { sectionId, content: "" };
       }
 
-      const typedContent = contentData[0] as SectionContent;
+      const typedContent = contentData[0] as DatabaseSectionContent;
       return { 
         sectionId, 
         content: typedContent?.content?.content || "" 
