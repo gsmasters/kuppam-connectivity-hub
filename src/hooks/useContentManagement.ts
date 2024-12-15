@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
+
+type StaffContent = Database['public']['Tables']['staff_content']['Row'];
 
 export const useContentManagement = () => {
   const { toast } = useToast();
@@ -9,33 +12,65 @@ export const useContentManagement = () => {
   const [content, setContent] = useState<Record<string, any>>({});
   const [unsavedChanges, setUnsavedChanges] = useState<Record<string, boolean>>({});
 
-  const loadContent = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('staff_content')
-        .select('*');
-      
-      if (error) throw error;
-      
-      const contentMap: Record<string, any> = {};
-      data?.forEach(item => {
-        contentMap[item.section] = item.content;
-      });
-      
-      setContent(contentMap);
-      console.log('Loaded content:', contentMap); // Debug log
-    } catch (error) {
-      console.error('Error loading content:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load content",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Load initial content
+  useEffect(() => {
+    const loadContent = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('staff_content')
+          .select('*');
+        
+        if (error) throw error;
+        
+        const contentMap: Record<string, any> = {};
+        data?.forEach(item => {
+          contentMap[item.section] = item.content;
+        });
+        
+        setContent(contentMap);
+        console.log('Loaded content:', contentMap); // Debug log
+      } catch (error) {
+        console.error('Error loading content:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load content",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadContent();
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('staff_content_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'staff_content'
+        },
+        (payload) => {
+          console.log('Real-time update received:', payload); // Debug log
+          const newRow = payload.new as StaffContent;
+          if (newRow && newRow.section && newRow.content) {
+            setContent(prev => ({
+              ...prev,
+              [newRow.section]: newRow.content
+            }));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [toast]); // Added toast to dependencies
 
   const saveContent = async (section: string, newContent: string) => {
     setSaving(true);
@@ -103,39 +138,6 @@ export const useContentManagement = () => {
       [section]: true
     }));
   };
-
-  // Subscribe to real-time changes
-  useEffect(() => {
-    const channel = supabase
-      .channel('staff_content_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'staff_content'
-        },
-        (payload) => {
-          console.log('Real-time update received:', payload); // Debug log
-          if (payload.new) {
-            setContent(prev => ({
-              ...prev,
-              [payload.new.section]: payload.new.content
-            }));
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  // Load initial content
-  useEffect(() => {
-    loadContent();
-  }, []);
 
   return {
     content,
