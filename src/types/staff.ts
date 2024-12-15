@@ -6,10 +6,21 @@ export interface BaseStaffMember {
   updated_at: string;
 }
 
+export type StaffType = 
+  | "mandal_office"
+  | "mandal_officer"
+  | "panchayat_secretary"
+  | "elected_representative"
+  | "sachivalayam"
+  | "revenue"
+  | "education"
+  | "health"
+  | "agriculture";
+
 export interface MandalStaff extends BaseStaffMember {
   position: string;
   department?: string;
-  staff_type: 'mandal_office' | 'mandal_officer';
+  staff_type: StaffType;
   is_working?: boolean;
 }
 

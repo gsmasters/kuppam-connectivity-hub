@@ -43,14 +43,14 @@ export const StaffGrid = ({
   // Group staff by department if showDepartment is true
   const groupedStaff = showDepartment
     ? staff.reduce((acc: Record<string, StaffMember[]>, member) => {
-        const dept = member.department || 'Other';
+        const dept = 'department' in member ? member.department || 'Other' : 'Other';
         if (!acc[dept]) acc[dept] = [];
         acc[dept].push(member);
         return acc;
       }, {})
     : isRepresentative
     ? staff.reduce((acc: Record<string, StaffMember[]>, member) => {
-        const type = member.representative_type || 'Other';
+        const type = 'representative_type' in member ? member.representative_type : 'Other';
         if (!acc[type]) acc[type] = [];
         acc[type].push(member);
         return acc;

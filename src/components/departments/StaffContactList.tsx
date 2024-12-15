@@ -18,11 +18,11 @@ import {
 import { StaffMember, MandalStaff, SachivalayamStaff, ElectedRepresentative } from "@/types/staff";
 
 function isMandalStaff(staff: StaffMember): staff is MandalStaff {
-  return 'staff_type' in staff;
+  return 'staff_type' in staff && 'position' in staff && !('representative_type' in staff);
 }
 
 function isSachivalayamStaff(staff: StaffMember): staff is SachivalayamStaff {
-  return 'secretariat_name' in staff;
+  return 'secretariat_name' in staff && 'designation' in staff;
 }
 
 function isElectedRepresentative(staff: StaffMember): staff is ElectedRepresentative {
