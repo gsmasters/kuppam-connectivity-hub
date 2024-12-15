@@ -23,7 +23,11 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Image,
+      Image.configure({
+        HTMLAttributes: {
+          class: 'resize-none',
+        },
+      }),
       TextStyle,
       Color,
       Highlight,
@@ -68,8 +72,7 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     if (imageUrl) {
       editor.chain().focus().setImage({ 
         src: imageUrl,
-        width: Number(imageWidth),
-        height: Number(imageHeight),
+        style: `width: ${imageWidth}px; height: ${imageHeight}px;`
       }).run();
     }
   };
