@@ -33,14 +33,14 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
     );
   }
 
-  // Ensure suggestions is always an array and filter out any undefined/null values
+  // Ensure suggestions is always an array and filter out any undefined/null/empty values
   const validSuggestions = (Array.isArray(suggestions) ? suggestions : [])
     .filter((suggestion): suggestion is string => 
       typeof suggestion === 'string' && suggestion.trim().length > 0
     );
 
-  // Only show suggestions if search query is at least 1 character
-  const shouldShowSuggestions = searchQuery.length >= 1;
+  // Only show suggestions if search query is not empty and at least 1 character
+  const shouldShowSuggestions = searchQuery.trim().length >= 1;
 
   return (
     <div className="relative max-w-sm">
@@ -50,7 +50,7 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
           value={searchQuery}
           onValueChange={(value) => {
             onSearchChange(value);
-            setOpen(value.length >= 1);
+            setOpen(value.trim().length >= 1);
           }}
           className="h-9"
         />
