@@ -1,4 +1,3 @@
-import { DepartmentCard } from "@/components/departments/DepartmentCard";
 import { Building2, Users } from "lucide-react";
 import {
   Accordion,
@@ -6,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Card } from "@/components/ui/card";
 
 interface StaffSectionProps {
   departments: Array<{
@@ -37,7 +37,35 @@ export const StaffSection = ({ departments }: StaffSectionProps) => {
               </div>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4">
-              <DepartmentCard title={dept.title} staff={dept.staff} />
+              <Card className="p-4">
+                <div className="space-y-4">
+                  {dept.staff.map((member, staffIndex) => (
+                    <div key={staffIndex} className="border-b last:border-0 pb-4 last:pb-0">
+                      <h4 className="font-medium text-lg">{member.name}</h4>
+                      <p className="text-sm text-muted-foreground">{member.position}</p>
+                      {member.mobile && (
+                        <a 
+                          href={`tel:${member.mobile}`}
+                          className="text-sm text-primary hover:underline mt-1 inline-block"
+                        >
+                          {member.mobile}
+                        </a>
+                      )}
+                      {member.email && (
+                        <a 
+                          href={`mailto:${member.email}`}
+                          className="text-sm text-primary hover:underline block mt-1"
+                        >
+                          {member.email}
+                        </a>
+                      )}
+                      {member.location && (
+                        <p className="text-sm text-muted-foreground mt-1">{member.location}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </Card>
             </AccordionContent>
           </AccordionItem>
         ))}
