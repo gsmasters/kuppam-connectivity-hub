@@ -1,23 +1,40 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
-
-const notifications = [
-  "New pension scheme registration starts from 15th April 2024",
-  "Village development program meeting on 20th April 2024",
-  "Free medical camp at Panchayat office on 25th April 2024",
-  "Last date for property tax payment is 30th April 2024",
-];
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 export const NotificationTicker = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const { data: notifications = [] } = useQuery({
+    queryKey: ['active-notifications'],
+    queryFn: async () => {
+      console.log('Fetching active notifications for ticker...');
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('active', true)
+        .eq('is_published', true)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      console.log('Fetched active notifications:', data);
+      return data || [];
+    },
+    refetchInterval: 2000, // Refetch every 2 seconds
+  });
+
   useEffect(() => {
+    if (notifications.length === 0) return;
+    
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % notifications.length);
     }, 5000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [notifications.length]);
+
+  if (!notifications.length) return null;
 
   return (
     <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white">
@@ -28,7 +45,7 @@ export const NotificationTicker = () => {
             <div className="animate-[slide_20s_linear_infinite]">
               <p className="flex items-center space-x-2">
                 <ArrowRight className="h-4 w-4" />
-                <span>{notifications[currentIndex]}</span>
+                <span>{notifications[currentIndex]?.message}</span>
               </p>
             </div>
           </div>
