@@ -38,15 +38,15 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <ScrollArea className="flex-1">
+      {/* Main Content with Scroll Area */}
+      <ScrollArea className="flex-1 h-[calc(100vh-4rem)]">
         <main className="container mx-auto py-6 px-4">
           {children || <Outlet />}
         </main>
       </ScrollArea>
 
-      {/* Footer */}
-      <footer className="border-t bg-white p-4">
+      {/* Footer with Scroll to Top */}
+      <footer className="sticky bottom-0 border-t bg-white p-4">
         <div className="container mx-auto flex items-center justify-between">
           <p className="text-sm text-gray-600">
             © 2024 MPDO Admin Dashboard
@@ -55,7 +55,8 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
             variant="ghost"
             size="icon"
             onClick={scrollToTop}
-            className="rounded-full"
+            className="rounded-full hover:bg-gray-100"
+            aria-label="Scroll to top"
           >
             <ChevronUp className="h-4 w-4" />
           </Button>
