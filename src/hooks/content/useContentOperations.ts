@@ -2,22 +2,25 @@ import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+type ContentRecord = Record<string, any>;
+type BooleanRecord = Record<string, boolean>;
+
 export const useContentOperations = (
-  content: Record<string, any>,
-  setContent: (content: Record<string, any>) => void,
-  setIsDraft: (isDraft: Record<string, boolean>) => void,
-  setUnsavedChanges: (changes: Record<string, boolean>) => void
+  content: ContentRecord,
+  setContent: (content: ContentRecord) => void,
+  setIsDraft: (isDraft: BooleanRecord) => void,
+  setUnsavedChanges: (changes: BooleanRecord) => void
 ) => {
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
 
   const handleContentChange = useCallback((sectionId: string, newContent: any) => {
     console.log('Content change for section:', sectionId);
-    setContent(prev => ({
+    setContent((prev: ContentRecord) => ({
       ...prev,
       [sectionId]: newContent
     }));
-    setUnsavedChanges(prev => ({
+    setUnsavedChanges((prev: BooleanRecord) => ({
       ...prev,
       [sectionId]: true
     }));
@@ -52,7 +55,7 @@ export const useContentOperations = (
 
       if (insertError) throw insertError;
 
-      setIsDraft(prev => ({
+      setIsDraft((prev: BooleanRecord) => ({
         ...prev,
         [sectionId]: true
       }));
@@ -62,7 +65,7 @@ export const useContentOperations = (
         description: "Content saved as draft",
       });
 
-      setUnsavedChanges(prev => ({
+      setUnsavedChanges((prev: BooleanRecord) => ({
         ...prev,
         [sectionId]: false
       }));
@@ -107,7 +110,7 @@ export const useContentOperations = (
 
       if (insertError) throw insertError;
 
-      setIsDraft(prev => ({
+      setIsDraft((prev: BooleanRecord) => ({
         ...prev,
         [sectionId]: false
       }));
@@ -117,7 +120,7 @@ export const useContentOperations = (
         description: "Content published successfully",
       });
 
-      setUnsavedChanges(prev => ({
+      setUnsavedChanges((prev: BooleanRecord) => ({
         ...prev,
         [sectionId]: false
       }));
