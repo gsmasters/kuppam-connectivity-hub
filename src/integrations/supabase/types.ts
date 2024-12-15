@@ -248,6 +248,7 @@ export type Database = {
           content: Json
           created_at: string
           id: string
+          is_draft: boolean | null
           is_published: boolean | null
           section_id: string | null
           updated_at: string
@@ -257,6 +258,7 @@ export type Database = {
           content: Json
           created_at?: string
           id?: string
+          is_draft?: boolean | null
           is_published?: boolean | null
           section_id?: string | null
           updated_at?: string
@@ -266,6 +268,7 @@ export type Database = {
           content?: Json
           created_at?: string
           id?: string
+          is_draft?: boolean | null
           is_published?: boolean | null
           section_id?: string | null
           updated_at?: string
