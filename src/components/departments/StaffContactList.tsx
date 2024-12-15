@@ -1,13 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { Users } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useState } from "react";
 import { StaffTabs } from "./staff/StaffTabs";
-import { StaffGrid } from "./staff/StaffGrid";
-import { StaffSearch } from "./staff/StaffSearch";
 import { useStaffDirectory } from "@/hooks/useStaffDirectory";
-import { filterStaff, getSearchSuggestions } from "@/utils/staff-helpers";
-import { StaffMember } from "@/types/staff";
+import { getSearchSuggestions } from "@/utils/staff-helpers";
+import { StaffHeader } from "@/components/staff/directory/StaffHeader";
+import { StaffSearchBar } from "@/components/staff/directory/StaffSearchBar";
+import { StaffContent } from "@/components/staff/directory/StaffContent";
 
 export const StaffContactList = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,70 +37,33 @@ export const StaffContactList = () => {
   return (
     <Card className="shadow-lg border-none">
       <CardHeader className="space-y-6 pb-8 bg-gray-50/50">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-3xl font-bold tracking-tight">Staff Directory</CardTitle>
-            <CardDescription className="mt-2 text-base">
-              Browse and search through mandal office staff, mandal level officers, sachivalayam staff, and elected representatives
-            </CardDescription>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Users className="h-5 w-5" />
-            <span className="font-medium">
-              Total Working Staff: {totalWorkingStaff}
-            </span>
-          </div>
-        </div>
-        <StaffSearch
+        <StaffHeader totalWorkingStaff={totalWorkingStaff} />
+        <StaffSearchBar
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           suggestions={getSearchSuggestions(allStaff, searchQuery)}
         />
       </CardHeader>
       <CardContent className="px-0 sm:px-6">
-        <Tabs defaultValue="mandal_officers" className="space-y-6">
-          <div className="px-4 sm:px-0">
-            <StaffTabs 
-              counts={{
-                mandal_office: mandalOfficeStaff?.filter(s => s.is_working !== false).length || 0,
-                mandal_officers: mandalOfficers?.filter(s => s.is_working !== false).length || 0,
-                sachivalayam: sachivalayamStaff?.length || 0,
-                representatives: electedRepresentatives?.length || 0
-              }}
-            />
-          </div>
-
-          <TabsContent value="mandal_officers" className="mt-6 space-y-6 px-4 sm:px-0">
-            <StaffGrid 
-              title="Mandal Level Officers"
-              description="Officers working at the mandal level across different departments"
-              staff={filterStaff(mandalOfficers, searchQuery)} 
-              isLoading={isLoadingMandalOfficers}
-              showDepartment
-              totalCount={mandalOfficers?.length || 0}
-              workingCount={mandalOfficers?.filter(s => s.is_working !== false).length || 0}
-            />
-          </TabsContent>
-
-          <TabsContent value="sachivalayam" className="mt-6 space-y-6 px-4 sm:px-0">
-            <StaffGrid 
-              title="Sachivalayam Staff"
-              description="Staff members working in various secretariats"
-              staff={filterStaff(sachivalayamStaff, searchQuery)} 
-              isLoading={isLoadingSachivalayam}
-            />
-          </TabsContent>
-
-          <TabsContent value="representatives" className="mt-6 space-y-6 px-4 sm:px-0">
-            <StaffGrid 
-              title="Elected Representatives"
-              description="Elected officials serving the mandal"
-              staff={filterStaff(electedRepresentatives, searchQuery)} 
-              isLoading={isLoadingRepresentatives}
-              isRepresentative
-            />
-          </TabsContent>
-        </Tabs>
+        <div className="px-4 sm:px-0">
+          <StaffTabs 
+            counts={{
+              mandal_office: mandalOfficeStaff?.filter(s => s.is_working !== false).length || 0,
+              mandal_officers: mandalOfficers?.filter(s => s.is_working !== false).length || 0,
+              sachivalayam: sachivalayamStaff?.length || 0,
+              representatives: electedRepresentatives?.length || 0
+            }}
+          />
+        </div>
+        <StaffContent
+          searchQuery={searchQuery}
+          mandalOfficers={mandalOfficers}
+          sachivalayamStaff={sachivalayamStaff}
+          electedRepresentatives={electedRepresentatives}
+          isLoadingMandalOfficers={isLoadingMandalOfficers}
+          isLoadingSachivalayam={isLoadingSachivalayam}
+          isLoadingRepresentatives={isLoadingRepresentatives}
+        />
       </CardContent>
     </Card>
   );
