@@ -25,6 +25,17 @@ export const StaffTabs = ({ counts }: StaffTabsProps) => (
       </TabsTrigger>
       
       <TabsTrigger 
+        value="mandal_office" 
+        className="flex items-center gap-3 px-6 py-4 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-xl transition-all border border-border/50 hover:border-primary/20 bg-white w-full sm:w-auto min-h-[80px]"
+      >
+        <Building2 className="h-5 w-5 text-green-600 shrink-0" />
+        <div className="flex flex-col items-start">
+          <span className="text-sm font-medium text-green-600 whitespace-normal">Mandal Office Staff</span>
+          <span className="text-lg font-semibold">{counts.mandal_office}</span>
+        </div>
+      </TabsTrigger>
+      
+      <TabsTrigger 
         value="sachivalayam" 
         className="flex items-center gap-3 px-6 py-4 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-xl transition-all border border-border/50 hover:border-primary/20 bg-white w-full sm:w-auto min-h-[80px]"
       >
