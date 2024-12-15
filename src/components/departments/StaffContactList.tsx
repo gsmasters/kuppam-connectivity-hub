@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Users } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
 import { StaffTabs } from "./staff/StaffTabs";
 import { StaffGrid } from "./staff/StaffGrid";
@@ -18,25 +18,22 @@ interface StaffMember {
   secretariat_name?: string;
 }
 
-const useStaffQuery = (staffType: string) => {
-  return useQuery({
-    queryKey: [staffType + "-staff"],
+export const StaffContactList = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  const { data: mandalOfficers, isLoading: isLoadingOfficers } = useQuery({
+    queryKey: ["staff", "mandal_officer"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("staff")
         .select("*")
-        .eq("staff_type", staffType)
+        .eq("staff_type", "mandal_officer")
         .order("name");
       if (error) throw error;
       return data;
     },
   });
-};
 
-export const StaffContactList = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  
-  const { data: mandalOfficers, isLoading: isLoadingOfficers } = useStaffQuery("mandal_officer");
   const { data: sachivalayamStaff, isLoading: isLoadingSachivalayam } = useQuery({
     queryKey: ["sachivalayam-staff"],
     queryFn: async () => {
@@ -48,10 +45,58 @@ export const StaffContactList = () => {
       return data;
     },
   });
-  const { data: revenueStaff, isLoading: isLoadingRevenue } = useStaffQuery("revenue");
-  const { data: educationStaff, isLoading: isLoadingEducation } = useStaffQuery("education");
-  const { data: healthStaff, isLoading: isLoadingHealth } = useStaffQuery("health");
-  const { data: agricultureStaff, isLoading: isLoadingAgriculture } = useStaffQuery("agriculture");
+
+  const { data: revenueStaff, isLoading: isLoadingRevenue } = useQuery({
+    queryKey: ["staff", "revenue"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("staff")
+        .select("*")
+        .eq("staff_type", "revenue")
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: educationStaff, isLoading: isLoadingEducation } = useQuery({
+    queryKey: ["staff", "education"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("staff")
+        .select("*")
+        .eq("staff_type", "education")
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: healthStaff, isLoading: isLoadingHealth } = useQuery({
+    queryKey: ["staff", "health"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("staff")
+        .select("*")
+        .eq("staff_type", "health")
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: agricultureStaff, isLoading: isLoadingAgriculture } = useQuery({
+    queryKey: ["staff", "agriculture"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("staff")
+        .select("*")
+        .eq("staff_type", "agriculture")
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const filterStaff = (staff: StaffMember[] | null) => {
     if (!staff) return [];
@@ -66,61 +111,59 @@ export const StaffContactList = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Users className="h-5 w-5 text-primary" />
-          Staff Directory
-        </CardTitle>
-        <div className="mt-4">
+    <Card className="shadow-lg border-none">
+      <CardHeader className="space-y-6 pb-8">
+        <CardTitle className="text-3xl font-bold tracking-tight">Staff Directory</CardTitle>
+        <div className="relative max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Search by name, department, designation..."
+            placeholder="Search staff..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="max-w-sm"
+            className="pl-10 bg-muted/50 border-none"
           />
         </div>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="mandal" className="space-y-4">
+        <Tabs defaultValue="mandal" className="space-y-6">
           <StaffTabs />
 
-          <TabsContent value="mandal">
+          <TabsContent value="mandal" className="mt-0 space-y-6">
             <StaffGrid 
               staff={filterStaff(mandalOfficers)} 
               isLoading={isLoadingOfficers} 
             />
           </TabsContent>
 
-          <TabsContent value="sachivalayam">
+          <TabsContent value="sachivalayam" className="mt-0 space-y-6">
             <StaffGrid 
               staff={filterStaff(sachivalayamStaff)} 
               isLoading={isLoadingSachivalayam} 
             />
           </TabsContent>
 
-          <TabsContent value="revenue">
+          <TabsContent value="revenue" className="mt-0 space-y-6">
             <StaffGrid 
               staff={filterStaff(revenueStaff)} 
               isLoading={isLoadingRevenue} 
             />
           </TabsContent>
 
-          <TabsContent value="education">
+          <TabsContent value="education" className="mt-0 space-y-6">
             <StaffGrid 
               staff={filterStaff(educationStaff)} 
               isLoading={isLoadingEducation} 
             />
           </TabsContent>
 
-          <TabsContent value="health">
+          <TabsContent value="health" className="mt-0 space-y-6">
             <StaffGrid 
               staff={filterStaff(healthStaff)} 
               isLoading={isLoadingHealth} 
             />
           </TabsContent>
 
-          <TabsContent value="agriculture">
+          <TabsContent value="agriculture" className="mt-0 space-y-6">
             <StaffGrid 
               staff={filterStaff(agricultureStaff)} 
               isLoading={isLoadingAgriculture} 
