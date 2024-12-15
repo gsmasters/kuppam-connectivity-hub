@@ -1,12 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { RichTextEditor } from "./RichTextEditor";
-import { PreviewDialog } from "./PreviewDialog";
-import { ImageUploader } from "./editor/ImageUploader";
 import { EditorActions } from "./editor/EditorActions";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Eye } from "lucide-react";
+import { TextEditor } from "./editor/content/TextEditor";
+import { ImageEditor } from "./editor/content/ImageEditor";
+import { PreviewSection } from "./editor/preview/PreviewSection";
 
 interface EditorViewProps {
   sectionId: string;
@@ -39,7 +35,7 @@ export const EditorView = ({
     switch (contentType) {
       case 'image':
         return (
-          <ImageUploader
+          <ImageEditor
             sectionId={sectionId}
             layoutWidth={layoutWidth}
             layoutHeight={layoutHeight}
@@ -54,61 +50,19 @@ export const EditorView = ({
       case 'programs':
       case 'staff':
         return (
-          <Tabs defaultValue="editor" className="w-full">
-            <TabsList className="mb-4">
-              <TabsTrigger value="editor">Editor</TabsTrigger>
-              <TabsTrigger value="code">Code View</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="editor">
-              <div className="space-y-4">
-                <RichTextEditor
-                  content={existingContent || ""}
-                  onChange={(content) => onContentChange(sectionId, content)}
-                />
-                <div className="flex flex-wrap gap-2 p-2 border-t">
-                  <div className="text-sm text-muted-foreground">
-                    Quick Formatting:
-                  </div>
-                  <button
-                    onClick={() => onContentChange(sectionId, existingContent + "<h2>New Heading</h2>")}
-                    className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
-                  >
-                    Add Heading
-                  </button>
-                  <button
-                    onClick={() => onContentChange(sectionId, existingContent + "<ul><li>New List Item</li></ul>")}
-                    className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
-                  >
-                    Add List
-                  </button>
-                  <button
-                    onClick={() => onContentChange(sectionId, existingContent + "<hr />")}
-                    className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
-                  >
-                    Add Divider
-                  </button>
-                </div>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="code">
-              <div className="space-y-4">
-                <textarea
-                  value={existingContent || ""}
-                  onChange={(e) => onContentChange(sectionId, e.target.value)}
-                  className="w-full h-[400px] font-mono text-sm p-4 border rounded-md"
-                />
-              </div>
-            </TabsContent>
-          </Tabs>
+          <TextEditor
+            sectionId={sectionId}
+            existingContent={existingContent || ""}
+            onContentChange={onContentChange}
+          />
         );
 
       default:
         return (
-          <RichTextEditor
-            content={existingContent || ""}
-            onChange={(content) => onContentChange(sectionId, content)}
+          <TextEditor
+            sectionId={sectionId}
+            existingContent={existingContent || ""}
+            onContentChange={onContentChange}
           />
         );
     }
@@ -136,83 +90,13 @@ export const EditorView = ({
         </Card>
       </div>
 
-      <div className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Preview</CardTitle>
-            <CardDescription>
-              See how your content will look on the website
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="desktop" className="w-full">
-              <TabsList className="mb-4">
-                <TabsTrigger value="desktop">Desktop</TabsTrigger>
-                <TabsTrigger value="mobile">Mobile</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="desktop">
-                <ScrollArea className="h-[calc(100vh-400px)] w-full rounded-md border">
-                  <div className="p-4">
-                    <div 
-                      className="prose max-w-none"
-                      dangerouslySetInnerHTML={{ __html: existingContent || "" }}
-                    />
-                  </div>
-                </ScrollArea>
-              </TabsContent>
-              
-              <TabsContent value="mobile">
-                <ScrollArea className="h-[calc(100vh-400px)] mx-auto" style={{ maxWidth: "375px" }}>
-                  <div className="p-4 border rounded-md">
-                    <div 
-                      className="prose max-w-none"
-                      dangerouslySetInnerHTML={{ __html: existingContent || "" }}
-                    />
-                  </div>
-                </ScrollArea>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-
-        {isDraft && (
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              This content is currently in draft mode. Click "Publish" to make it live.
-            </AlertDescription>
-          </Alert>
-        )}
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Content Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div>
-              <span className="font-medium">Status: </span>
-              <span className={`${isDraft ? 'text-yellow-600' : 'text-green-600'}`}>
-                {isDraft ? 'Draft' : 'Published'}
-              </span>
-            </div>
-            <div>
-              <span className="font-medium">Content Type: </span>
-              <span className="capitalize">{contentType}</span>
-            </div>
-            {(layoutWidth || layoutHeight) && (
-              <div>
-                <span className="font-medium">Recommended Dimensions: </span>
-                <span>
-                  {layoutWidth && `Width: ${layoutWidth}px`}
-                  {layoutWidth && layoutHeight && ' × '}
-                  {layoutHeight && `Height: ${layoutHeight}px`}
-                </span>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+      <PreviewSection
+        content={existingContent}
+        isDraft={isDraft}
+        contentType={contentType}
+        layoutWidth={layoutWidth}
+        layoutHeight={layoutHeight}
+      />
     </div>
   );
 };
