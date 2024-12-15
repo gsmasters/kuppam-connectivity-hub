@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Section, PageSection, SectionContent } from "@/types/content";
 
 export const useContentManagement = () => {
@@ -15,6 +15,18 @@ export const useContentManagement = () => {
   useEffect(() => {
     const loadSections = async () => {
       try {
+        // First check if user is authenticated
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+          toast({
+            title: "Authentication Required",
+            description: "Please log in to manage content",
+            variant: "destructive",
+          });
+          return;
+        }
+
         const { data: sectionsData, error } = await supabase
           .from('page_sections')
           .select('*')
@@ -109,6 +121,18 @@ export const useContentManagement = () => {
   const handleSave = async (sectionId: string) => {
     setSaving(true);
     try {
+      // Check authentication before saving
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to save content",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from('section_content')
         .insert({
@@ -117,7 +141,18 @@ export const useContentManagement = () => {
           is_published: true
         });
 
-      if (error) throw error;
+      if (error) {
+        if (error.code === '42501') {
+          toast({
+            title: "Permission Denied",
+            description: "You don't have permission to publish content",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
+        return;
+      }
 
       toast({
         title: "Success",
