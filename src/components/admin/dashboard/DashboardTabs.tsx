@@ -24,7 +24,10 @@ export const DashboardTabs = () => {
       if (notifications && notifications.length > 0) {
         const { error: updateError } = await supabase
           .from('notifications')
-          .update({ is_published: true, is_draft: false })
+          .update({ 
+            is_published: true, 
+            is_draft: false 
+          })
           .in('id', notifications.map(n => n.id));
 
         if (updateError) throw updateError;
