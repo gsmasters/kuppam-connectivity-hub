@@ -1,9 +1,6 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
-import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
 import {
@@ -17,6 +14,9 @@ import {
   AlignRight,
   Link as LinkIcon,
 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from 'react';
 
 interface RichTextEditorProps {
