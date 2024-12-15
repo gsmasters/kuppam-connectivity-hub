@@ -1,12 +1,10 @@
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, MapPin, Building, Briefcase, UserCheck } from "lucide-react";
+import { Building2, MapPin, UserCheck } from "lucide-react";
 
 interface StaffTabsProps {
   counts: {
     mandal: number;
     sachivalayam: number;
-    revenue: number;
-    education: number;
     representatives: number;
   };
 }
@@ -34,28 +32,6 @@ export const StaffTabs = ({ counts }: StaffTabsProps) => (
       <span className="sm:hidden">Sach.</span>
       <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
         {counts.sachivalayam}
-      </span>
-    </TabsTrigger>
-    
-    <TabsTrigger 
-      value="revenue" 
-      className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
-    >
-      <Building className="h-4 w-4" />
-      <span>Revenue</span>
-      <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
-        {counts.revenue}
-      </span>
-    </TabsTrigger>
-    
-    <TabsTrigger 
-      value="education" 
-      className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
-    >
-      <Briefcase className="h-4 w-4" />
-      <span>Education</span>
-      <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
-        {counts.education}
       </span>
     </TabsTrigger>
     

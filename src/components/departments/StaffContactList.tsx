@@ -47,34 +47,6 @@ export const StaffContactList = () => {
     },
   });
 
-  const { data: revenueStaff, isLoading: isLoadingRevenue } = useQuery({
-    queryKey: ["staff", "revenue"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("staff")
-        .select("*")
-        .eq("staff_type", "revenue")
-        .order("name");
-      if (error) throw error;
-      // Filter out entries with null values in critical fields
-      return data?.filter(staff => staff.name && staff.position) || [];
-    },
-  });
-
-  const { data: educationStaff, isLoading: isLoadingEducation } = useQuery({
-    queryKey: ["staff", "education"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("staff")
-        .select("*")
-        .eq("staff_type", "education")
-        .order("name");
-      if (error) throw error;
-      // Filter out entries with null values in critical fields
-      return data?.filter(staff => staff.name && staff.position) || [];
-    },
-  });
-
   const { data: electedRepresentatives, isLoading: isLoadingRepresentatives } = useQuery({
     queryKey: ["elected-representatives"],
     queryFn: async () => {
@@ -115,8 +87,6 @@ export const StaffContactList = () => {
               Total Staff: {
                 (mandalOfficers?.length || 0) +
                 (sachivalayamStaff?.length || 0) +
-                (revenueStaff?.length || 0) +
-                (educationStaff?.length || 0) +
                 (electedRepresentatives?.length || 0)
               }
             </span>
@@ -138,8 +108,6 @@ export const StaffContactList = () => {
             counts={{
               mandal: mandalOfficers?.length || 0,
               sachivalayam: sachivalayamStaff?.length || 0,
-              revenue: revenueStaff?.length || 0,
-              education: educationStaff?.length || 0,
               representatives: electedRepresentatives?.length || 0
             }}
           />
@@ -159,24 +127,6 @@ export const StaffContactList = () => {
               description="Staff members working in various secretariats"
               staff={filterStaff(sachivalayamStaff)} 
               isLoading={isLoadingSachivalayam}
-            />
-          </TabsContent>
-
-          <TabsContent value="revenue" className="mt-0 space-y-6">
-            <StaffGrid 
-              title="Revenue Department"
-              description="Officials handling revenue and land administration"
-              staff={filterStaff(revenueStaff)} 
-              isLoading={isLoadingRevenue}
-            />
-          </TabsContent>
-
-          <TabsContent value="education" className="mt-0 space-y-6">
-            <StaffGrid 
-              title="Education Department"
-              description="Staff managing educational institutions and programs"
-              staff={filterStaff(educationStaff)} 
-              isLoading={isLoadingEducation}
             />
           </TabsContent>
 
