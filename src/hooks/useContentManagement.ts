@@ -13,17 +13,17 @@ export const useContentManagement = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('website_content')
+        .from('staff_content')
         .select('*');
       
       if (error) throw error;
       
       const contentMap: Record<string, any> = {};
       data?.forEach(item => {
-        if (!contentMap[item.page]) {
-          contentMap[item.page] = {};
+        if (!contentMap[item.section]) {
+          contentMap[item.section] = {};
         }
-        contentMap[item.page][item.section] = item.content;
+        contentMap[item.section] = item.content;
       });
       
       setContent(contentMap);
@@ -39,17 +39,35 @@ export const useContentManagement = () => {
     }
   };
 
-  const saveContent = async (page: string, section: string, newContent: string) => {
+  const saveContent = async (section: string, newContent: string) => {
     setSaving(true);
     try {
+      // First, save to history
+      const { data: existingContent } = await supabase
+        .from('staff_content')
+        .select('id, content')
+        .eq('section', section)
+        .single();
+
+      if (existingContent) {
+        await supabase
+          .from('staff_content_history')
+          .insert({
+            staff_content_id: existingContent.id,
+            content: existingContent.content,
+          });
+      }
+
+      // Then update or insert new content
       const { error } = await supabase
-        .from('website_content')
+        .from('staff_content')
         .upsert({
-          page,
           section,
           content: newContent,
+          is_published: true,
+          updated_at: new Date().toISOString(),
         }, {
-          onConflict: 'page,section'
+          onConflict: 'section'
         });
 
       if (error) throw error;
@@ -61,15 +79,12 @@ export const useContentManagement = () => {
 
       setContent(prev => ({
         ...prev,
-        [page]: {
-          ...prev[page],
-          [section]: newContent
-        }
+        [section]: newContent
       }));
 
       setUnsavedChanges(prev => ({
         ...prev,
-        [`${page}-${section}`]: false
+        [section]: false
       }));
 
     } catch (error) {
@@ -84,10 +99,10 @@ export const useContentManagement = () => {
     }
   };
 
-  const markContentChanged = (page: string, section: string) => {
+  const markContentChanged = (section: string) => {
     setUnsavedChanges(prev => ({
       ...prev,
-      [`${page}-${section}`]: true
+      [section]: true
     }));
   };
 

@@ -39,6 +39,65 @@ export type Database = {
         }
         Relationships: []
       }
+      staff_content: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          is_published: boolean | null
+          section: string
+          updated_at: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          id?: string
+          is_published?: boolean | null
+          section: string
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          is_published?: boolean | null
+          section?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      staff_content_history: {
+        Row: {
+          content: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          staff_content_id: string | null
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          staff_content_id?: string | null
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          staff_content_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_content_history_staff_content_id_fkey"
+            columns: ["staff_content_id"]
+            isOneToOne: false
+            referencedRelation: "staff_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       website_content: {
         Row: {
           content: Json

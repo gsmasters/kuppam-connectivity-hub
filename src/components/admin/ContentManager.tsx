@@ -16,7 +16,7 @@ export const ContentManager = () => {
     markContentChanged 
   } = useContentManagement();
 
-  const pages = [
+  const sections = [
     {
       id: "home",
       label: "Home Page",
@@ -52,9 +52,9 @@ export const ContentManager = () => {
     );
   }
 
-  const handleContentChange = (page: string, section: string, newContent: string) => {
+  const handleContentChange = (section: string, newContent: string) => {
     setPreviewContent(newContent);
-    markContentChanged(page, section);
+    markContentChanged(section);
   };
 
   return (
@@ -66,27 +66,27 @@ export const ContentManager = () => {
 
       <Tabs defaultValue="home">
         <TabsList className="grid w-full grid-cols-3">
-          {pages.map((page) => (
+          {sections.map((page) => (
             <TabsTrigger key={page.id} value={page.id}>
               {page.label}
             </TabsTrigger>
           ))}
         </TabsList>
 
-        {pages.map((page) => (
+        {sections.map((page) => (
           <TabsContent key={page.id} value={page.id} className="space-y-4">
             {page.sections.map((section) => (
               <ContentSection
                 key={section.id}
                 title={section.label}
                 description={`Edit ${section.label.toLowerCase()} content`}
-                content={content[page.id]?.[section.id] || ""}
+                content={content[section.id] || ""}
                 saving={saving}
-                hasUnsavedChanges={unsavedChanges[`${page.id}-${section.id}`]}
+                hasUnsavedChanges={unsavedChanges[section.id]}
                 onContentChange={(newContent) => 
-                  handleContentChange(page.id, section.id, newContent)
+                  handleContentChange(section.id, newContent)
                 }
-                onSave={() => saveContent(page.id, section.id, previewContent)}
+                onSave={() => saveContent(section.id, previewContent)}
               />
             ))}
           </TabsContent>
