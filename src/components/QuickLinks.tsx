@@ -18,22 +18,23 @@ interface QuickLink {
 export const QuickLinks = () => {
   const links: QuickLink[] = [
     {
-      title: "About Us",
-      description: "Learn about our roles and responsibilities",
+      title: "Grievance Portal",
+      description: "Submit and track your grievances",
       icon: Building,
-      href: "/about-us",
+      href: "https://meekosam.ap.gov.in/",
+      external: true
     },
     {
-      title: "Staff Directory",
-      description: "Find contact information for our staff",
+      title: "RTI Information",
+      description: "Access Right to Information details",
       icon: Users,
-      href: "/departments",
+      href: "#rti",
     },
     {
-      title: "Programs",
-      description: "View our ongoing and upcoming programs",
+      title: "Latest News",
+      description: "Stay updated with recent announcements",
       icon: Calendar,
-      href: "/",
+      href: "#news",
     }
   ];
 
