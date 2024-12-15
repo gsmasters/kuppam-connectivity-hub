@@ -31,11 +31,14 @@ const About = () => {
         .eq('is_published', true)
         .eq('page_sections.page', 'about')
         .eq('page_sections.section', 'main')
+        .order('version', { ascending: false })
+        .limit(1)
         .single();
 
       if (error) throw error;
       return (data as SectionContentResponse)?.content?.content || '';
-    }
+    },
+    staleTime: 1000, // Refetch after 1 second
   });
 
   return (
