@@ -1,6 +1,7 @@
 import { Users } from "lucide-react";
 import { ContactCard } from "./ContactCard";
 import { StaffMember } from "@/types/staff";
+import { DEPARTMENTS } from "@/utils/staff-helpers";
 
 interface StaffGridProps {
   staff: StaffMember[];
@@ -40,10 +41,12 @@ export const StaffGrid = ({
     );
   }
 
-  // Group staff by department if showDepartment is true
+  // Group staff by department if showDepartment is true, using the predefined DEPARTMENTS array
   const groupedStaff = showDepartment
     ? staff.reduce((acc: Record<string, StaffMember[]>, member) => {
-        const dept = 'department' in member ? member.department || 'Other' : 'Other';
+        const dept = 'department' in member ? 
+          DEPARTMENTS.find(d => d === member.department) || 'Other' : 
+          'Other';
         if (!acc[dept]) acc[dept] = [];
         acc[dept].push(member);
         return acc;
@@ -79,7 +82,7 @@ export const StaffGrid = ({
       {(showDepartment || isRepresentative) ? (
         Object.entries(groupedStaff).map(([group, members]) => (
           <div key={group} className="space-y-4">
-            <h4 className="text-lg font-medium capitalize">{group.replace('_', ' ')}</h4>
+            <h4 className="text-lg font-medium capitalize">{group}</h4>
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
               {members.map((member, index) => (
                 <ContactCard key={member.id} member={member} index={index + 1} />

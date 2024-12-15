@@ -1,5 +1,19 @@
 import { StaffMember, MandalStaff, SachivalayamStaff, ElectedRepresentative } from "@/types/staff";
 
+export const DEPARTMENTS = [
+  'Panchayat Raj & Rural Development',
+  'Panchayat Raj & Rural Development (Engineering)',
+  'Irrigation Department',
+  'Education Department',
+  'Social Welfare/ Tribal Welfare Department',
+  'Agriculture Department',
+  'Animal Husbandry, Fisheries Department',
+  'Revenue (Village Revenue Officer & Survey Assistant) Department',
+  'Home (Mahila Police/ Grama Mahila Samrakshana Karyadarshi) Department',
+  'Energy Department (Energy Assistant)',
+  'Medical, Health & Family Welfare (Auxiliary Nurse Midwife (ANM)) Department'
+];
+
 export function isMandalStaff(staff: StaffMember): staff is MandalStaff {
   return 'staff_type' in staff && 'position' in staff && !('representative_type' in staff);
 }
@@ -32,6 +46,13 @@ export const getSearchSuggestions = (allStaff: StaffMember[] | undefined, search
       }
     }
   };
+
+  // Add department suggestions if they match the query
+  DEPARTMENTS.forEach(dept => {
+    if (dept.toLowerCase().includes(query)) {
+      suggestions.add(dept);
+    }
+  });
 
   allStaff.forEach(member => {
     if (!member) return;
