@@ -32,9 +32,9 @@ const programs = [
 
 export const ProgramsCarousel = () => {
   return (
-    <div className="bg-gray-50 py-8">
+    <div className="bg-gray-50 py-6 sm:py-8">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold mb-6 text-gray-900">Recent Programs</h2>
+        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-900">Recent Programs</h2>
         <Carousel
           opts={{
             align: "start",
@@ -44,23 +44,23 @@ export const ProgramsCarousel = () => {
         >
           <CarouselContent>
             {programs.map((program, index) => (
-              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+              <CarouselItem key={index} className="basis-full sm:basis-1/2 lg:basis-1/3">
                 <Card className="overflow-hidden">
                   <img
                     src={program.image}
                     alt={program.title}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-40 sm:h-48 object-cover"
                   />
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg">{program.title}</h3>
+                  <div className="p-3 sm:p-4">
+                    <h3 className="font-semibold text-base sm:text-lg">{program.title}</h3>
                     <p className="text-sm text-gray-600">{program.date}</p>
                   </div>
                 </Card>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          <CarouselPrevious className="hidden sm:flex" />
+          <CarouselNext className="hidden sm:flex" />
         </Carousel>
       </div>
     </div>
