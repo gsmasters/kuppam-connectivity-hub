@@ -75,7 +75,7 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
 
         if (error) throw error;
         
-        queryClient.invalidateQueries({ queryKey: ['notifications'] });
+        await queryClient.invalidateQueries({ queryKey: ['notifications'] });
         toast.success("Notification updated successfully");
       } else {
         const { error } = await supabase
@@ -87,7 +87,7 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
 
         if (error) throw error;
         
-        queryClient.invalidateQueries({ queryKey: ['notifications'] });
+        await queryClient.invalidateQueries({ queryKey: ['notifications'] });
         toast.success("Notification created successfully");
       }
 

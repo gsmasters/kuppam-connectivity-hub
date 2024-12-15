@@ -27,6 +27,7 @@ export const NotificationsList = ({ onEdit }: NotificationsListProps) => {
       console.log('Fetched notifications:', data);
       return data;
     },
+    refetchInterval: 2000, // Refetch every 2 seconds
   });
 
   const columns = [
