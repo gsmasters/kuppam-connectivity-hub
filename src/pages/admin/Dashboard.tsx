@@ -26,31 +26,42 @@ type TableInfo = {
 const Dashboard = () => {
   const [selectedTable, setSelectedTable] = useState<TableNames | null>(null);
 
-  const { data: tables, isLoading } = useQuery({
+  const { data: tables, isLoading, error } = useQuery({
     queryKey: ['database-tables'],
     queryFn: async () => {
-      const { data: tablesData, error } = await supabase
-        .from('page_sections')
-        .select('*')
-        .limit(0);
-
-      if (error) throw error;
-
+      console.log("Fetching database tables...");
+      
       // Get the database schema from the types
-      const dbSchema = (supabase.from('page_sections') as any).parent.tables as Record<TableNames, {
-        Row: any;
-        Insert: any;
-        Update: any;
-        Relationships: any[];
-      }>;
+      const tables = Object.keys(supabase.from('page_sections').parent.tables) as TableNames[];
+      console.log("Available tables:", tables);
 
-      return Object.entries(dbSchema).map(([tableName, schema]) => ({
-        name: tableName as TableNames,
-        columns: Object.entries(schema.Row).map(([name, type]) => ({
-          name,
-          type: typeof type === 'object' ? 'object' : typeof type
-        }))
-      })) as TableInfo[];
+      const tablesInfo: TableInfo[] = [];
+
+      for (const tableName of tables) {
+        const { data, error } = await supabase
+          .from(tableName)
+          .select('*')
+          .limit(1);
+
+        if (error) {
+          console.error(`Error fetching schema for ${tableName}:`, error);
+          continue;
+        }
+
+        const columns = data && data[0] ? 
+          Object.entries(data[0]).map(([name, value]) => ({
+            name,
+            type: typeof value
+          })) : [];
+
+        tablesInfo.push({
+          name: tableName,
+          columns
+        });
+      }
+
+      console.log("Tables info:", tablesInfo);
+      return tablesInfo;
     }
   });
 
@@ -94,6 +105,29 @@ const Dashboard = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="container mx-auto py-6">
+        <div className="flex items-center gap-2 mb-6">
+          <DatabaseIcon className="h-6 w-6" />
+          <h1 className="text-2xl font-bold text-red-500">Error Loading Schema</h1>
+        </div>
+        <p className="text-red-500">{String(error)}</p>
+      </div>
+    );
+  }
+
+  if (!tables || tables.length === 0) {
+    return (
+      <div className="container mx-auto py-6">
+        <div className="flex items-center gap-2 mb-6">
+          <DatabaseIcon className="h-6 w-6" />
+          <h1 className="text-2xl font-bold">No Tables Found</h1>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-6">
       <div className="flex items-center gap-2 mb-6">
@@ -103,7 +137,7 @@ const Dashboard = () => {
 
       <ScrollArea className="h-[calc(100vh-12rem)] rounded-lg border">
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tables?.map((table) => (
+          {tables.map((table) => (
             <Card key={String(table.name)} className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
