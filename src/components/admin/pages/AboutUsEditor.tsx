@@ -30,19 +30,43 @@ export const AboutUsEditor = () => {
     queryFn: async () => {
       console.log('Fetching about page content...');
       
-      // First get the section ID
+      // First ensure the page section exists
       const { data: pageSections, error: sectionError } = await supabase
         .from('page_sections')
         .select('id')
         .eq('page', 'about-us')
         .eq('section', 'main');
 
-      if (sectionError) throw sectionError;
-      if (!pageSections || pageSections.length === 0) {
-        throw new Error('Section not found');
+      if (sectionError) {
+        console.error('Error fetching page section:', sectionError);
+        throw sectionError;
       }
 
-      const sectionId = pageSections[0].id;
+      let sectionId;
+      
+      if (!pageSections || pageSections.length === 0) {
+        // Create the page section if it doesn't exist
+        const { data: newSection, error: createError } = await supabase
+          .from('page_sections')
+          .insert({
+            page: 'about-us',
+            section: 'main',
+            title: 'About Us',
+            content_type: 'text',
+            section_type: 'content'
+          })
+          .select()
+          .single();
+
+        if (createError) {
+          console.error('Error creating page section:', createError);
+          throw createError;
+        }
+        
+        sectionId = newSection.id;
+      } else {
+        sectionId = pageSections[0].id;
+      }
 
       // Then get the content, handling the case where no content exists yet
       const { data: contentData, error: contentError } = await supabase
@@ -59,6 +83,7 @@ export const AboutUsEditor = () => {
       }
 
       console.log('Content fetched successfully:', contentData);
+      
       // Handle case where no content exists yet
       if (!contentData || contentData.length === 0) {
         return { sectionId, content: "" };
@@ -69,7 +94,8 @@ export const AboutUsEditor = () => {
         sectionId, 
         content: typedContent?.content?.content || "" 
       };
-    }
+    },
+    retry: 1
   });
 
   const handleContentChange = (newContent: string) => {
