@@ -12,7 +12,6 @@ export const useContentManagement = () => {
   const [content, setContent] = useState<Record<string, any>>({});
   const [unsavedChanges, setUnsavedChanges] = useState<Record<string, boolean>>({});
 
-  // Load initial content
   useEffect(() => {
     const loadContent = async () => {
       setLoading(true);
@@ -29,7 +28,7 @@ export const useContentManagement = () => {
         });
         
         setContent(contentMap);
-        console.log('Loaded content:', contentMap); // Debug log
+        console.log('Loaded content:', contentMap);
       } catch (error) {
         console.error('Error loading content:', error);
         toast({
@@ -44,7 +43,6 @@ export const useContentManagement = () => {
 
     loadContent();
 
-    // Subscribe to real-time changes
     const channel = supabase
       .channel('staff_content_changes')
       .on(
@@ -55,9 +53,9 @@ export const useContentManagement = () => {
           table: 'staff_content'
         },
         (payload) => {
-          console.log('Real-time update received:', payload); // Debug log
-          const newRow = payload.new as StaffContent;
-          if (newRow && newRow.section && newRow.content) {
+          console.log('Real-time update received:', payload);
+          if (payload.new && 'section' in payload.new && 'content' in payload.new) {
+            const newRow = payload.new as StaffContent;
             setContent(prev => ({
               ...prev,
               [newRow.section]: newRow.content
@@ -70,19 +68,20 @@ export const useContentManagement = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [toast]); // Added toast to dependencies
+  }, [toast]);
 
   const saveContent = async (section: string, newContent: string) => {
     setSaving(true);
     try {
-      // First, save to history
+      // First check if content exists for this section
       const { data: existingContent } = await supabase
         .from('staff_content')
         .select('id, content')
         .eq('section', section)
-        .single();
+        .maybeSingle();
 
       if (existingContent) {
+        // Save to history before updating
         await supabase
           .from('staff_content_history')
           .insert({
@@ -91,7 +90,7 @@ export const useContentManagement = () => {
           });
       }
 
-      // Then update or insert new content
+      // Update or insert new content
       const { error } = await supabase
         .from('staff_content')
         .upsert({
@@ -99,8 +98,6 @@ export const useContentManagement = () => {
           content: newContent,
           is_published: true,
           updated_at: new Date().toISOString(),
-        }, {
-          onConflict: 'section'
         });
 
       if (error) throw error;
