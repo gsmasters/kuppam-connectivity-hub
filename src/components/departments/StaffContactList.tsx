@@ -23,13 +23,28 @@ export const StaffContactList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   
   // Query for mandal office staff
-  const { data: mandalOfficeStaff, isLoading: isLoadingMandal } = useQuery({
+  const { data: mandalOfficeStaff, isLoading: isLoadingMandalOffice } = useQuery({
     queryKey: ["staff", "mandal_office"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("staff")
         .select("*")
         .eq("staff_type", "mandal_office")
+        .order("department", { ascending: true })
+        .order("position");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Query for mandal level officers
+  const { data: mandalOfficers, isLoading: isLoadingMandalOfficers } = useQuery({
+    queryKey: ["staff", "mandal_officer"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("staff")
+        .select("*")
+        .eq("staff_type", "mandal_officer")
         .order("department", { ascending: true })
         .order("position");
       if (error) throw error;
@@ -85,8 +100,9 @@ export const StaffContactList = () => {
     });
   };
 
-  // Calculate working staff count (assuming all staff are working unless specified otherwise)
+  // Calculate working staff count
   const mandalOfficeWorkingCount = mandalOfficeStaff?.filter(staff => staff.is_working !== false).length || 0;
+  const mandalOfficersWorkingCount = mandalOfficers?.filter(staff => staff.is_working !== false).length || 0;
 
   return (
     <Card className="shadow-lg border-none">
@@ -95,13 +111,13 @@ export const StaffContactList = () => {
           <div>
             <CardTitle className="text-3xl font-bold tracking-tight">Staff Directory</CardTitle>
             <CardDescription className="mt-2">
-              Browse and search through mandal office staff, sachivalayam staff, and elected representatives
+              Browse and search through mandal office staff, mandal level officers, sachivalayam staff, and elected representatives
             </CardDescription>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Users className="h-5 w-5" />
             <span className="font-medium">
-              Total Staff: {mandalOfficeStaff?.length || 0}
+              Total Staff: {(mandalOfficeStaff?.length || 0) + (mandalOfficers?.length || 0)}
             </span>
           </div>
         </div>
@@ -116,24 +132,37 @@ export const StaffContactList = () => {
         </div>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="mandal" className="space-y-6">
+        <Tabs defaultValue="mandal_office" className="space-y-6">
           <StaffTabs 
             counts={{
-              mandal: mandalOfficeStaff?.length || 0,
+              mandal_office: mandalOfficeStaff?.length || 0,
+              mandal_officers: mandalOfficers?.length || 0,
               sachivalayam: sachivalayamStaff?.length || 0,
               representatives: electedRepresentatives?.length || 0
             }}
           />
 
-          <TabsContent value="mandal" className="mt-0 space-y-6">
+          <TabsContent value="mandal_office" className="mt-0 space-y-6">
             <StaffGrid 
               title="Mandal Office Staff"
               description="Key officials and staff members working in the mandal office"
               staff={filterStaff(mandalOfficeStaff)} 
-              isLoading={isLoadingMandal}
+              isLoading={isLoadingMandalOffice}
               showDepartment
               totalCount={mandalOfficeStaff?.length || 0}
               workingCount={mandalOfficeWorkingCount}
+            />
+          </TabsContent>
+
+          <TabsContent value="mandal_officers" className="mt-0 space-y-6">
+            <StaffGrid 
+              title="Mandal Level Officers"
+              description="Officers working at the mandal level across different departments"
+              staff={filterStaff(mandalOfficers)} 
+              isLoading={isLoadingMandalOfficers}
+              showDepartment
+              totalCount={mandalOfficers?.length || 0}
+              workingCount={mandalOfficersWorkingCount}
             />
           </TabsContent>
 
