@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Header = () => {
+export const Header = () => {
   const navigation = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
@@ -33,5 +33,3 @@ const Header = () => {
     </header>
   );
 };
-
-export default Header;

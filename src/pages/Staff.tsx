@@ -4,7 +4,6 @@ import { LeadershipBanner } from "@/components/LeadershipBanner";
 import { StaffSection } from "@/components/staff/StaffSection";
 import { RepresentativesSection } from "@/components/staff/RepresentativesSection";
 
-const Staff = () => {
   const departments = [
     {
       title: "Mandal Office Administration",
@@ -206,6 +205,7 @@ const Staff = () => {
     ]
   };
 
+const Staff = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <LeadershipBanner />
