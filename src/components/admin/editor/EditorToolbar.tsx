@@ -1,27 +1,11 @@
 import { Toggle } from "@/components/ui/toggle";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Editor } from '@tiptap/react';
+import { Editor, Level } from '@tiptap/react';
 import {
-  Bold,
-  Italic,
-  Strikethrough,
-  List,
-  ListOrdered,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  AlignJustify,
-  Heading1,
-  Heading2,
-  Heading3,
-  Quote,
-  Table,
-  Link as LinkIcon,
-  Image as ImageIcon,
-  Code,
-  Undo,
-  Redo,
-  Palette
+  Bold, Italic, Strikethrough, List, ListOrdered,
+  AlignLeft, AlignCenter, AlignRight, AlignJustify,
+  Quote, Table, Link as LinkIcon, Image as ImageIcon,
+  Code, Undo, Redo, Palette
 } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
 
@@ -34,6 +18,19 @@ export const EditorToolbar = ({ editor, onImageUpload }: EditorToolbarProps) => 
   if (!editor) {
     return null;
   }
+
+  const handleHeadingChange = (value: string) => {
+    if (value === 'p') {
+      editor.chain().focus().setParagraph().run();
+    } else {
+      const level = parseInt(value.replace('h', '')) as Level;
+      editor.chain().focus().toggleHeading({ level }).run();
+    }
+  };
+
+  const insertTable = () => {
+    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
+  };
 
   return (
     <div className="border-b p-2 flex flex-wrap gap-2">
@@ -67,14 +64,7 @@ export const EditorToolbar = ({ editor, onImageUpload }: EditorToolbarProps) => 
 
       <Select
         value={editor.isActive('heading') ? `h${editor.getAttributes('heading').level}` : 'p'}
-        onValueChange={(value) => {
-          if (value === 'p') {
-            editor.chain().focus().setParagraph().run();
-          } else {
-            const level = parseInt(value.replace('h', ''));
-            editor.chain().focus().toggleHeading({ level }).run();
-          }
-        }}
+        onValueChange={handleHeadingChange}
       >
         <SelectTrigger className="w-[120px] h-8">
           <SelectValue />
@@ -157,13 +147,7 @@ export const EditorToolbar = ({ editor, onImageUpload }: EditorToolbarProps) => 
         <Toggle
           size="sm"
           pressed={editor.isActive('table')}
-          onPressedChange={() => 
-            editor
-              .chain()
-              .focus()
-              .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-              .run()
-          }
+          onPressedChange={insertTable}
         >
           <Table className="h-4 w-4" />
         </Toggle>
