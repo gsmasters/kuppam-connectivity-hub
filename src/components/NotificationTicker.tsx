@@ -1,23 +1,78 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-const notifications = [
-  "New pension scheme registration starts from 15th April 2024",
-  "Village development program meeting on 20th April 2024",
-  "Free medical camp at Panchayat office on 25th April 2024",
-  "Last date for property tax payment is 30th April 2024",
-];
+interface Notification {
+  id: string;
+  message: string;
+  active: boolean;
+  priority: 'low' | 'medium' | 'high';
+  position: 'top' | 'bottom';
+}
 
 export const NotificationTicker = () => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % notifications.length);
-    }, 5000);
+    loadNotifications();
 
-    return () => clearInterval(timer);
+    // Subscribe to changes
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'notifications' },
+        () => {
+          loadNotifications();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
+
+  const loadNotifications = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('active', true)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading notifications:', error);
+        return;
+      }
+
+      setNotifications(data || []);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      const timer = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % notifications.length);
+      }, 5000);
+
+      return () => clearInterval(timer);
+    }
+  }, [notifications.length]);
+
+  if (loading) {
+    return null; // Don't show anything while loading
+  }
+
+  if (notifications.length === 0) {
+    return null; // Don't show the ticker if there are no notifications
+  }
 
   return (
     <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white">
@@ -28,7 +83,7 @@ export const NotificationTicker = () => {
             <div className="animate-[slide_20s_linear_infinite]">
               <p className="flex items-center space-x-2">
                 <ArrowRight className="h-4 w-4" />
-                <span>{notifications[currentIndex]}</span>
+                <span>{notifications[currentIndex]?.message}</span>
               </p>
             </div>
           </div>
