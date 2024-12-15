@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { NotificationTicker } from "./NotificationTicker";
 
 export const Header = () => {
   const navigation = [
@@ -29,6 +30,9 @@ export const Header = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="w-full">
+        <NotificationTicker />
       </div>
     </header>
   );

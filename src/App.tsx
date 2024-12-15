@@ -5,7 +5,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ContactBar } from "@/components/ContactBar";
-import { NotificationTicker } from "@/components/NotificationTicker";
 import { LeadershipBanner } from "@/components/LeadershipBanner";
 import Index from "./pages/Index";
 import About from "./pages/About";
@@ -31,7 +30,6 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <div className="flex flex-col min-h-screen">
-            <NotificationTicker />
             <LeadershipBanner />
             <Routes>
               <Route path="/" element={<Index />} />
