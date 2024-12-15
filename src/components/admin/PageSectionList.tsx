@@ -11,12 +11,15 @@ interface PageSectionListProps {
 }
 
 export const PageSectionList = ({ pageId, label, sections, onSelectSection }: PageSectionListProps) => {
+  // Format the label to be more user-friendly
+  const displayLabel = label.charAt(0).toUpperCase() + label.slice(1).replace(/_/g, ' ');
+  
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FolderOpen className="h-5 w-5" />
-          {label}
+          {displayLabel}
         </CardTitle>
         <CardDescription>
           {sections.length} section{sections.length !== 1 ? 's' : ''}
