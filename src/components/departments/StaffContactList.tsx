@@ -15,16 +15,18 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { StaffMember, MandalStaff, SachivalayamStaff, ElectedRepresentative } from "@/types/staff";
 
-interface StaffMember {
-  id: string;
-  name: string;
-  position?: string;
-  designation?: string;
-  mobile?: string;
-  department?: string;
-  secretariat_name?: string;
-  is_working?: boolean;
+function isMandalStaff(staff: StaffMember): staff is MandalStaff {
+  return 'staff_type' in staff;
+}
+
+function isSachivalayamStaff(staff: StaffMember): staff is SachivalayamStaff {
+  return 'secretariat_name' in staff;
+}
+
+function isElectedRepresentative(staff: StaffMember): staff is ElectedRepresentative {
+  return 'representative_type' in staff;
 }
 
 export const StaffContactList = () => {
@@ -102,16 +104,30 @@ export const StaffContactList = () => {
 
     const query = searchQuery.toLowerCase().trim();
     return staff.filter(member => {
-      const searchFields = [
-        member.name,
-        member.position,
-        member.designation,
-        member.department,
-        member.secretariat_name,
-        member.mobile
-      ];
+      const baseFields = [member.name, member.mobile];
       
-      return searchFields.some(field => 
+      if (isMandalStaff(member)) {
+        baseFields.push(member.position, member.department || '');
+      }
+      
+      if (isSachivalayamStaff(member)) {
+        baseFields.push(
+          member.designation,
+          member.secretariat_name,
+          member.secretariat_code || ''
+        );
+      }
+      
+      if (isElectedRepresentative(member)) {
+        baseFields.push(
+          member.position,
+          member.representative_type,
+          member.gram_panchayat || '',
+          member.panchayat_name || ''
+        );
+      }
+      
+      return baseFields.some(field => 
         field?.toLowerCase().includes(query)
       );
     });
@@ -122,11 +138,24 @@ export const StaffContactList = () => {
     const suggestions = new Set<string>();
     allStaff.forEach(member => {
       if (member.name) suggestions.add(member.name);
-      if (member.department) suggestions.add(member.department);
-      if (member.position) suggestions.add(member.position);
-      if (member.designation) suggestions.add(member.designation);
-      if (member.secretariat_name) suggestions.add(member.secretariat_name);
+      if (member.mobile) suggestions.add(member.mobile);
+      
+      if (isMandalStaff(member)) {
+        if (member.department) suggestions.add(member.department);
+        if (member.position) suggestions.add(member.position);
+      }
+      
+      if (isSachivalayamStaff(member)) {
+        if (member.designation) suggestions.add(member.designation);
+        if (member.secretariat_name) suggestions.add(member.secretariat_name);
+      }
+      
+      if (isElectedRepresentative(member)) {
+        if (member.position) suggestions.add(member.position);
+        if (member.representative_type) suggestions.add(member.representative_type);
+      }
     });
+    
     return Array.from(suggestions)
       .filter(suggestion => 
         suggestion.toLowerCase().includes(searchQuery.toLowerCase())

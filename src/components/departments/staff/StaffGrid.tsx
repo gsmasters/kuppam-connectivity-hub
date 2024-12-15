@@ -1,16 +1,6 @@
 import { Users } from "lucide-react";
 import { ContactCard } from "./ContactCard";
-
-interface StaffMember {
-  id: string;
-  name: string;
-  position?: string;
-  designation?: string;
-  mobile?: string;
-  department?: string;
-  secretariat_name?: string;
-  representative_type?: string;
-}
+import { StaffMember } from "@/types/staff";
 
 interface StaffGridProps {
   staff: StaffMember[];
