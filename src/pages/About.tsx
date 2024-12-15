@@ -7,6 +7,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
+interface ContentData {
+  content: {
+    content: string;
+  };
+}
+
 const defaultContent = `MPDO: Mandal Parishad Development Officer
 A Mandal Parishad Development Officer (MPDO), also known as a block development officer (BDO), is responsible for a number of tasks, including:
 
@@ -32,7 +38,6 @@ const About = () => {
     queryFn: async () => {
       console.log('Fetching about page content...');
       
-      // First, get the page section ID for the about page's main content
       const { data: pageSections, error: sectionError } = await supabase
         .from('page_sections')
         .select('id')
@@ -45,7 +50,6 @@ const About = () => {
       }
 
       if (!pageSections || pageSections.length === 0) {
-        // If no section exists, create one
         const { data: newSection, error: createError } = await supabase
           .from('page_sections')
           .insert({
@@ -59,7 +63,6 @@ const About = () => {
 
         if (createError) throw createError;
         
-        // Create initial content
         const { error: contentError } = await supabase
           .from('section_content')
           .insert({
@@ -77,7 +80,6 @@ const About = () => {
 
       const sectionId = pageSections[0].id;
 
-      // Then get the latest published content for this section
       const { data: contentData, error: contentError } = await supabase
         .from('section_content')
         .select('*')
@@ -89,7 +91,6 @@ const About = () => {
 
       if (contentError) {
         if (contentError.code === 'PGRST116') {
-          // If no published content exists, create initial content
           const { error: insertError } = await supabase
             .from('section_content')
             .insert({
@@ -108,14 +109,13 @@ const About = () => {
       }
 
       console.log('Content fetched successfully:', contentData);
-      return contentData.content.content || defaultContent;
+      return (contentData as ContentData).content.content || defaultContent;
     },
     staleTime: 1000 * 60, // Cache for 1 minute
     retry: 1,
   });
 
   useEffect(() => {
-    // Set up real-time subscription for content updates
     const channel = supabase
       .channel('about-content-changes')
       .on(
