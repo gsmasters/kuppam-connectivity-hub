@@ -13,19 +13,19 @@ export const QuickLinks = () => {
       title: "About MPDO",
       description: "Learn about our roles and responsibilities",
       icon: Building,
-      href: "#about",
+      href: "/about-us",
     },
     {
       title: "Staff Directory",
       description: "Find contact information for our staff",
       icon: Users,
-      href: "#staff",
+      href: "/departments",
     },
     {
       title: "Programs & Schemes",
       description: "View our ongoing and upcoming programs",
       icon: Calendar,
-      href: "#programs",
+      href: "/",
     },
     {
       title: "Documents",
