@@ -17,3 +17,9 @@ export interface SectionContent {
   section_id: string;
   content: any;
 }
+
+export interface Page {
+  id: string;
+  name: string;
+  slug: string;
+}
