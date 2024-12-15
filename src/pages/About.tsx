@@ -7,11 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-interface SectionContent {
-  content: string;
-  version: number;
-}
-
 const defaultContent = `MPDO: Mandal Parishad Development Officer
 A Mandal Parishad Development Officer (MPDO), also known as a block development officer (BDO), is responsible for a number of tasks, including:
 
@@ -69,7 +64,7 @@ const About = () => {
           .from('section_content')
           .insert({
             section_id: newSection.id,
-            content: defaultContent,
+            content: { content: defaultContent },
             version: 1,
             is_published: true,
             is_draft: false
@@ -99,7 +94,7 @@ const About = () => {
             .from('section_content')
             .insert({
               section_id: sectionId,
-              content: defaultContent,
+              content: { content: defaultContent },
               version: 1,
               is_published: true,
               is_draft: false
@@ -113,7 +108,7 @@ const About = () => {
       }
 
       console.log('Content fetched successfully:', contentData);
-      return contentData.content;
+      return contentData.content.content || defaultContent;
     },
     staleTime: 1000 * 60, // Cache for 1 minute
     retry: 1,
