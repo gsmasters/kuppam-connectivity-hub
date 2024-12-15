@@ -1,81 +1,26 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
-interface Notification {
-  id: string;
-  message: string;
-  active: boolean;
-  created_at: string;
-  updated_at: string;
-  start_date: string;
-  end_date: string | null;
-}
+const notifications = [
+  "New pension scheme registration starts from 15th April 2024",
+  "Village development program meeting on 20th April 2024",
+  "Free medical camp at Panchayat office on 25th April 2024",
+  "Last date for property tax payment is 30th April 2024",
+];
 
 export const NotificationTicker = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadNotifications();
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % notifications.length);
+    }, 5000);
 
-    // Subscribe to changes
-    const channel = supabase
-      .channel('schema-db-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'notifications' },
-        () => {
-          loadNotifications();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => clearInterval(timer);
   }, []);
 
-  const loadNotifications = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('active', true)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error loading notifications:', error);
-        return;
-      }
-
-      setNotifications(data || []);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error:', error);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (notifications.length > 0) {
-      const timer = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % notifications.length);
-      }, 5000);
-
-      return () => clearInterval(timer);
-    }
-  }, [notifications.length]);
-
-  if (loading || notifications.length === 0) {
-    return null;
-  }
-
-  const currentNotification = notifications[currentIndex];
-
   return (
-    <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white w-full">
+    <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white">
       <div className="container mx-auto px-4">
         <div className="flex items-center space-x-2">
           <span className="font-semibold whitespace-nowrap">Latest Updates:</span>
@@ -83,7 +28,7 @@ export const NotificationTicker = () => {
             <div className="animate-[slide_20s_linear_infinite]">
               <p className="flex items-center space-x-2">
                 <ArrowRight className="h-4 w-4" />
-                <span>{currentNotification?.message}</span>
+                <span>{notifications[currentIndex]}</span>
               </p>
             </div>
           </div>
