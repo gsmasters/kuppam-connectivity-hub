@@ -54,10 +54,35 @@ export const EditorView = ({
       case 'programs':
       case 'staff':
         return (
-          <RichTextEditor
-            content={existingContent || ""}
-            onChange={(content) => onContentChange(sectionId, content)}
-          />
+          <div className="space-y-4">
+            <RichTextEditor
+              content={existingContent || ""}
+              onChange={(content) => onContentChange(sectionId, content)}
+            />
+            <div className="flex flex-wrap gap-2 p-2 border-t">
+              <div className="text-sm text-muted-foreground">
+                Quick Formatting:
+              </div>
+              <button
+                onClick={() => onContentChange(sectionId, existingContent + "<h2>New Heading</h2>")}
+                className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
+              >
+                Add Heading
+              </button>
+              <button
+                onClick={() => onContentChange(sectionId, existingContent + "<ul><li>New List Item</li></ul>")}
+                className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
+              >
+                Add List
+              </button>
+              <button
+                onClick={() => onContentChange(sectionId, existingContent + "<hr />")}
+                className="px-2 py-1 text-sm bg-secondary rounded hover:bg-secondary/80"
+              >
+                Add Divider
+              </button>
+            </div>
+          </div>
         );
 
       default:
@@ -108,7 +133,7 @@ export const EditorView = ({
               </TabsList>
               
               <TabsContent value="desktop">
-                <ScrollArea className="h-[600px] w-full rounded-md border">
+                <ScrollArea className="h-[calc(100vh-400px)] w-full rounded-md border">
                   <div className="p-4">
                     <div 
                       className="prose max-w-none"
@@ -119,7 +144,7 @@ export const EditorView = ({
               </TabsContent>
               
               <TabsContent value="mobile">
-                <ScrollArea className="h-[600px] mx-auto" style={{ maxWidth: "375px" }}>
+                <ScrollArea className="h-[calc(100vh-400px)] mx-auto" style={{ maxWidth: "375px" }}>
                   <div className="p-4 border rounded-md">
                     <div 
                       className="prose max-w-none"
