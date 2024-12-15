@@ -1,29 +1,23 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
-import TextStyle from '@tiptap/extension-text-style';
-import Color from '@tiptap/extension-color';
-import Highlight from '@tiptap/extension-highlight';
+import { Button } from "@/components/ui/button";
+import { Toggle } from "@/components/ui/toggle";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useState } from 'react';
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { 
-  Bold, 
-  Italic, 
-  Heading1, 
-  Heading2, 
-  List, 
+import {
+  Bold,
+  Italic,
+  Strikethrough,
+  List,
   ListOrdered,
-  Image as ImageIcon,
   AlignLeft,
   AlignCenter,
   AlignRight,
-  Link as LinkIcon
+  Link as LinkIcon,
 } from 'lucide-react';
+import { useState } from 'react';
 
 interface RichTextEditorProps {
   content: string;
@@ -31,30 +25,23 @@ interface RichTextEditorProps {
 }
 
 export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
-  const [imageUrl, setImageUrl] = useState('');
+  const [url, setUrl] = useState<string>('');
+  const [showLinkDialog, setShowLinkDialog] = useState(false);
 
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Image.configure({
-        HTMLAttributes: {
-          class: 'max-w-full rounded-lg',
-        },
-      }),
-      TextStyle,
-      Color,
-      Highlight,
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-blue-500 underline',
+          class: 'text-primary underline',
         },
       }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
     ],
-    content: content,
+    content,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
@@ -64,147 +51,110 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     return null;
   }
 
-  const handleImageUpload = async (file: File) => {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('content-images')
-        .upload(filePath, file);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('content-images')
-        .getPublicUrl(filePath);
-
-      setImageUrl(publicUrl);
-      editor.chain().focus().setImage({ src: publicUrl }).run();
-      toast.success('Image uploaded successfully!');
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      toast.error('Failed to upload image');
+  const setLink = () => {
+    if (url === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      return;
     }
-  };
 
-  const addLink = () => {
-    const url = window.prompt('Enter URL');
-    if (url) {
-      editor.chain().focus().setLink({ href: url }).run();
-    }
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    setUrl('');
+    setShowLinkDialog(false);
   };
 
   return (
-    <div className="space-y-4 border rounded-lg p-4">
-      <div className="flex flex-wrap gap-2 p-2 border-b bg-gray-50">
-        <div className="flex gap-1 items-center border-r pr-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            data-active={editor.isActive('bold')}
-          >
-            <Bold className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            data-active={editor.isActive('italic')}
-          >
-            <Italic className="h-4 w-4" />
-          </Button>
-        </div>
+    <div className="border rounded-lg">
+      <div className="border-b p-2 flex flex-wrap gap-2">
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('bold')}
+          onPressedChange={() => editor.chain().focus().toggleBold().run()}
+        >
+          <Bold className="h-4 w-4" />
+        </Toggle>
         
-        <div className="flex gap-1 items-center border-r pr-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-            data-active={editor.isActive('heading', { level: 1 })}
-          >
-            <Heading1 className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            data-active={editor.isActive('heading', { level: 2 })}
-          >
-            <Heading2 className="h-4 w-4" />
-          </Button>
-        </div>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('italic')}
+          onPressedChange={() => editor.chain().focus().toggleItalic().run()}
+        >
+          <Italic className="h-4 w-4" />
+        </Toggle>
+        
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('strike')}
+          onPressedChange={() => editor.chain().focus().toggleStrike().run()}
+        >
+          <Strikethrough className="h-4 w-4" />
+        </Toggle>
 
-        <div className="flex gap-1 items-center border-r pr-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            data-active={editor.isActive('bulletList')}
-          >
-            <List className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            data-active={editor.isActive('orderedList')}
-          >
-            <ListOrdered className="h-4 w-4" />
-          </Button>
-        </div>
+        <Dialog open={showLinkDialog} onOpenChange={setShowLinkDialog}>
+          <DialogTrigger asChild>
+            <Toggle
+              size="sm"
+              pressed={editor.isActive('link')}
+            >
+              <LinkIcon className="h-4 w-4" />
+            </Toggle>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Link</DialogTitle>
+            </DialogHeader>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Enter URL"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+              <Button onClick={setLink}>Add</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
-        <div className="flex gap-1 items-center border-r pr-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().setTextAlign('left').run()}
-            data-active={editor.isActive({ textAlign: 'left' })}
-          >
-            <AlignLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().setTextAlign('center').run()}
-            data-active={editor.isActive({ textAlign: 'center' })}
-          >
-            <AlignCenter className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().setTextAlign('right').run()}
-            data-active={editor.isActive({ textAlign: 'right' })}
-          >
-            <AlignRight className="h-4 w-4" />
-          </Button>
-        </div>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('bulletList')}
+          onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
+        >
+          <List className="h-4 w-4" />
+        </Toggle>
+        
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('orderedList')}
+          onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
+        >
+          <ListOrdered className="h-4 w-4" />
+        </Toggle>
 
-        <div className="flex gap-1 items-center">
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) handleImageUpload(file);
-            }}
-            className="max-w-[200px]"
-          />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={addLink}
-          >
-            <LinkIcon className="h-4 w-4" />
-          </Button>
-        </div>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive({ textAlign: 'left' })}
+          onPressedChange={() => editor.chain().focus().setTextAlign('left').run()}
+        >
+          <AlignLeft className="h-4 w-4" />
+        </Toggle>
+
+        <Toggle
+          size="sm"
+          pressed={editor.isActive({ textAlign: 'center' })}
+          onPressedChange={() => editor.chain().focus().setTextAlign('center').run()}
+        >
+          <AlignCenter className="h-4 w-4" />
+        </Toggle>
+
+        <Toggle
+          size="sm"
+          pressed={editor.isActive({ textAlign: 'right' })}
+          onPressedChange={() => editor.chain().focus().setTextAlign('right').run()}
+        >
+          <AlignRight className="h-4 w-4" />
+        </Toggle>
       </div>
-      <EditorContent editor={editor} className="min-h-[300px] prose max-w-none" />
+
+      <EditorContent editor={editor} className="prose max-w-none p-4" />
     </div>
   );
 };
