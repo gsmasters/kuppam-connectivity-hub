@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 /**
  * NotificationTicker Component
@@ -48,7 +48,7 @@ export const NotificationTicker = () => {
   return (
     <div className="w-full bg-primary/95 border-t border-b border-primary/20">
       <div className="container mx-auto">
-        <ScrollArea className="w-full" orientation="horizontal">
+        <ScrollArea className="w-full">
           <div className="flex items-center gap-4 py-2 px-4 min-w-full">
             <span className="font-semibold text-white whitespace-nowrap flex-shrink-0">
               Latest Updates:
@@ -65,6 +65,7 @@ export const NotificationTicker = () => {
               ))}
             </div>
           </div>
+          <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
     </div>
