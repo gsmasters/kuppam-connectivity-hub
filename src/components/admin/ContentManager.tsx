@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-import { Loader2, FolderOpen, ArrowLeft, Eye } from "lucide-react";
-import { PreviewDialog } from "./PreviewDialog";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { EditorView } from "./EditorView";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { PageSectionList } from "./PageSectionList";
+import { SectionEditor } from "./SectionEditor";
 
 interface Section {
   id: string;
@@ -61,7 +59,7 @@ export const ContentManager = () => {
         // Load content for all sections
         const { data: contentData, error: contentError } = await supabase
           .from('section_content')
-          .select('section_id, content')
+          .select('*')
           .eq('is_published', true)
           .order('version', { ascending: false });
 
@@ -101,7 +99,7 @@ export const ContentManager = () => {
         },
         (payload) => {
           console.log('Real-time update received:', payload);
-          if (payload.new) {
+          if (payload.new && 'section_id' in payload.new) {
             setContent(prev => ({
               ...prev,
               [payload.new.section_id]: payload.new.content
@@ -171,40 +169,15 @@ export const ContentManager = () => {
 
   if (selectedSection) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSelectedSection(null)}
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h2 className="text-2xl font-bold">{selectedSection.title}</h2>
-              <p className="text-sm text-muted-foreground">{selectedSection.description}</p>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {content[selectedSection.id] && (
-              <PreviewDialog content={content[selectedSection.id]} />
-            )}
-          </div>
-        </div>
-
-        <EditorView
-          sectionId={selectedSection.id}
-          contentType={selectedSection.content_type}
-          layoutWidth={selectedSection.layout_width}
-          layoutHeight={selectedSection.layout_height}
-          existingContent={content[selectedSection.id] || ""}
-          onContentChange={handleContentChange}
-          onSave={() => handleSave(selectedSection.id)}
-          saving={saving}
-          hasUnsavedChanges={unsavedChanges[selectedSection.id]}
-        />
-      </div>
+      <SectionEditor
+        section={selectedSection}
+        content={content[selectedSection.id]}
+        onBack={() => setSelectedSection(null)}
+        onContentChange={handleContentChange}
+        onSave={handleSave}
+        saving={saving}
+        hasUnsavedChanges={unsavedChanges[selectedSection.id]}
+      />
     );
   }
 
@@ -215,29 +188,13 @@ export const ContentManager = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sections.map((page) => (
-          <Card key={page.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FolderOpen className="h-5 w-5" />
-                {page.label}
-              </CardTitle>
-              <CardDescription>
-                {page.sections.length} section{page.sections.length !== 1 ? 's' : ''}
-              </CardDescription>
-              <div className="mt-4 space-y-2">
-                {page.sections.map((section) => (
-                  <Button
-                    key={section.id}
-                    variant="outline"
-                    className="w-full justify-start text-left"
-                    onClick={() => setSelectedSection(section)}
-                  >
-                    {section.title}
-                  </Button>
-                ))}
-              </div>
-            </CardHeader>
-          </Card>
+          <PageSectionList
+            key={page.id}
+            pageId={page.id}
+            label={page.label}
+            sections={page.sections}
+            onSelectSection={setSelectedSection}
+          />
         ))}
       </div>
     </div>
