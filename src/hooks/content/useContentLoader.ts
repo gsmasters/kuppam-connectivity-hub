@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { PageSection } from "@/types/content";
+import { PageSection, Section } from "@/types/content";
 
 export const useContentLoader = () => {
   const [loading, setLoading] = useState(true);
@@ -23,15 +23,31 @@ export const useContentLoader = () => {
       console.log("Sections loaded:", sectionsData?.length);
 
       const groupedSections = sectionsData?.reduce((acc: PageSection[], section) => {
+        // Filter out content types that aren't in our Section interface
+        const validContentTypes: Section['content_type'][] = ['text', 'image', 'table', 'hero', 'stats', 'programs', 'staff'];
+        if (!validContentTypes.includes(section.content_type as Section['content_type'])) {
+          return acc;
+        }
+
         const pageIndex = acc.findIndex(p => p.id === section.page);
+        const sectionWithValidType: Section = {
+          id: section.id,
+          title: section.title,
+          description: section.description,
+          content_type: section.content_type as Section['content_type'],
+          section_type: section.section_type,
+          layout_width: section.layout_width,
+          layout_height: section.layout_height
+        };
+
         if (pageIndex === -1) {
           acc.push({
             id: section.page,
             label: section.page.charAt(0).toUpperCase() + section.page.slice(1),
-            sections: [section]
+            sections: [sectionWithValidType]
           });
         } else {
-          acc[pageIndex].sections.push(section);
+          acc[pageIndex].sections.push(sectionWithValidType);
         }
         return acc;
       }, []);
