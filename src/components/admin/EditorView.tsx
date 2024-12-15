@@ -6,7 +6,7 @@ import { EditorActions } from "./editor/EditorActions";
 
 interface EditorViewProps {
   sectionId: string;
-  contentType: 'text' | 'image' | 'table' | 'hero' | 'stats' | 'programs' | 'staff' | 'features' | 'testimonials' | 'gallery' | 'pricing' | 'faq';
+  contentType: 'text' | 'image' | 'table' | 'hero' | 'stats' | 'programs' | 'staff';
   layoutWidth: number | null;
   layoutHeight: number | null;
   existingContent: any;
@@ -49,11 +49,6 @@ export const EditorView = ({
       case 'stats':
       case 'programs':
       case 'staff':
-      case 'features':
-      case 'testimonials':
-      case 'gallery':
-      case 'pricing':
-      case 'faq':
         return (
           <RichTextEditor
             content={existingContent || ""}
