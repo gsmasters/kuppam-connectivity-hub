@@ -4,7 +4,7 @@ export interface Section {
   id: string;
   title: string;
   description: string | null;
-  content_type: 'text' | 'image' | 'table' | 'hero' | 'stats' | 'programs' | 'staff';
+  content_type: 'text' | 'image' | 'table' | 'hero' | 'stats' | 'programs' | 'staff' | 'features' | 'testimonials' | 'gallery' | 'pricing' | 'faq';
   section_type: SectionType;
   layout_width: number | null;
   layout_height: number | null;
