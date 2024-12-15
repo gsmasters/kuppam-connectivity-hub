@@ -16,13 +16,6 @@ export const NotificationTicker = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [showContacts, setShowContacts] = useState(false);
-
-  const contacts = [
-    { text: "94910 71391" },
-    { text: "kuppam.brgf@gmail.com" },
-    { text: "MPDO Office, Kuppam Mandal" }
-  ];
 
   useEffect(() => {
     loadNotifications();
@@ -58,7 +51,6 @@ export const NotificationTicker = () => {
       }
 
       setNotifications(data || []);
-      setShowContacts(data?.length === 0);
       setLoading(false);
     } catch (error) {
       console.error('Error:', error);
@@ -67,38 +59,31 @@ export const NotificationTicker = () => {
   };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (notifications.length > 0) {
+    if (notifications.length > 0) {
+      const timer = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % notifications.length);
-      } else {
-        setCurrentIndex((prev) => (prev + 1) % contacts.length);
-      }
-    }, 5000);
+      }, 5000);
 
-    return () => clearInterval(timer);
+      return () => clearInterval(timer);
+    }
   }, [notifications.length]);
 
-  if (loading) {
+  if (loading || notifications.length === 0) {
     return null;
   }
 
   const currentNotification = notifications[currentIndex];
-  const currentContact = contacts[currentIndex % contacts.length];
 
   return (
     <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white w-full">
       <div className="container mx-auto px-4">
         <div className="flex items-center space-x-2">
-          <span className="font-semibold whitespace-nowrap">
-            {showContacts ? "Contact Us:" : "Latest Updates:"}
-          </span>
+          <span className="font-semibold whitespace-nowrap">Latest Updates:</span>
           <div className="overflow-hidden flex-1">
             <div className="animate-[slide_20s_linear_infinite]">
               <p className="flex items-center space-x-2">
                 <ArrowRight className="h-4 w-4" />
-                <span>
-                  {showContacts ? currentContact.text : currentNotification?.message}
-                </span>
+                <span>{currentNotification?.message}</span>
               </p>
             </div>
           </div>
