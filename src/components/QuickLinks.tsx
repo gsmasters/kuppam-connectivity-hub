@@ -10,7 +10,7 @@ import { Building, Users, Info, FileText, Calendar, BookOpen, HelpCircle, Extern
 export const QuickLinks = () => {
   const links = [
     {
-      title: "About MPDO",
+      title: "About Us",
       description: "Learn about our roles and responsibilities",
       icon: Building,
       href: "/about-us",
@@ -22,53 +22,18 @@ export const QuickLinks = () => {
       href: "/departments",
     },
     {
-      title: "Programs & Schemes",
+      title: "Programs",
       description: "View our ongoing and upcoming programs",
       icon: Calendar,
       href: "/",
-    },
-    {
-      title: "AP Panchayat Raj",
-      description: "Access AP Panchayat Raj Portal",
-      icon: ExternalLink,
-      href: "https://appanchayats.ap.gov.in/APPRPortal/",
-      external: true,
-    },
-    {
-      title: "Digital Panchayat",
-      description: "Visit Digital Panchayat Portal",
-      icon: ExternalLink,
-      href: "https://digitalpanchayat.ap.gov.in/",
-      external: true,
-    },
-    {
-      title: "AP Government",
-      description: "Official AP Government Portal",
-      icon: ExternalLink,
-      href: "https://www.ap.gov.in/",
-      external: true,
-    },
-    {
-      title: "NREGA AP",
-      description: "MGNREGA Portal of AP",
-      icon: ExternalLink,
-      href: "https://nrega.ap.gov.in/",
-      external: true,
-    },
-    {
-      title: "Rural Development",
-      description: "AP Rural Development Department",
-      icon: ExternalLink,
-      href: "https://rd.ap.gov.in/",
-      external: true,
-    },
+    }
   ];
 
   return (
     <section className="py-16 bg-gradient-to-r from-amber-500/10 to-amber-600/20">
       <div className="container mx-auto px-4">
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-[#DD4814]">Quick Access</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {links.map((link) => (
             <a
               key={link.title}
