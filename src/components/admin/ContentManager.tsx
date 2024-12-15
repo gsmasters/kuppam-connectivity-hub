@@ -20,6 +20,11 @@ interface PageSection {
   sections: Section[];
 }
 
+interface SectionContent {
+  section_id: string;
+  content: any;
+}
+
 export const ContentManager = () => {
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
   const [loading, setLoading] = useState(true);
@@ -99,10 +104,11 @@ export const ContentManager = () => {
         },
         (payload) => {
           console.log('Real-time update received:', payload);
-          if (payload.new && 'section_id' in payload.new) {
+          const newData = payload.new as SectionContent;
+          if (newData && newData.section_id) {
             setContent(prev => ({
               ...prev,
-              [payload.new.section_id]: payload.new.content
+              [newData.section_id]: newData.content
             }));
           }
         }
