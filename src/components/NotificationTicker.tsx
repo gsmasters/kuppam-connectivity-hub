@@ -7,7 +7,7 @@ interface Notification {
   message: string;
   active: boolean;
   priority: 'low' | 'medium' | 'high';
-  position: string; // Changed from 'top' | 'bottom' to string to match database
+  position: string;
   created_at: string;
   updated_at: string;
   start_date: string;
@@ -71,15 +71,22 @@ export const NotificationTicker = () => {
   }, [notifications.length]);
 
   if (loading) {
-    return null; // Don't show anything while loading
+    return null;
   }
 
   if (notifications.length === 0) {
-    return null; // Don't show the ticker if there are no notifications
+    return null;
   }
 
+  const currentNotification = notifications[currentIndex];
+  const isTopPosition = currentNotification?.position !== 'bottom';
+
   return (
-    <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white">
+    <div 
+      className={`bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white fixed w-full z-50 ${
+        isTopPosition ? 'top-0' : 'bottom-0'
+      }`}
+    >
       <div className="container mx-auto px-4">
         <div className="flex items-center space-x-2">
           <span className="font-semibold whitespace-nowrap">Latest Updates:</span>
@@ -87,7 +94,7 @@ export const NotificationTicker = () => {
             <div className="animate-[slide_20s_linear_infinite]">
               <p className="flex items-center space-x-2">
                 <ArrowRight className="h-4 w-4" />
-                <span>{notifications[currentIndex]?.message}</span>
+                <span>{currentNotification?.message}</span>
               </p>
             </div>
           </div>
