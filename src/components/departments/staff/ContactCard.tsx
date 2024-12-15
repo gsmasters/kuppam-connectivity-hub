@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Phone, MapPin } from "lucide-react";
+import { Phone, MapPin, Building2 } from "lucide-react";
 
 interface StaffMember {
   id: string;
@@ -9,6 +9,7 @@ interface StaffMember {
   mobile?: string;
   department?: string;
   secretariat_name?: string;
+  representative_type?: string;
 }
 
 interface ContactCardProps {
@@ -34,9 +35,15 @@ export const ContactCard = ({ member }: ContactCardProps) => (
           </Badge>
         )}
         
+        {member.representative_type && (
+          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+            {member.representative_type.replace('_', ' ')}
+          </Badge>
+        )}
+        
         {member.secretariat_name && (
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-            <MapPin className="h-4 w-4" />
+            <Building2 className="h-4 w-4" />
             {member.secretariat_name}
           </div>
         )}

@@ -1,7 +1,17 @@
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, MapPin, Building, Briefcase, User, Factory } from "lucide-react";
+import { Building2, MapPin, Building, Briefcase, UserCheck } from "lucide-react";
 
-export const StaffTabs = () => (
+interface StaffTabsProps {
+  counts: {
+    mandal: number;
+    sachivalayam: number;
+    revenue: number;
+    education: number;
+    representatives: number;
+  };
+}
+
+export const StaffTabs = ({ counts }: StaffTabsProps) => (
   <TabsList className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-muted/50 p-1">
     <TabsTrigger 
       value="mandal" 
@@ -10,6 +20,9 @@ export const StaffTabs = () => (
       <Building2 className="h-4 w-4" />
       <span className="hidden sm:inline">Mandal Officers</span>
       <span className="sm:hidden">Mandal</span>
+      <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
+        {counts.mandal}
+      </span>
     </TabsTrigger>
     
     <TabsTrigger 
@@ -19,6 +32,9 @@ export const StaffTabs = () => (
       <MapPin className="h-4 w-4" />
       <span className="hidden sm:inline">Sachivalayam</span>
       <span className="sm:hidden">Sach.</span>
+      <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
+        {counts.sachivalayam}
+      </span>
     </TabsTrigger>
     
     <TabsTrigger 
@@ -27,6 +43,9 @@ export const StaffTabs = () => (
     >
       <Building className="h-4 w-4" />
       <span>Revenue</span>
+      <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
+        {counts.revenue}
+      </span>
     </TabsTrigger>
     
     <TabsTrigger 
@@ -35,22 +54,20 @@ export const StaffTabs = () => (
     >
       <Briefcase className="h-4 w-4" />
       <span>Education</span>
+      <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
+        {counts.education}
+      </span>
     </TabsTrigger>
     
     <TabsTrigger 
-      value="health" 
+      value="representatives" 
       className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
     >
-      <User className="h-4 w-4" />
-      <span>Health</span>
-    </TabsTrigger>
-    
-    <TabsTrigger 
-      value="agriculture" 
-      className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm rounded-lg transition-all"
-    >
-      <Factory className="h-4 w-4" />
-      <span>Agriculture</span>
+      <UserCheck className="h-4 w-4" />
+      <span>Representatives</span>
+      <span className="ml-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium">
+        {counts.representatives}
+      </span>
     </TabsTrigger>
   </TabsList>
 );
