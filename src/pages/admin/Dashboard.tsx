@@ -14,13 +14,34 @@ import {
   Bell,
   Calendar,
   Image,
-  Layout
+  Layout,
+  Home,
+  Info,
+  Building2
 } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
 
   const sections = [
+    { 
+      title: "Home", 
+      path: "/",
+      icon: Home,
+      description: "Manage home page content and layout"
+    },
+    { 
+      title: "About", 
+      path: "/about",
+      icon: Info,
+      description: "Edit about page information"
+    },
+    { 
+      title: "Departments", 
+      path: "/departments",
+      icon: Building2,
+      description: "Manage department information"
+    },
     { 
       title: "Events", 
       path: "/admin/events",
@@ -67,7 +88,7 @@ const Dashboard = () => {
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="content" className="gap-2">
             <FileText className="h-4 w-4" />
-            Content Management
+            Page Content
           </TabsTrigger>
           <TabsTrigger value="pages" className="gap-2">
             <Layout className="h-4 w-4" />
@@ -75,7 +96,7 @@ const Dashboard = () => {
           </TabsTrigger>
           <TabsTrigger value="staff" className="gap-2">
             <Users className="h-4 w-4" />
-            Staff Management
+            Staff Directory
           </TabsTrigger>
           <TabsTrigger value="quick-access" className="gap-2">
             <Settings className="h-4 w-4" />
