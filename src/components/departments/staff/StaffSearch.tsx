@@ -50,7 +50,7 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
           value={searchQuery}
           onValueChange={(value) => {
             onSearchChange(value);
-            setOpen(value.trim().length >= 1);
+            setOpen(true);
           }}
           className="h-9"
         />
@@ -62,9 +62,9 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
               <CommandEmpty>No results found.</CommandEmpty>
             ) : (
               <CommandGroup heading="Suggestions">
-                {validSuggestions.map((suggestion) => (
+                {validSuggestions.map((suggestion, index) => (
                   <CommandItem
-                    key={suggestion}
+                    key={`${suggestion}-${index}`}
                     value={suggestion}
                     onSelect={(value) => {
                       onSearchChange(value);
