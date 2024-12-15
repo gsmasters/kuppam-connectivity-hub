@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Database, Table, Column, Link as LinkIcon } from "lucide-react";
+import { Database, Table, ListTree, Link as LinkIcon } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -80,7 +80,7 @@ const Dashboard = () => {
                     <Tooltip>
                       <TooltipTrigger>
                         <div className="flex items-center gap-2 text-sm">
-                          <Column className="h-4 w-4" />
+                          <ListTree className="h-4 w-4" />
                           <span>{column.name}</span>
                           <span className="text-xs text-muted-foreground">
                             ({column.type})
