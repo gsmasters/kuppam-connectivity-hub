@@ -118,12 +118,14 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     return css || '/* No CSS styles found */';
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
       toast.success('Copied to clipboard!');
-    }).catch(() => {
+    } catch (err) {
+      console.error('Failed to copy:', err);
       toast.error('Failed to copy to clipboard');
-    });
+    }
   };
 
   if (!editor) {
@@ -181,7 +183,7 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
               }
             }}
             readOnly={codeType === 'css'}
-            className="w-full h-[400px] font-mono text-sm p-4 font-mono"
+            className="w-full h-[400px] font-mono text-sm p-4"
             placeholder={codeType === 'css' ? '/* CSS styles will appear here */' : '<!-- HTML content -->'}
           />
         </div>
