@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ContactBar } from "@/components/ContactBar";
 import Index from "./pages/Index";
 import About from "./pages/About";
-import Departments from "./pages/Departments";
+import StaffDirectory from "./pages/StaffDirectory";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 
 const App = () => {
@@ -29,7 +29,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about-us" element={<About />} />
-            <Route path="/departments" element={<Departments />} />
+            <Route path="/staff-directory" element={<StaffDirectory />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
           <ContactBar />

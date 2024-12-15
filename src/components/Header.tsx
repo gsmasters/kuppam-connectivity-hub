@@ -5,7 +5,7 @@ import { NotificationTicker } from "./NotificationTicker";
 export const Header = () => {
   const navigation = [
     { name: "About Us", href: "/about-us" },
-    { name: "Departments", href: "/departments" },
+    { name: "Staff Directory", href: "/staff-directory" },
     { name: "Programs", href: "/" }
   ];
 
