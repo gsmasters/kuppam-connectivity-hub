@@ -1,6 +1,6 @@
 import { RichTextEditor } from "../../RichTextEditor";
 import { Toggle } from "@/components/ui/toggle";
-import { Code } from "lucide-react";
+import { Code, Text } from "lucide-react";
 import { useState } from "react";
 import { QuickFormatButtons } from "./QuickFormatButtons";
 
@@ -19,7 +19,17 @@ export const TextEditor = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end mb-2">
+      <div className="flex justify-end gap-2 mb-2">
+        <Toggle
+          aria-label="Toggle text view"
+          pressed={!isCodeView}
+          onPressedChange={(pressed) => setIsCodeView(!pressed)}
+          className="gap-2"
+        >
+          <Text className="h-4 w-4" />
+          Text View
+        </Toggle>
+        
         <Toggle
           aria-label="Toggle code view"
           pressed={isCodeView}
