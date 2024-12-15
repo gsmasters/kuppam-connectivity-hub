@@ -61,7 +61,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-6 p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold">MPDO Dashboard</h1>
         <Button variant="outline" onClick={() => navigate("/admin/settings")}>
           <Settings className="h-4 w-4 mr-2" />
           Settings
