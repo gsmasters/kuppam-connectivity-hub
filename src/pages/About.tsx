@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { DepartmentsList } from "@/components/about/DepartmentsList";
 
 interface SectionContent {
   id: string;
@@ -108,10 +109,13 @@ const About = () => {
             No content available yet.
           </div>
         ) : (
-          <div 
-            className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: aboutContent }}
-          />
+          <>
+            <div 
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: aboutContent }}
+            />
+            <DepartmentsList />
+          </>
         )}
       </main>
       <Footer />

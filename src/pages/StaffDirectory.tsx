@@ -2,7 +2,6 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { LeadershipBanner } from "@/components/LeadershipBanner";
 import { StaffContactList } from "@/components/departments/StaffContactList";
-import { DepartmentsList } from "@/components/departments/DepartmentsList";
 
 const StaffDirectory = () => {
   return (
@@ -10,8 +9,7 @@ const StaffDirectory = () => {
       <LeadershipBanner />
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto space-y-12">
-          <DepartmentsList />
+        <div className="max-w-6xl mx-auto">
           <StaffContactList />
         </div>
       </main>
