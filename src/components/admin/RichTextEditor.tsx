@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { EditorToolbar } from './editor/EditorToolbar';
 import { EditorContentWrapper } from './editor/EditorContent';
+import { useState } from 'react';
 
 interface RichTextEditorProps {
   content: string;
@@ -22,6 +23,7 @@ interface RichTextEditorProps {
 }
 
 export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
+  const [isCodeView, setIsCodeView] = useState(false);
   const lowlight = createLowlight(common)
 
   const editor = useEditor({
@@ -93,8 +95,24 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
 
   return (
     <div className="border rounded-lg">
-      <EditorToolbar editor={editor} onImageUpload={handleImageUpload} />
-      <EditorContentWrapper editor={editor} />
+      <EditorToolbar 
+        editor={editor} 
+        onImageUpload={handleImageUpload} 
+        isCodeView={isCodeView}
+        onViewChange={setIsCodeView}
+      />
+      {isCodeView ? (
+        <textarea
+          value={editor.getHTML()}
+          onChange={(e) => {
+            editor.commands.setContent(e.target.value);
+            onChange(e.target.value);
+          }}
+          className="w-full h-[400px] font-mono text-sm p-4 border-t"
+        />
+      ) : (
+        <EditorContentWrapper editor={editor} />
+      )}
     </div>
   );
 };
