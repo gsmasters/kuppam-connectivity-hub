@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Phone, Mail, Building } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Notification {
@@ -14,19 +14,10 @@ interface Notification {
   end_date: string | null;
 }
 
-const contactInfo = [
-  { icon: <Phone className="h-4 w-4" />, text: "94910 71391" },
-  { icon: <Mail className="h-4 w-4" />, text: "kuppam.brgf@gmail.com" },
-  { icon: <Building className="h-4 w-4" />, text: "MPDO Office, Kuppam Mandal" }
-];
-
-const missionStatement = "Empowering villages through governance, ensuring progress with purpose, and building a foundation for sustainable rural development.";
-
 export const NotificationTicker = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [currentContactIndex, setCurrentContactIndex] = useState(0);
 
   useEffect(() => {
     loadNotifications();
@@ -76,19 +67,18 @@ export const NotificationTicker = () => {
       }, 5000);
 
       return () => clearInterval(timer);
-    } else {
-      // When no notifications, rotate through contact info
-      const timer = setInterval(() => {
-        setCurrentContactIndex((prev) => (prev + 1) % contactInfo.length);
-      }, 3000);
-
-      return () => clearInterval(timer);
     }
   }, [notifications.length]);
 
   if (loading) {
     return null;
   }
+
+  if (notifications.length === 0) {
+    return null;
+  }
+
+  const currentNotification = notifications[currentIndex];
 
   const getPriorityGradient = (priority: 'low' | 'medium' | 'high') => {
     switch (priority) {
@@ -103,74 +93,23 @@ export const NotificationTicker = () => {
     }
   };
 
-  // Mission statement ticker at the top
-  const MissionTicker = () => (
-    <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white w-full">
+  return (
+    <div 
+      className={`bg-gradient-to-r ${getPriorityGradient(currentNotification?.priority || 'medium')} py-2 text-white w-full`}
+    >
       <div className="container mx-auto px-4">
         <div className="flex items-center space-x-2">
+          <span className="font-semibold whitespace-nowrap">Latest Updates:</span>
           <div className="overflow-hidden flex-1">
             <div className="animate-[slide_20s_linear_infinite]">
               <p className="flex items-center space-x-2">
                 <ArrowRight className="h-4 w-4" />
-                <span>{missionStatement}</span>
+                <span>{currentNotification?.message}</span>
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
-
-  // Notification or contact info ticker
-  const MainTicker = () => {
-    if (notifications.length > 0) {
-      const currentNotification = notifications[currentIndex];
-      return (
-        <div 
-          className={`bg-gradient-to-r ${getPriorityGradient(currentNotification?.priority || 'medium')} py-2 text-white w-full`}
-        >
-          <div className="container mx-auto px-4">
-            <div className="flex items-center space-x-2">
-              <span className="font-semibold whitespace-nowrap">Latest Updates:</span>
-              <div className="overflow-hidden flex-1">
-                <div className="animate-[slide_20s_linear_infinite]">
-                  <p className="flex items-center space-x-2">
-                    <ArrowRight className="h-4 w-4" />
-                    <span>{currentNotification?.message}</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Show rotating contact info when no notifications
-    const currentContact = contactInfo[currentContactIndex];
-    return (
-      <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white w-full">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center space-x-2">
-            <span className="font-semibold whitespace-nowrap">Contact Us:</span>
-            <div className="overflow-hidden flex-1">
-              <div className="animate-[slide_20s_linear_infinite]">
-                <p className="flex items-center space-x-2">
-                  {currentContact.icon}
-                  <span>{currentContact.text}</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <>
-      <MissionTicker />
-      <MainTicker />
-    </>
   );
 };
