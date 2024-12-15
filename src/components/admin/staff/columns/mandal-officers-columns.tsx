@@ -1,14 +1,18 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Phone } from "lucide-react";
 
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "name",
     header: "Officer Name",
-  },
-  {
-    accessorKey: "position",
-    header: "Designation",
+    cell: ({ row }) => (
+      <div>
+        <div className="font-medium">{row.original.name}</div>
+        <div className="text-sm text-muted-foreground">{row.original.position}</div>
+      </div>
+    ),
   },
   {
     accessorKey: "department",
@@ -23,15 +27,22 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "mobile",
-    header: "Mobile Number",
+    header: "Contact",
     cell: ({ row }) => {
-      return (
-        <a 
-          href={`tel:${row.original.mobile}`}
-          className="text-blue-600 hover:underline"
+      return row.original.mobile ? (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-2 text-blue-600 hover:text-blue-800"
+          asChild
         >
-          {row.original.mobile}
-        </a>
+          <a href={`tel:${row.original.mobile}`}>
+            <Phone className="h-4 w-4" />
+            {row.original.mobile}
+          </a>
+        </Button>
+      ) : (
+        <span className="text-muted-foreground">No contact</span>
       );
     },
   },
