@@ -48,15 +48,20 @@ export const NotificationTicker = () => {
           <span className="font-semibold whitespace-nowrap">Latest Updates:</span>
           <div className="overflow-hidden flex-1">
             <div 
-              className={`notification-scroll transition-all duration-500 ease-in-out transform ${
+              className={`transition-all duration-500 ease-in-out transform ${
                 isTransitioning 
                   ? "opacity-0 -translate-y-4" 
                   : "opacity-100 translate-y-0"
-              } ${notifications.length > 1 ? 'animate-scroll' : ''}`}
+              }`}
+              style={{
+                animation: notifications.length > 1 
+                  ? "scroll 20s linear infinite" 
+                  : "none"
+              }}
             >
               <p className="flex items-center space-x-2">
                 <ArrowRight className="h-4 w-4" />
-                <span className="line-clamp-1 animate-marquee">
+                <span className="line-clamp-1">
                   {notifications[currentIndex]?.message}
                 </span>
               </p>
@@ -69,6 +74,24 @@ export const NotificationTicker = () => {
           )}
         </div>
       </div>
+      <style jsx>{`
+        @keyframes scroll {
+          0% {
+            transform: translateX(100%);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
+        }
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
+        }
+      `}</style>
     </div>
   );
 };
