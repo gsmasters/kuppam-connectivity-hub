@@ -3,6 +3,8 @@ import { useContentManagement } from "@/hooks/useContentManagement";
 import { PageSectionList } from "./PageSectionList";
 import { SectionEditor } from "./SectionEditor";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ContentManager = () => {
   const {
@@ -14,8 +16,36 @@ export const ContentManager = () => {
     content,
     unsavedChanges,
     handleContentChange,
-    handleSave
+    handleSave,
+    refreshContent
   } = useContentManagement();
+
+  // Set up real-time subscription for content updates
+  useEffect(() => {
+    console.log("Setting up realtime subscription for content updates");
+    const channel = supabase
+      .channel('content_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'section_content'
+        },
+        (payload) => {
+          console.log('Content update received:', payload);
+          refreshContent();
+        }
+      )
+      .subscribe((status) => {
+        console.log('Realtime subscription status:', status);
+      });
+
+    return () => {
+      console.log('Cleaning up realtime subscription');
+      supabase.removeChannel(channel);
+    };
+  }, [refreshContent]);
 
   if (loading) {
     return (
