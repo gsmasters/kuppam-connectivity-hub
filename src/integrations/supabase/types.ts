@@ -51,6 +51,8 @@ export type Database = {
           created_at: string
           end_date: string | null
           id: string
+          is_draft: boolean | null
+          is_published: boolean | null
           message: string
           position: string | null
           priority: Database["public"]["Enums"]["notification_priority"] | null
@@ -62,6 +64,8 @@ export type Database = {
           created_at?: string
           end_date?: string | null
           id?: string
+          is_draft?: boolean | null
+          is_published?: boolean | null
           message: string
           position?: string | null
           priority?: Database["public"]["Enums"]["notification_priority"] | null
@@ -73,6 +77,8 @@ export type Database = {
           created_at?: string
           end_date?: string | null
           id?: string
+          is_draft?: boolean | null
+          is_published?: boolean | null
           message?: string
           position?: string | null
           priority?: Database["public"]["Enums"]["notification_priority"] | null
