@@ -1,7 +1,6 @@
 import { Toggle } from "@/components/ui/toggle";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Editor } from '@tiptap/react';
 import {
   Bold,
   Italic,
@@ -11,12 +10,20 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
+  AlignJustify,
+  Heading1,
+  Heading2,
+  Heading3,
+  Quote,
+  Table,
   Link as LinkIcon,
   Image as ImageIcon,
-  Palette,
+  Code,
+  Undo,
+  Redo,
+  Palette
 } from 'lucide-react';
-import { Editor } from '@tiptap/react';
-import { useState } from 'react';
+import { Separator } from "@/components/ui/separator";
 
 interface EditorToolbarProps {
   editor: Editor;
@@ -24,156 +31,183 @@ interface EditorToolbarProps {
 }
 
 export const EditorToolbar = ({ editor, onImageUpload }: EditorToolbarProps) => {
-  const [url, setUrl] = useState<string>('');
-  const [showLinkDialog, setShowLinkDialog] = useState(false);
-  const [showColorPicker, setShowColorPicker] = useState(false);
-
-  const setLink = () => {
-    if (url === '') {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
-      return;
-    }
-    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-    setUrl('');
-    setShowLinkDialog(false);
-  };
+  if (!editor) {
+    return null;
+  }
 
   return (
     <div className="border-b p-2 flex flex-wrap gap-2">
-      <Toggle
-        size="sm"
-        pressed={editor.isActive('bold')}
-        onPressedChange={() => editor.chain().focus().toggleBold().run()}
-      >
-        <Bold className="h-4 w-4" />
-      </Toggle>
-      
-      <Toggle
-        size="sm"
-        pressed={editor.isActive('italic')}
-        onPressedChange={() => editor.chain().focus().toggleItalic().run()}
-      >
-        <Italic className="h-4 w-4" />
-      </Toggle>
-      
-      <Toggle
-        size="sm"
-        pressed={editor.isActive('strike')}
-        onPressedChange={() => editor.chain().focus().toggleStrike().run()}
-      >
-        <Strikethrough className="h-4 w-4" />
-      </Toggle>
+      <div className="flex items-center gap-1">
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('bold')}
+          onPressedChange={() => editor.chain().focus().toggleBold().run()}
+        >
+          <Bold className="h-4 w-4" />
+        </Toggle>
+        
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('italic')}
+          onPressedChange={() => editor.chain().focus().toggleItalic().run()}
+        >
+          <Italic className="h-4 w-4" />
+        </Toggle>
+        
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('strike')}
+          onPressedChange={() => editor.chain().focus().toggleStrike().run()}
+        >
+          <Strikethrough className="h-4 w-4" />
+        </Toggle>
+      </div>
 
-      <Dialog open={showLinkDialog} onOpenChange={setShowLinkDialog}>
-        <DialogTrigger asChild>
-          <Toggle size="sm" pressed={editor.isActive('link')}>
-            <LinkIcon className="h-4 w-4" />
-          </Toggle>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add Link</DialogTitle>
-          </DialogHeader>
-          <div className="flex gap-2">
-            <Input
-              placeholder="Enter URL"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-            />
-            <Button onClick={setLink}>Add</Button>
+      <Separator orientation="vertical" className="h-8" />
+
+      <Select
+        value={editor.isActive('heading') ? `h${editor.getAttributes('heading').level}` : 'p'}
+        onValueChange={(value) => {
+          if (value === 'p') {
+            editor.chain().focus().setParagraph().run();
+          } else {
+            const level = parseInt(value.replace('h', ''));
+            editor.chain().focus().toggleHeading({ level }).run();
+          }
+        }}
+      >
+        <SelectTrigger className="w-[120px] h-8">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="p">Paragraph</SelectItem>
+          <SelectItem value="h1">Heading 1</SelectItem>
+          <SelectItem value="h2">Heading 2</SelectItem>
+          <SelectItem value="h3">Heading 3</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Separator orientation="vertical" className="h-8" />
+
+      <div className="flex items-center gap-1">
+        <Toggle
+          size="sm"
+          pressed={editor.isActive({ textAlign: 'left' })}
+          onPressedChange={() => editor.chain().focus().setTextAlign('left').run()}
+        >
+          <AlignLeft className="h-4 w-4" />
+        </Toggle>
+        
+        <Toggle
+          size="sm"
+          pressed={editor.isActive({ textAlign: 'center' })}
+          onPressedChange={() => editor.chain().focus().setTextAlign('center').run()}
+        >
+          <AlignCenter className="h-4 w-4" />
+        </Toggle>
+        
+        <Toggle
+          size="sm"
+          pressed={editor.isActive({ textAlign: 'right' })}
+          onPressedChange={() => editor.chain().focus().setTextAlign('right').run()}
+        >
+          <AlignRight className="h-4 w-4" />
+        </Toggle>
+
+        <Toggle
+          size="sm"
+          pressed={editor.isActive({ textAlign: 'justify' })}
+          onPressedChange={() => editor.chain().focus().setTextAlign('justify').run()}
+        >
+          <AlignJustify className="h-4 w-4" />
+        </Toggle>
+      </div>
+
+      <Separator orientation="vertical" className="h-8" />
+
+      <div className="flex items-center gap-1">
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('bulletList')}
+          onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
+        >
+          <List className="h-4 w-4" />
+        </Toggle>
+        
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('orderedList')}
+          onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
+        >
+          <ListOrdered className="h-4 w-4" />
+        </Toggle>
+
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('blockquote')}
+          onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}
+        >
+          <Quote className="h-4 w-4" />
+        </Toggle>
+      </div>
+
+      <Separator orientation="vertical" className="h-8" />
+
+      <div className="flex items-center gap-1">
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('table')}
+          onPressedChange={() => 
+            editor
+              .chain()
+              .focus()
+              .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+              .run()
+          }
+        >
+          <Table className="h-4 w-4" />
+        </Toggle>
+
+        <Toggle
+          size="sm"
+          pressed={editor.isActive('code')}
+          onPressedChange={() => editor.chain().focus().toggleCode().run()}
+        >
+          <Code className="h-4 w-4" />
+        </Toggle>
+
+        <label className="cursor-pointer">
+          <input
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={onImageUpload}
+          />
+          <div className="p-2 hover:bg-accent rounded-sm">
+            <ImageIcon className="h-4 w-4" />
           </div>
-        </DialogContent>
-      </Dialog>
+        </label>
+      </div>
 
-      <Toggle
-        size="sm"
-        pressed={editor.isActive('bulletList')}
-        onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
-      >
-        <List className="h-4 w-4" />
-      </Toggle>
-      
-      <Toggle
-        size="sm"
-        pressed={editor.isActive('orderedList')}
-        onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
-      >
-        <ListOrdered className="h-4 w-4" />
-      </Toggle>
+      <Separator orientation="vertical" className="h-8" />
 
-      <Toggle
-        size="sm"
-        pressed={editor.isActive({ textAlign: 'left' })}
-        onPressedChange={() => editor.chain().focus().setTextAlign('left').run()}
-      >
-        <AlignLeft className="h-4 w-4" />
-      </Toggle>
-
-      <Toggle
-        size="sm"
-        pressed={editor.isActive({ textAlign: 'center' })}
-        onPressedChange={() => editor.chain().focus().setTextAlign('center').run()}
-      >
-        <AlignCenter className="h-4 w-4" />
-      </Toggle>
-
-      <Toggle
-        size="sm"
-        pressed={editor.isActive({ textAlign: 'right' })}
-        onPressedChange={() => editor.chain().focus().setTextAlign('right').run()}
-      >
-        <AlignRight className="h-4 w-4" />
-      </Toggle>
-
-      <label className="cursor-pointer">
-        <input
-          type="file"
-          className="hidden"
-          accept="image/*"
-          onChange={onImageUpload}
-        />
-        <div className="p-2 hover:bg-accent rounded-sm">
-          <ImageIcon className="h-4 w-4" />
-        </div>
-      </label>
-
-      <ColorPicker editor={editor} showColorPicker={showColorPicker} setShowColorPicker={setShowColorPicker} />
+      <div className="flex items-center gap-1">
+        <Toggle
+          size="sm"
+          onPressedChange={() => editor.chain().focus().undo().run()}
+          disabled={!editor.can().undo()}
+        >
+          <Undo className="h-4 w-4" />
+        </Toggle>
+        
+        <Toggle
+          size="sm"
+          onPressedChange={() => editor.chain().focus().redo().run()}
+          disabled={!editor.can().redo()}
+        >
+          <Redo className="h-4 w-4" />
+        </Toggle>
+      </div>
     </div>
   );
 };
-
-const ColorPicker = ({ 
-  editor, 
-  showColorPicker, 
-  setShowColorPicker 
-}: { 
-  editor: Editor; 
-  showColorPicker: boolean; 
-  setShowColorPicker: (show: boolean) => void;
-}) => (
-  <Dialog open={showColorPicker} onOpenChange={setShowColorPicker}>
-    <DialogTrigger asChild>
-      <Toggle size="sm">
-        <Palette className="h-4 w-4" />
-      </Toggle>
-    </DialogTrigger>
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Text Color</DialogTitle>
-      </DialogHeader>
-      <div className="grid grid-cols-6 gap-2">
-        {['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF'].map((color) => (
-          <button
-            key={color}
-            className="w-8 h-8 rounded-full"
-            style={{ backgroundColor: color }}
-            onClick={() => {
-              editor.chain().focus().setColor(color).run();
-              setShowColorPicker(false);
-            }}
-          />
-        ))}
-      </div>
-    </DialogContent>
-  </Dialog>
-);
