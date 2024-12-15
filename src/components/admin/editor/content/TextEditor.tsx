@@ -24,7 +24,11 @@ export const TextEditor = ({
           aria-label="Toggle text view"
           pressed={!isCodeView}
           onPressedChange={(pressed) => setIsCodeView(!pressed)}
-          className="gap-2"
+          className={`gap-2 transition-colors ${
+            !isCodeView 
+              ? "bg-green-500 text-white hover:bg-green-600" 
+              : "hover:bg-green-100"
+          }`}
         >
           <Text className="h-4 w-4" />
           Text View
@@ -34,7 +38,11 @@ export const TextEditor = ({
           aria-label="Toggle code view"
           pressed={isCodeView}
           onPressedChange={setIsCodeView}
-          className="gap-2"
+          className={`gap-2 transition-colors ${
+            isCodeView 
+              ? "bg-red-500 text-white hover:bg-red-600" 
+              : "hover:bg-red-100"
+          }`}
         >
           <Code className="h-4 w-4" />
           Code View
