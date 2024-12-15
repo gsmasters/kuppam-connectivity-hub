@@ -6,17 +6,17 @@ const Dashboard = () => {
   const dashboardCards = [
     {
       title: "Pages",
-      description: "Manage website pages and their content",
+      description: "Create and manage website pages",
       icon: Layout,
     },
     {
       title: "Content",
-      description: "Manage content blocks and sections",
+      description: "Edit and publish content sections",
       icon: FileText,
     },
     {
       title: "Staff",
-      description: "Manage staff directory and details",
+      description: "Manage staff directory",
       icon: Users,
     },
   ];

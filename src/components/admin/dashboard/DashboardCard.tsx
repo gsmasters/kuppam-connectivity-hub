@@ -9,9 +9,9 @@ interface DashboardCardProps {
 
 export const DashboardCard = ({ title, description, icon: Icon }: DashboardCardProps) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+    <Card className="transition-all hover:shadow-md">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-lg">
           <Icon className="h-5 w-5 text-primary" />
           {title}
         </CardTitle>
