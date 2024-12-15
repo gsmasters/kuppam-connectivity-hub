@@ -9,6 +9,19 @@ import { Input } from "@/components/ui/input";
 import { useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { 
+  Bold, 
+  Italic, 
+  Heading1, 
+  Heading2, 
+  List, 
+  ListOrdered,
+  Image as ImageIcon,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Link
+} from 'lucide-react';
 
 interface RichTextEditorProps {
   content: string;
@@ -17,19 +30,13 @@ interface RichTextEditorProps {
 
 export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   const [imageUrl, setImageUrl] = useState('');
-  const [imageWidth, setImageWidth] = useState('300');
-  const [imageHeight, setImageHeight] = useState('200');
 
   const editor = useEditor({
     extensions: [
       StarterKit,
       Image.configure({
-        inline: true,
-        allowBase64: true,
         HTMLAttributes: {
-          class: 'resize-none',
-          width: imageWidth,
-          height: imageHeight,
+          class: 'max-w-full rounded-lg',
         },
       }),
       TextStyle,
@@ -65,6 +72,7 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
         .getPublicUrl(filePath);
 
       setImageUrl(publicUrl);
+      editor.chain().focus().setImage({ src: publicUrl }).run();
       toast.success('Image uploaded successfully!');
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -72,42 +80,101 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     }
   };
 
-  const addImage = () => {
-    if (imageUrl) {
-      editor.chain().focus().setImage({ 
-        src: imageUrl,
-      }).run();
+  const addLink = () => {
+    const url = window.prompt('Enter URL');
+    if (url) {
+      editor.chain().focus().setLink({ href: url }).run();
     }
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-2 p-2 border rounded-lg bg-gray-50">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          data-active={editor.isActive('bold')}
-        >
-          Bold
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          data-active={editor.isActive('italic')}
-        >
-          Italic
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleHighlight().run()}
-          data-active={editor.isActive('highlight')}
-        >
-          Highlight
-        </Button>
-        <div className="flex gap-2 items-center">
+    <div className="space-y-4 border rounded-lg p-4">
+      <div className="flex flex-wrap gap-2 p-2 border-b bg-gray-50">
+        <div className="flex gap-1 items-center border-r pr-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            data-active={editor.isActive('bold')}
+          >
+            <Bold className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            data-active={editor.isActive('italic')}
+          >
+            <Italic className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <div className="flex gap-1 items-center border-r pr-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+            data-active={editor.isActive('heading', { level: 1 })}
+          >
+            <Heading1 className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+            data-active={editor.isActive('heading', { level: 2 })}
+          >
+            <Heading2 className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="flex gap-1 items-center border-r pr-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            data-active={editor.isActive('bulletList')}
+          >
+            <List className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            data-active={editor.isActive('orderedList')}
+          >
+            <ListOrdered className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="flex gap-1 items-center border-r pr-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().setTextAlign('left').run()}
+            data-active={editor.isActive({ textAlign: 'left' })}
+          >
+            <AlignLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().setTextAlign('center').run()}
+            data-active={editor.isActive({ textAlign: 'center' })}
+          >
+            <AlignCenter className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().setTextAlign('right').run()}
+            data-active={editor.isActive({ textAlign: 'right' })}
+          >
+            <AlignRight className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="flex gap-1 items-center">
           <Input
             type="file"
             accept="image/*"
@@ -117,31 +184,16 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
             }}
             className="max-w-[200px]"
           />
-          <Input
-            type="text"
-            placeholder="Width (px)"
-            value={imageWidth}
-            onChange={(e) => setImageWidth(e.target.value)}
-            className="w-24"
-          />
-          <Input
-            type="text"
-            placeholder="Height (px)"
-            value={imageHeight}
-            onChange={(e) => setImageHeight(e.target.value)}
-            className="w-24"
-          />
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
-            onClick={addImage}
-            disabled={!imageUrl}
+            onClick={addLink}
           >
-            Add Image
+            <Link className="h-4 w-4" />
           </Button>
         </div>
       </div>
-      <EditorContent editor={editor} className="min-h-[200px] border rounded-lg p-4" />
+      <EditorContent editor={editor} className="min-h-[300px] prose max-w-none" />
     </div>
   );
 };

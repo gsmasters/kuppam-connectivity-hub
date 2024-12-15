@@ -9,13 +9,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Loader2, Eye } from "lucide-react";
 import { RichTextEditor } from "./RichTextEditor";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export const ContentManager = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState<Record<string, any>>({});
+  const [previewContent, setPreviewContent] = useState<string>("");
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     loadContent();
@@ -51,7 +61,7 @@ export const ContentManager = () => {
     }
   };
 
-  const saveContent = async (page: string, section: string, newContent: any) => {
+  const saveContent = async (page: string, section: string, newContent: string) => {
     try {
       const { error } = await supabase
         .from('website_content')
@@ -119,6 +129,24 @@ export const ContentManager = () => {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Content Management</h2>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="gap-2">
+              <Eye className="h-4 w-4" />
+              Preview
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl h-[80vh]">
+            <DialogHeader>
+              <DialogTitle>Content Preview</DialogTitle>
+            </DialogHeader>
+            <div className="overflow-y-auto prose max-w-none" dangerouslySetInnerHTML={{ __html: previewContent }} />
+          </DialogContent>
+        </Dialog>
+      </div>
+
       <Tabs defaultValue="home">
         <TabsList className="grid w-full grid-cols-3">
           {pages.map((page) => (
@@ -138,14 +166,10 @@ export const ContentManager = () => {
                 </CardHeader>
                 <CardContent>
                   <RichTextEditor
-                    content={JSON.stringify(content[page.id]?.[section.id] || {})}
+                    content={content[page.id]?.[section.id] || ""}
                     onChange={(newContent) => {
-                      try {
-                        const parsedContent = JSON.parse(newContent);
-                        saveContent(page.id, section.id, parsedContent);
-                      } catch (error) {
-                        console.error('Invalid JSON:', error);
-                      }
+                      setPreviewContent(newContent);
+                      saveContent(page.id, section.id, newContent);
                     }}
                   />
                 </CardContent>

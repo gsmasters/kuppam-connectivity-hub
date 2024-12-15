@@ -3,23 +3,79 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ContentManager } from "@/components/admin/ContentManager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  FileText, 
+  Users, 
+  BarChart, 
+  PhoneCall,
+  Settings,
+  Bell,
+  Calendar,
+  Image
+} from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
 
   const sections = [
-    { title: "Events", path: "/admin/events" },
-    { title: "Staff Directory", path: "/admin/staff" },
-    { title: "Population Stats", path: "/admin/stats" },
-    { title: "Department Contacts", path: "/admin/contacts" },
+    { 
+      title: "Events", 
+      path: "/admin/events",
+      icon: Calendar,
+      description: "Manage upcoming events and announcements"
+    },
+    { 
+      title: "Staff Directory", 
+      path: "/admin/staff",
+      icon: Users,
+      description: "Update staff information and departments"
+    },
+    { 
+      title: "Population Stats", 
+      path: "/admin/stats",
+      icon: BarChart,
+      description: "View and update population statistics"
+    },
+    { 
+      title: "Department Contacts", 
+      path: "/admin/contacts",
+      icon: PhoneCall,
+      description: "Manage department contact information"
+    },
+    { 
+      title: "Media Library", 
+      path: "/admin/media",
+      icon: Image,
+      description: "Manage uploaded images and files"
+    },
+    { 
+      title: "Notifications", 
+      path: "/admin/notifications",
+      icon: Bell,
+      description: "Manage site-wide notifications"
+    },
   ];
 
   return (
     <div className="space-y-6 p-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <Button variant="outline" onClick={() => navigate("/admin/settings")}>
+          <Settings className="h-4 w-4 mr-2" />
+          Settings
+        </Button>
+      </div>
+
       <Tabs defaultValue="content" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="content">Content Management</TabsTrigger>
-          <TabsTrigger value="quick-access">Quick Access</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="content" className="gap-2">
+            <FileText className="h-4 w-4" />
+            Content Management
+          </TabsTrigger>
+          <TabsTrigger value="quick-access" className="gap-2">
+            <Settings className="h-4 w-4" />
+            Quick Access
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="content">
@@ -28,18 +84,25 @@ const Dashboard = () => {
 
         <TabsContent value="quick-access">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sections.map((section) => (
-              <Card key={section.title} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle>{section.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Button onClick={() => navigate(section.path)}>
-                    Manage {section.title}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+            {sections.map((section) => {
+              const Icon = section.icon;
+              return (
+                <Card key={section.title} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Icon className="h-5 w-5" />
+                      {section.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-500 mb-4">{section.description}</p>
+                    <Button onClick={() => navigate(section.path)}>
+                      Manage {section.title}
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </TabsContent>
       </Tabs>
