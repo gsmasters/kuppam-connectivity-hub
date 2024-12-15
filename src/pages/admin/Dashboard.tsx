@@ -28,49 +28,49 @@ const Dashboard = () => {
       title: "Home", 
       path: "/",
       icon: Home,
-      description: "Manage home page content and layout"
+      description: "Edit and manage home page sections"
     },
     { 
       title: "About", 
       path: "/about",
       icon: Info,
-      description: "Edit about page information"
+      description: "Update about page content"
     },
     { 
       title: "Departments", 
       path: "/departments",
       icon: Building2,
-      description: "Manage department information"
+      description: "Edit department information and contacts"
     },
     { 
       title: "Events", 
       path: "/admin/events",
       icon: Calendar,
-      description: "Manage upcoming events and announcements"
+      description: "Manage upcoming events"
     },
     { 
       title: "Population Stats", 
       path: "/admin/stats",
       icon: BarChart,
-      description: "View and update population statistics"
+      description: "Update mandal population statistics"
     },
     { 
-      title: "Department Contacts", 
+      title: "Contact Directory", 
       path: "/admin/contacts",
       icon: PhoneCall,
-      description: "Manage department contact information"
+      description: "Manage contact information"
     },
     { 
       title: "Media Library", 
       path: "/admin/media",
       icon: Image,
-      description: "Manage uploaded images and files"
+      description: "Upload and manage media files"
     },
     { 
       title: "Notifications", 
       path: "/admin/notifications",
       icon: Bell,
-      description: "Manage site-wide notifications"
+      description: "Manage site notifications"
     },
   ];
 
@@ -88,7 +88,7 @@ const Dashboard = () => {
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="content" className="gap-2">
             <FileText className="h-4 w-4" />
-            Page Content
+            Content
           </TabsTrigger>
           <TabsTrigger value="pages" className="gap-2">
             <Layout className="h-4 w-4" />
@@ -96,7 +96,7 @@ const Dashboard = () => {
           </TabsTrigger>
           <TabsTrigger value="staff" className="gap-2">
             <Users className="h-4 w-4" />
-            Staff Directory
+            Staff
           </TabsTrigger>
           <TabsTrigger value="quick-access" className="gap-2">
             <Settings className="h-4 w-4" />
