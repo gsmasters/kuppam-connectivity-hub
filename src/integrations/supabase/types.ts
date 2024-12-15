@@ -357,6 +357,10 @@ export type Database = {
         | "elected_representative"
         | "sachivalayam"
         | "mandal_officer"
+        | "revenue"
+        | "education"
+        | "health"
+        | "agriculture"
     }
     CompositeTypes: {
       [_ in never]: never
