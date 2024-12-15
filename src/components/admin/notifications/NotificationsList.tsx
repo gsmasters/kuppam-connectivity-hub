@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { DataTable } from "@/components/ui/data-table";
@@ -8,9 +7,12 @@ import { Edit2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
-export const NotificationsList = () => {
+interface NotificationsListProps {
+  onEdit: (notificationId: string) => void;
+}
+
+export const NotificationsList = ({ onEdit }: NotificationsListProps) => {
   const queryClient = useQueryClient();
-  const [selectedNotification, setSelectedNotification] = useState(null);
 
   const { data: notifications, isLoading } = useQuery({
     queryKey: ['notifications'],
@@ -24,10 +26,6 @@ export const NotificationsList = () => {
       return data;
     },
   });
-
-  const handleEdit = (notification) => {
-    setSelectedNotification(notification);
-  };
 
   const columns = [
     {
@@ -61,6 +59,8 @@ export const NotificationsList = () => {
               .eq('id', notification.id);
             
             if (error) throw error;
+            
+            queryClient.invalidateQueries({ queryKey: ['notifications'] });
             toast.success("Notification deleted successfully");
           } catch (error) {
             console.error('Error deleting notification:', error);
@@ -73,7 +73,7 @@ export const NotificationsList = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => handleEdit(notification)}
+              onClick={() => onEdit(notification.id)}
             >
               <Edit2 className="h-4 w-4" />
             </Button>

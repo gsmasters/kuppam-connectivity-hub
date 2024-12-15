@@ -7,6 +7,17 @@ import { NotificationDialog } from "./notifications/NotificationDialog";
 
 export const NotificationsManager = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedNotificationId, setSelectedNotificationId] = useState<string | undefined>();
+
+  const handleEdit = (notificationId: string) => {
+    setSelectedNotificationId(notificationId);
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    setSelectedNotificationId(undefined);
+  };
 
   return (
     <div className="space-y-4">
@@ -19,13 +30,14 @@ export const NotificationsManager = () => {
           </Button>
         </CardHeader>
         <CardContent>
-          <NotificationsList />
+          <NotificationsList onEdit={handleEdit} />
         </CardContent>
       </Card>
 
       <NotificationDialog 
         open={isDialogOpen} 
-        onOpenChange={setIsDialogOpen}
+        onOpenChange={handleDialogClose}
+        notificationId={selectedNotificationId}
       />
     </div>
   );
