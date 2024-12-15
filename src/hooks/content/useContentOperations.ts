@@ -4,12 +4,13 @@ import { useToast } from "@/hooks/use-toast";
 
 type ContentRecord = Record<string, any>;
 type BooleanRecord = Record<string, boolean>;
+type SetStateAction<T> = T | ((prevState: T) => T);
 
 export const useContentOperations = (
   content: ContentRecord,
-  setContent: (content: ContentRecord) => void,
-  setIsDraft: (isDraft: BooleanRecord) => void,
-  setUnsavedChanges: (changes: BooleanRecord) => void
+  setContent: (value: SetStateAction<ContentRecord>) => void,
+  setIsDraft: (value: SetStateAction<BooleanRecord>) => void,
+  setUnsavedChanges: (value: SetStateAction<BooleanRecord>) => void
 ) => {
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
