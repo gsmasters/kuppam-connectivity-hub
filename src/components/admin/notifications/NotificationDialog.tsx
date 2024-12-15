@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface NotificationDialogProps {
   open: boolean;
@@ -19,6 +20,7 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
   const [isPublished, setIsPublished] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (notificationId && open) {
@@ -72,6 +74,8 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
           .eq('id', notificationId);
 
         if (error) throw error;
+        
+        queryClient.invalidateQueries({ queryKey: ['notifications'] });
         toast.success("Notification updated successfully");
       } else {
         const { error } = await supabase
@@ -82,6 +86,8 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
           });
 
         if (error) throw error;
+        
+        queryClient.invalidateQueries({ queryKey: ['notifications'] });
         toast.success("Notification created successfully");
       }
 
