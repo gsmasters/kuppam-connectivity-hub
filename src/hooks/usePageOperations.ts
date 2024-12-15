@@ -18,6 +18,32 @@ export const usePageOperations = () => {
 
       if (pageError) throw pageError;
 
+      // Create initial page section
+      const { data: section, error: sectionError } = await supabase
+        .from("page_sections")
+        .insert({
+          page: newPage.id,
+          section: 'content',
+          title: 'Main Content',
+          content_type: 'text'
+        })
+        .select()
+        .single();
+
+      if (sectionError) throw sectionError;
+
+      // Create initial content for the section
+      const { error: contentError } = await supabase
+        .from('section_content')
+        .insert({
+          section_id: section.id,
+          content: "",
+          version: 1,
+          is_published: true
+        });
+
+      if (contentError) throw contentError;
+
       if (selectedTemplate) {
         const { data: templates } = await supabase
           .from("page_templates")
@@ -30,7 +56,7 @@ export const usePageOperations = () => {
           
           for (let i = 0; i < sections.length; i++) {
             const sectionType = sections[i];
-            const { data: section, error: sectionError } = await supabase
+            const { data: templateSection, error: templateSectionError } = await supabase
               .from("page_sections")
               .insert({
                 page: newPage.id,
@@ -41,13 +67,25 @@ export const usePageOperations = () => {
               .select()
               .single();
 
-            if (sectionError) throw sectionError;
+            if (templateSectionError) throw templateSectionError;
+
+            // Create initial content for template section
+            const { error: templateContentError } = await supabase
+              .from('section_content')
+              .insert({
+                section_id: templateSection.id,
+                content: "",
+                version: 1,
+                is_published: true
+              });
+
+            if (templateContentError) throw templateContentError;
 
             const { error: orderError } = await supabase
               .from("page_sections_order")
               .insert({
                 page_id: newPage.id,
-                section_id: section.id,
+                section_id: templateSection.id,
                 order_index: i
               });
 
@@ -85,11 +123,39 @@ export const usePageOperations = () => {
 
       if (pageError) throw pageError;
 
+      // Get or create a page section for this page
+      const { data: existingSection } = await supabase
+        .from("page_sections")
+        .select()
+        .eq("page", pageId)
+        .eq("section", "content")
+        .single();
+
+      let sectionId;
+      
+      if (!existingSection) {
+        const { data: newSection, error: sectionError } = await supabase
+          .from("page_sections")
+          .insert({
+            page: pageId,
+            section: "content",
+            title: "Main Content",
+            content_type: "text"
+          })
+          .select()
+          .single();
+
+        if (sectionError) throw sectionError;
+        sectionId = newSection.id;
+      } else {
+        sectionId = existingSection.id;
+      }
+
       // Get current version
       const { data: currentVersionData } = await supabase
         .from('section_content')
         .select('version')
-        .eq('section_id', pageId)
+        .eq('section_id', sectionId)
         .order('version', { ascending: false })
         .limit(1);
 
@@ -101,7 +167,7 @@ export const usePageOperations = () => {
       const { error: contentError } = await supabase
         .from('section_content')
         .insert({
-          section_id: pageId,
+          section_id: sectionId,
           content: pageContent,
           version: newVersion,
           is_published: true
