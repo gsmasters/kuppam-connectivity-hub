@@ -24,9 +24,12 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     extensions: [
       StarterKit,
       Image.configure({
+        inline: true,
+        allowBase64: true,
         HTMLAttributes: {
           class: 'resize-none',
-          style: 'max-width: 100%',
+          width: imageWidth,
+          height: imageHeight,
         },
       }),
       TextStyle,
@@ -73,11 +76,8 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     if (imageUrl) {
       editor.chain().focus().setImage({ 
         src: imageUrl,
-        HTMLAttributes: {
-          width: imageWidth,
-          height: imageHeight,
-          style: `width: ${imageWidth}px; height: ${imageHeight}px;`,
-        }
+        width: imageWidth,
+        height: imageHeight,
       }).run();
     }
   };
