@@ -7,10 +7,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-interface ContentData {
+interface SectionContent {
+  id: string;
+  section_id: string;
   content: {
     content: string;
   };
+  version: number;
+  is_published: boolean;
+  is_draft: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 const defaultContent = `MPDO: Mandal Parishad Development Officer
@@ -109,7 +116,8 @@ const About = () => {
       }
 
       console.log('Content fetched successfully:', contentData);
-      return (contentData as ContentData).content.content || defaultContent;
+      const typedContent = contentData as SectionContent;
+      return typedContent.content.content || defaultContent;
     },
     staleTime: 1000 * 60, // Cache for 1 minute
     retry: 1,
