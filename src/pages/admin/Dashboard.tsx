@@ -11,65 +11,48 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import type { Database } from "@/integrations/supabase/types";
 
-const tables = [
-  {
-    name: "elected_representatives",
-    columns: [
-      { name: "id", type: "uuid", nullable: false, default: "gen_random_uuid()" },
-      { name: "name", type: "varchar", nullable: false },
-      { name: "position", type: "varchar", nullable: false },
-      { name: "mobile", type: "varchar", nullable: true },
-      { name: "representative_type", type: "enum", nullable: false },
-      { name: "gram_panchayat", type: "varchar", nullable: true },
-      { name: "panchayat_name", type: "varchar", nullable: true },
-      { name: "created_at", type: "timestamp", nullable: true, default: "now()" },
-      { name: "updated_at", type: "timestamp", nullable: true, default: "now()" }
-    ]
-  },
-  {
-    name: "notifications",
-    columns: [
-      { name: "id", type: "uuid", nullable: false, default: "gen_random_uuid()" },
-      { name: "message", type: "text", nullable: false },
-      { name: "active", type: "boolean", nullable: true, default: "true" },
-      { name: "start_date", type: "timestamp", nullable: false },
-      { name: "end_date", type: "timestamp", nullable: true },
-      { name: "created_at", type: "timestamp", nullable: false },
-      { name: "updated_at", type: "timestamp", nullable: false }
-    ]
-  },
-  // ... Add more tables as needed
-];
-
-const relationships = [
-  {
-    from: { table: "staff_content_history", column: "staff_content_id" },
-    to: { table: "staff_content", column: "id" }
-  },
-  {
-    from: { table: "section_content", column: "section_id" },
-    to: { table: "page_sections", column: "id" }
-  },
-  {
-    from: { table: "page_sections_order", column: "page_id" },
-    to: { table: "pages", column: "id" }
-  },
-  {
-    from: { table: "page_sections_order", column: "section_id" },
-    to: { table: "page_sections", column: "id" }
-  }
-];
+type TableNames = keyof Database['public']['Tables'];
 
 const Dashboard = () => {
-  const [selectedTable, setSelectedTable] = useState<string | null>(null);
+  const [selectedTable, setSelectedTable] = useState<TableNames | null>(null);
 
-  const handleCreate = (tableName: string) => {
+  const { data: tables, isLoading } = useQuery({
+    queryKey: ['database-tables'],
+    queryFn: async () => {
+      const { data: tablesData, error } = await supabase
+        .from('page_sections')
+        .select('*')
+        .limit(0);
+
+      if (error) throw error;
+
+      // Get the database schema from the types
+      const dbSchema: Record<TableNames, {
+        Row: any;
+        Insert: any;
+        Update: any;
+        Relationships: any[];
+      }> = (supabase.from('page_sections') as any).parent.tables;
+
+      return Object.entries(dbSchema).map(([tableName, schema]) => ({
+        name: tableName as TableNames,
+        columns: Object.entries(schema.Row).map(([name, type]) => ({
+          name,
+          type: typeof type === 'object' ? 'object' : typeof type
+        }))
+      }));
+    }
+  });
+
+  const handleCreate = (tableName: TableNames) => {
     toast.info(`Create operation for ${tableName}`);
     // Here you would typically open a modal or navigate to a create form
   };
 
-  const handleView = async (tableName: string) => {
+  const handleView = async (tableName: TableNames) => {
     try {
       const { data, error } = await supabase
         .from(tableName)
@@ -86,15 +69,26 @@ const Dashboard = () => {
     }
   };
 
-  const handleEdit = (tableName: string) => {
+  const handleEdit = (tableName: TableNames) => {
     toast.info(`Edit operation for ${tableName}`);
     // Here you would typically open a modal or navigate to an edit form
   };
 
-  const handleDelete = (tableName: string) => {
+  const handleDelete = (tableName: TableNames) => {
     toast.info(`Delete operation for ${tableName}`);
     // Here you would typically show a confirmation dialog
   };
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto py-6">
+        <div className="flex items-center gap-2 mb-6">
+          <Database className="h-6 w-6" />
+          <h1 className="text-2xl font-bold">Loading Database Schema...</h1>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-6">
@@ -105,7 +99,7 @@ const Dashboard = () => {
 
       <ScrollArea className="h-[calc(100vh-12rem)] rounded-lg border">
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tables.map((table) => (
+          {tables?.map((table) => (
             <Card key={table.name} className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -170,19 +164,10 @@ const Dashboard = () => {
                           <span className="text-xs text-muted-foreground">
                             ({column.type})
                           </span>
-                          {relationships.some(
-                            (rel) =>
-                              (rel.from.table === table.name &&
-                                rel.from.column === column.name) ||
-                              (rel.to.table === table.name &&
-                                rel.to.column === column.name)
-                          ) && <LinkIcon className="h-3 w-3 text-blue-500" />}
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>Type: {column.type}</p>
-                        <p>Nullable: {column.nullable ? "Yes" : "No"}</p>
-                        {column.default && <p>Default: {column.default}</p>}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
