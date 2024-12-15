@@ -36,12 +36,12 @@ export const NotificationTicker = () => {
   if (notifications.length === 0) return null;
 
   return (
-    <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white">
+    <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white relative overflow-hidden w-full">
       <div className="container mx-auto px-4">
         <div className="flex items-center space-x-2">
           <span className="font-semibold whitespace-nowrap">Latest Updates:</span>
-          <div className="overflow-hidden flex-1">
-            <div className="animate-[slide_20s_linear_infinite]">
+          <div className="overflow-hidden flex-1 relative">
+            <div className="animate-slide whitespace-nowrap">
               <p className="flex items-center space-x-2">
                 <ArrowRight className="h-4 w-4" />
                 <span>{notifications[currentIndex]?.message}</span>
