@@ -35,6 +35,9 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
   // Ensure suggestions is always an array
   const validSuggestions = Array.isArray(suggestions) ? suggestions : [];
 
+  // Only show suggestions if search query is at least 2 characters
+  const shouldShowSuggestions = searchQuery.length >= 2;
+
   return (
     <div className="relative max-w-sm">
       <Command className="rounded-lg border shadow-md">
@@ -43,11 +46,11 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: S
           value={searchQuery}
           onValueChange={(value) => {
             onSearchChange(value);
-            setOpen(value.length > 0);
+            setOpen(value.length >= 2);
           }}
           className="h-9"
         />
-        {open && searchQuery && (
+        {open && shouldShowSuggestions && (
           <CommandList>
             {!validSuggestions.length ? (
               <CommandEmpty>No results found.</CommandEmpty>
