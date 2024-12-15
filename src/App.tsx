@@ -30,18 +30,20 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <NotificationTicker />
-          <LeadershipBanner />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about-us" element={<About />} />
-            <Route path="/departments" element={<Departments />} />
-            <Route path="/admin/login" element={<Login />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route path="dashboard" element={<Dashboard />} />
-            </Route>
-          </Routes>
-          <ContactBar />
+          <div className="flex flex-col min-h-screen">
+            <NotificationTicker />
+            <LeadershipBanner />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about-us" element={<About />} />
+              <Route path="/departments" element={<Departments />} />
+              <Route path="/admin/login" element={<Login />} />
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route path="dashboard" element={<Dashboard />} />
+              </Route>
+            </Routes>
+            <ContactBar />
+          </div>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
