@@ -13,52 +13,56 @@ export function isElectedRepresentative(staff: StaffMember): staff is ElectedRep
 }
 
 export const getSearchSuggestions = (allStaff: StaffMember[] | undefined, searchQuery: string): string[] => {
-  // Return empty array if no staff or no search query
-  if (!allStaff?.length || !searchQuery?.trim()) {
+  if (!allStaff || !Array.isArray(allStaff) || !searchQuery) {
     return [];
   }
-  
-  const suggestions = new Set<string>();
+
   const query = searchQuery.toLowerCase().trim();
-  
+  if (!query) {
+    return [];
+  }
+
+  const suggestions = new Set<string>();
+
+  const addIfValid = (value: string | undefined | null) => {
+    if (typeof value === 'string' && value.trim()) {
+      const trimmed = value.trim();
+      if (trimmed.toLowerCase().includes(query)) {
+        suggestions.add(trimmed);
+      }
+    }
+  };
+
   allStaff.forEach(member => {
     if (!member) return;
 
-    // Helper function to add suggestion if it matches query
-    const addIfMatches = (value: string | undefined | null) => {
-      if (value?.trim() && value.toLowerCase().includes(query)) {
-        suggestions.add(value.trim());
-      }
-    };
+    addIfValid(member.name);
+    addIfValid(member.mobile);
 
-    // Add basic fields
-    addIfMatches(member.name);
-    addIfMatches(member.mobile);
-    
     if (isMandalStaff(member)) {
-      addIfMatches(member.position);
-      addIfMatches(member.department);
+      addIfValid(member.position);
+      addIfValid(member.department);
     }
-    
+
     if (isSachivalayamStaff(member)) {
-      addIfMatches(member.designation);
-      addIfMatches(member.secretariat_name);
-      addIfMatches(member.secretariat_code);
+      addIfValid(member.designation);
+      addIfValid(member.secretariat_name);
+      addIfValid(member.secretariat_code);
     }
-    
+
     if (isElectedRepresentative(member)) {
-      addIfMatches(member.position);
-      addIfMatches(member.representative_type);
-      addIfMatches(member.gram_panchayat);
-      addIfMatches(member.panchayat_name);
+      addIfValid(member.position);
+      addIfValid(member.representative_type);
+      addIfValid(member.gram_panchayat);
+      addIfValid(member.panchayat_name);
     }
   });
-  
+
   return Array.from(suggestions).slice(0, 10);
 };
 
 export const filterStaff = (staff: StaffMember[] | null | undefined, searchQuery: string): StaffMember[] => {
-  if (!staff?.length) return [];
+  if (!staff || !Array.isArray(staff)) return [];
   if (!searchQuery?.trim()) return staff;
 
   const query = searchQuery.toLowerCase().trim();
@@ -69,19 +73,16 @@ export const filterStaff = (staff: StaffMember[] | null | undefined, searchQuery
     const searchableFields = [
       member.name,
       member.mobile,
-      isMandalStaff(member) && [member.position, member.department],
-      isSachivalayamStaff(member) && [
-        member.designation,
-        member.secretariat_name,
-        member.secretariat_code
-      ],
-      isElectedRepresentative(member) && [
-        member.position,
-        member.representative_type,
-        member.gram_panchayat,
-        member.panchayat_name
-      ]
-    ].flat().filter(Boolean);
+      isMandalStaff(member) && member.position,
+      isMandalStaff(member) && member.department,
+      isSachivalayamStaff(member) && member.designation,
+      isSachivalayamStaff(member) && member.secretariat_name,
+      isSachivalayamStaff(member) && member.secretariat_code,
+      isElectedRepresentative(member) && member.position,
+      isElectedRepresentative(member) && member.representative_type,
+      isElectedRepresentative(member) && member.gram_panchayat,
+      isElectedRepresentative(member) && member.panchayat_name
+    ].filter(Boolean);
 
     return searchableFields.some(field => 
       field?.toString().toLowerCase().includes(query)
