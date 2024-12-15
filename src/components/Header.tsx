@@ -1,6 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { NotificationTicker } from "./NotificationTicker";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const Header = () => {
   const navigation = [
@@ -8,6 +11,30 @@ export const Header = () => {
     { name: "Staff Directory", href: "/staff-directory" },
     { name: "Programs", href: "/" }
   ];
+
+  const MobileNav = () => (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="sm:hidden">
+          <Menu className="h-6 w-6" />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-[300px] sm:hidden">
+        <div className="flex flex-col space-y-4 mt-8">
+          {navigation.map((item) => (
+            <Link
+              key={item.name}
+              to={item.href}
+              className="px-4 py-2 rounded-md text-gray-700 hover:text-primary hover:bg-gray-50 transition-all duration-200 text-sm font-medium"
+            >
+              {item.name}
+            </Link>
+          ))}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
 
   return (
     <>
@@ -34,6 +61,9 @@ export const Header = () => {
                   </Link>
                 ))}
               </nav>
+            </div>
+            <div className="flex items-center">
+              <MobileNav />
             </div>
           </div>
         </div>
