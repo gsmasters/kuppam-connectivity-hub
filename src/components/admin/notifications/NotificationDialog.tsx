@@ -20,6 +20,7 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
   const [position, setPosition] = useState<"top" | "bottom">("top");
   const [active, setActive] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (notificationId && open) {
@@ -31,7 +32,9 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
 
   const loadNotification = async () => {
     try {
+      setLoading(true);
       console.log('Loading notification:', notificationId);
+      
       const { data, error } = await supabase
         .from('notifications')
         .select('*')
@@ -44,14 +47,14 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
       if (data) {
         setMessage(data.message);
         setPriority(data.priority as "low" | "medium" | "high");
-        // Ensure position is either "top" or "bottom"
-        const notificationPosition = data.position === "bottom" ? "bottom" : "top";
-        setPosition(notificationPosition);
-        setActive(data.active);
+        setPosition(data.position === "bottom" ? "bottom" : "top");
+        setActive(data.active ?? true);
       }
     } catch (error) {
       console.error('Error loading notification:', error);
       toast.error("Failed to load notification");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,80 +116,86 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
         <DialogHeader>
           <DialogTitle>{notificationId ? "Edit" : "Create New"} Notification</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="message">Message</Label>
-            <Input
-              id="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Enter notification message"
-              required
-            />
+        {loading ? (
+          <div className="flex items-center justify-center p-4">
+            Loading notification data...
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="message">Message</Label>
+              <Input
+                id="message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Enter notification message"
+                required
+              />
+            </div>
 
-          <div className="space-y-2">
-            <Label>Priority</Label>
-            <RadioGroup
-              value={priority}
-              onValueChange={(value: "low" | "medium" | "high") => setPriority(value)}
-              className="flex gap-4"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="low" id="low" />
-                <Label htmlFor="low">Low</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="medium" id="medium" />
-                <Label htmlFor="medium">Medium</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="high" id="high" />
-                <Label htmlFor="high">High</Label>
-              </div>
-            </RadioGroup>
-          </div>
+            <div className="space-y-2">
+              <Label>Priority</Label>
+              <RadioGroup
+                value={priority}
+                onValueChange={(value: "low" | "medium" | "high") => setPriority(value)}
+                className="flex gap-4"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="low" id="low" />
+                  <Label htmlFor="low">Low</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="medium" id="medium" />
+                  <Label htmlFor="medium">Medium</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="high" id="high" />
+                  <Label htmlFor="high">High</Label>
+                </div>
+              </RadioGroup>
+            </div>
 
-          <div className="space-y-2">
-            <Label>Position</Label>
-            <RadioGroup
-              value={position}
-              onValueChange={(value: "top" | "bottom") => setPosition(value)}
-              className="flex gap-4"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="top" id="top" />
-                <Label htmlFor="top">Top</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="bottom" id="bottom" />
-                <Label htmlFor="bottom">Bottom</Label>
-              </div>
-            </RadioGroup>
-          </div>
+            <div className="space-y-2">
+              <Label>Position</Label>
+              <RadioGroup
+                value={position}
+                onValueChange={(value: "top" | "bottom") => setPosition(value)}
+                className="flex gap-4"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="top" id="top" />
+                  <Label htmlFor="top">Top</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="bottom" id="bottom" />
+                  <Label htmlFor="bottom">Bottom</Label>
+                </div>
+              </RadioGroup>
+            </div>
 
-          <div className="flex items-center justify-between">
-            <Label htmlFor="active">Active</Label>
-            <Switch
-              id="active"
-              checked={active}
-              onCheckedChange={setActive}
-            />
-          </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="active">Active</Label>
+              <Switch
+                id="active"
+                checked={active}
+                onCheckedChange={setActive}
+              />
+            </div>
 
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={saving}>
-              {saving ? (notificationId ? "Updating..." : "Creating...") : (notificationId ? "Update" : "Create")} Notification
-            </Button>
-          </div>
-        </form>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={saving}>
+                {saving ? (notificationId ? "Updating..." : "Creating...") : (notificationId ? "Update" : "Create")} Notification
+              </Button>
+            </div>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );
