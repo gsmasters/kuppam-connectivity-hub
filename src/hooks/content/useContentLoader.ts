@@ -23,16 +23,9 @@ export const useContentLoader = () => {
       console.log("Sections loaded:", sectionsData?.length);
 
       const groupedSections = sectionsData?.reduce((acc: PageSection[], section) => {
-        // Only process sections with valid content types
-        const validContentTypes: Section['content_type'][] = ['text', 'image', 'table', 'hero', 'stats', 'programs', 'staff'];
         const contentType = section.content_type as Section['content_type'];
-        
-        if (!validContentTypes.includes(contentType)) {
-          console.log(`Skipping section with invalid content type: ${section.content_type}`);
-          return acc;
-        }
-
         const pageIndex = acc.findIndex(p => p.id === section.page);
+        
         const sectionWithValidType: Section = {
           id: section.id,
           title: section.title,
