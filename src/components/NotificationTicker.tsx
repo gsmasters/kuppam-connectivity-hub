@@ -7,7 +7,11 @@ interface Notification {
   message: string;
   active: boolean;
   priority: 'low' | 'medium' | 'high';
-  position: 'top' | 'bottom';
+  position: string; // Changed from 'top' | 'bottom' to string to match database
+  created_at: string;
+  updated_at: string;
+  start_date: string;
+  end_date: string | null;
 }
 
 export const NotificationTicker = () => {
