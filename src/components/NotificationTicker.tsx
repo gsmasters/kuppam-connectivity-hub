@@ -1,72 +1,38 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
-/**
- * NotificationTicker Component
- * Displays latest updates in a scrollable ticker format
- * Features:
- * - Horizontal scrolling with custom scrollbar
- * - Real-time updates via React Query
- * - Auto-rotation of notifications
- */
+const notifications = [
+  "New pension scheme registration starts from 15th April 2024",
+  "Village development program meeting on 20th April 2024",
+  "Free medical camp at Panchayat office on 25th April 2024",
+  "Last date for property tax payment is 30th April 2024",
+];
+
 export const NotificationTicker = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Fetch active notifications from Supabase
-  const { data: notifications = [] } = useQuery({
-    queryKey: ["notifications"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("notifications")
-        .select("*")
-        .eq("active", true)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  // Auto-rotate notifications every 5 seconds
   useEffect(() => {
-    if (notifications.length <= 1) return;
-
-    const interval = setInterval(() => {
-      setCurrentIndex((current) =>
-        current === notifications.length - 1 ? 0 : current + 1
-      );
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % notifications.length);
     }, 5000);
 
-    return () => clearInterval(interval);
-  }, [notifications.length]);
-
-  if (notifications.length === 0) return null;
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <div className="w-full bg-primary/95 border-t border-b border-primary/20">
-      <div className="container mx-auto">
-        <ScrollArea className="w-full">
-          <div className="flex items-center gap-4 py-2 px-4 min-w-full">
-            <span className="font-semibold text-white whitespace-nowrap flex-shrink-0">
-              Latest Updates:
-            </span>
-            <div className="flex items-center gap-8">
-              {notifications.map((notification) => (
-                <div
-                  key={notification.id}
-                  className="inline-flex items-center gap-2 text-white whitespace-nowrap"
-                >
-                  <ArrowRight className="h-4 w-4 flex-shrink-0" />
-                  <span className="text-sm">{notification.message}</span>
-                </div>
-              ))}
+    <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center space-x-2">
+          <span className="font-semibold whitespace-nowrap">Latest Updates:</span>
+          <div className="overflow-hidden flex-1">
+            <div className="animate-[slide_20s_linear_infinite]">
+              <p className="flex items-center space-x-2">
+                <ArrowRight className="h-4 w-4" />
+                <span>{notifications[currentIndex]}</span>
+              </p>
             </div>
           </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ContactBar } from "@/components/ContactBar";
-import { LeadershipBanner } from "@/components/LeadershipBanner";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Departments from "./pages/Departments";
@@ -29,19 +28,16 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="flex flex-col min-h-screen">
-            <LeadershipBanner />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/about-us" element={<About />} />
-              <Route path="/departments" element={<Departments />} />
-              <Route path="/admin/login" element={<Login />} />
-              <Route path="/admin" element={<AdminLayout />}>
-                <Route path="dashboard" element={<Dashboard />} />
-              </Route>
-            </Routes>
-            <ContactBar />
-          </div>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/about-us" element={<About />} />
+            <Route path="/departments" element={<Departments />} />
+            <Route path="/admin/login" element={<Login />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="dashboard" element={<Dashboard />} />
+            </Route>
+          </Routes>
+          <ContactBar />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
