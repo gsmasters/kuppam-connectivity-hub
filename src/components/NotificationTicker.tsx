@@ -79,7 +79,6 @@ export const NotificationTicker = () => {
   }
 
   const currentNotification = notifications[currentIndex];
-  const isTopPosition = currentNotification?.position !== 'bottom';
 
   const getPriorityGradient = (priority: 'low' | 'medium' | 'high') => {
     switch (priority) {
@@ -96,9 +95,7 @@ export const NotificationTicker = () => {
 
   return (
     <div 
-      className={`bg-gradient-to-r ${getPriorityGradient(currentNotification?.priority || 'medium')} py-2 text-white fixed w-full z-50 ${
-        isTopPosition ? 'top-0' : 'bottom-0'
-      }`}
+      className={`bg-gradient-to-r ${getPriorityGradient(currentNotification?.priority || 'medium')} py-2 text-white w-full`}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center space-x-2">
