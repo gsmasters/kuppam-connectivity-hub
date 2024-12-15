@@ -16,6 +16,7 @@ interface NotificationDialogProps {
 export const NotificationDialog = ({ open, onOpenChange, notificationId }: NotificationDialogProps) => {
   const [message, setMessage] = useState("");
   const [active, setActive] = useState(true);
+  const [isPublished, setIsPublished] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -41,6 +42,7 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
       if (data) {
         setMessage(data.message);
         setActive(data.active ?? true);
+        setIsPublished(data.is_published ?? false);
       }
     } catch (error) {
       console.error('Error loading notification:', error);
@@ -58,6 +60,8 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
       const notificationData = {
         message,
         active,
+        is_published: isPublished,
+        is_draft: !isPublished,
         updated_at: new Date().toISOString(),
       };
 
@@ -94,6 +98,7 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
   const resetForm = () => {
     setMessage("");
     setActive(true);
+    setIsPublished(false);
   };
 
   return (
@@ -125,6 +130,15 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
                 id="active"
                 checked={active}
                 onCheckedChange={setActive}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Label htmlFor="published">Publish Immediately</Label>
+              <Switch
+                id="published"
+                checked={isPublished}
+                onCheckedChange={setIsPublished}
               />
             </div>
 
