@@ -1,5 +1,5 @@
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
-import { StaffMember, MandalStaff, SachivalayamStaff, ElectedRepresentative } from "@/types/staff";
+import { StaffMember } from "@/types/staff";
 
 interface StaffSearchProps {
   searchQuery: string;
@@ -20,18 +20,20 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions }: StaffS
         {searchQuery && (
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Suggestions">
-              {suggestions.map((suggestion) => (
-                <CommandItem
-                  key={suggestion}
-                  onSelect={(value) => {
-                    onSearchChange(value);
-                  }}
-                >
-                  {suggestion}
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            {suggestions.length > 0 && (
+              <CommandGroup heading="Suggestions">
+                {suggestions.map((suggestion) => (
+                  <CommandItem
+                    key={suggestion}
+                    onSelect={(value) => {
+                      onSearchChange(value);
+                    }}
+                  >
+                    {suggestion}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
           </CommandList>
         )}
       </Command>

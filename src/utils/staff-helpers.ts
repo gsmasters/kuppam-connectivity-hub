@@ -12,10 +12,14 @@ export function isElectedRepresentative(staff: StaffMember): staff is ElectedRep
   return 'representative_type' in staff;
 }
 
-export const getSearchSuggestions = (allStaff: StaffMember[], searchQuery: string): string[] => {
+export const getSearchSuggestions = (allStaff: StaffMember[] | undefined, searchQuery: string): string[] => {
+  if (!allStaff || !searchQuery) return [];
+  
   const suggestions = new Set<string>();
   
   allStaff.forEach(member => {
+    if (!member) return;
+
     if (member.name) suggestions.add(member.name);
     if (member.mobile) suggestions.add(member.mobile);
     
@@ -42,12 +46,14 @@ export const getSearchSuggestions = (allStaff: StaffMember[], searchQuery: strin
     .slice(0, 10);
 };
 
-export const filterStaff = (staff: StaffMember[] | null, searchQuery: string): StaffMember[] => {
+export const filterStaff = (staff: StaffMember[] | null | undefined, searchQuery: string): StaffMember[] => {
   if (!staff) return [];
   if (!searchQuery.trim()) return staff;
 
   const query = searchQuery.toLowerCase().trim();
   return staff.filter(member => {
+    if (!member) return false;
+
     const baseFields = [member.name, member.mobile];
     
     if (isMandalStaff(member)) {
