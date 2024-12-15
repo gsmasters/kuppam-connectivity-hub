@@ -155,7 +155,7 @@ const About = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col pt-[4.5rem]">
+    <div className="min-h-screen flex flex-col">
       <LeadershipBanner />
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
