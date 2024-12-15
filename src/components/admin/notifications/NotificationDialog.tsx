@@ -41,8 +41,10 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
 
       if (data) {
         setMessage(data.message);
-        setPriority(data.priority);
-        setPosition(data.position);
+        setPriority(data.priority as "low" | "medium" | "high");
+        // Ensure position is either "top" or "bottom"
+        const notificationPosition = data.position === "bottom" ? "bottom" : "top";
+        setPosition(notificationPosition);
         setActive(data.active);
       }
     } catch (error) {
