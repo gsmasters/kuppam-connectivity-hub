@@ -16,6 +16,7 @@ interface StaffMember {
   mobile?: string;
   department?: string;
   secretariat_name?: string;
+  is_working?: boolean;
 }
 
 export const StaffContactList = () => {
@@ -84,12 +85,8 @@ export const StaffContactList = () => {
     });
   };
 
-  // Calculate total staff count
-  const totalStaffCount = (
-    (mandalOfficeStaff?.length || 0) +
-    (sachivalayamStaff?.length || 0) +
-    (electedRepresentatives?.length || 0)
-  );
+  // Calculate working staff count (assuming all staff are working unless specified otherwise)
+  const mandalOfficeWorkingCount = mandalOfficeStaff?.filter(staff => staff.is_working !== false).length || 0;
 
   return (
     <Card className="shadow-lg border-none">
@@ -104,7 +101,7 @@ export const StaffContactList = () => {
           <div className="flex items-center gap-2 text-muted-foreground">
             <Users className="h-5 w-5" />
             <span className="font-medium">
-              Total Staff: {totalStaffCount}
+              Total Staff: {mandalOfficeStaff?.length || 0}
             </span>
           </div>
         </div>
@@ -135,6 +132,8 @@ export const StaffContactList = () => {
               staff={filterStaff(mandalOfficeStaff)} 
               isLoading={isLoadingMandal}
               showDepartment
+              totalCount={mandalOfficeStaff?.length || 0}
+              workingCount={mandalOfficeWorkingCount}
             />
           </TabsContent>
 

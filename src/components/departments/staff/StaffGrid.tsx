@@ -19,6 +19,8 @@ interface StaffGridProps {
   description: string;
   isRepresentative?: boolean;
   showDepartment?: boolean;
+  totalCount?: number;
+  workingCount?: number;
 }
 
 export const StaffGrid = ({ 
@@ -27,7 +29,9 @@ export const StaffGrid = ({
   title, 
   description, 
   isRepresentative,
-  showDepartment 
+  showDepartment,
+  totalCount,
+  workingCount
 }: StaffGridProps) => {
   if (isLoading) {
     return (
@@ -68,9 +72,18 @@ export const StaffGrid = ({
       <div className="border-b pb-4">
         <h3 className="text-xl font-semibold">{title}</h3>
         <p className="text-muted-foreground mt-1">{description}</p>
-        <p className="text-sm text-primary font-medium mt-2">
-          Total: {staff.length} {staff.length === 1 ? 'member' : 'members'}
-        </p>
+        <div className="flex gap-4 mt-2">
+          {totalCount !== undefined && (
+            <p className="text-sm text-primary font-medium">
+              Total Staff: {totalCount}
+            </p>
+          )}
+          {workingCount !== undefined && (
+            <p className="text-sm text-green-600 font-medium">
+              Working Staff: {workingCount}
+            </p>
+          )}
+        </div>
       </div>
 
       {(showDepartment || isRepresentative) ? (
@@ -78,16 +91,16 @@ export const StaffGrid = ({
           <div key={group} className="space-y-4">
             <h4 className="text-lg font-medium capitalize">{group.replace('_', ' ')}</h4>
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
-              {members.map((member) => (
-                <ContactCard key={member.id} member={member} />
+              {members.map((member, index) => (
+                <ContactCard key={member.id} member={member} index={index + 1} />
               ))}
             </div>
           </div>
         ))
       ) : (
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
-          {staff.map((member) => (
-            <ContactCard key={member.id} member={member} />
+          {staff.map((member, index) => (
+            <ContactCard key={member.id} member={member} index={index + 1} />
           ))}
         </div>
       )}

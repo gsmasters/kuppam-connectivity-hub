@@ -14,19 +14,27 @@ interface StaffMember {
 
 interface ContactCardProps {
   member: StaffMember;
+  index?: number;
 }
 
-export const ContactCard = ({ member }: ContactCardProps) => (
+export const ContactCard = ({ member, index }: ContactCardProps) => (
   <div className="group p-6 bg-white rounded-xl border border-border/50 hover:border-primary/20 transition-all duration-300 hover:shadow-lg">
     <div className="flex justify-between items-start gap-4">
       <div className="space-y-3 flex-grow">
-        <div>
-          <h4 className="font-semibold text-lg text-gray-900 group-hover:text-primary transition-colors">
-            {member.name}
-          </h4>
-          <p className="text-sm text-muted-foreground mt-1">
-            {member.position || member.designation}
-          </p>
+        <div className="flex items-center gap-2">
+          {index !== undefined && (
+            <span className="text-sm font-medium text-muted-foreground">
+              {index}.
+            </span>
+          )}
+          <div>
+            <h4 className="font-semibold text-lg text-gray-900 group-hover:text-primary transition-colors">
+              {member.name}
+            </h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              {member.position || member.designation}
+            </p>
+          </div>
         </div>
         
         {member.department && (
