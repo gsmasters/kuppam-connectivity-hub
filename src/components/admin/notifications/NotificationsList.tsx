@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { format } from "date-fns";
+import { NotificationDialog } from "./NotificationDialog";
 
 interface Notification {
   id: string;
@@ -22,11 +23,12 @@ interface Notification {
 export const NotificationsList = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedNotification, setSelectedNotification] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     loadNotifications();
 
-    // Subscribe to realtime changes
     const channel = supabase
       .channel('schema-db-changes')
       .on(
@@ -83,6 +85,11 @@ export const NotificationsList = () => {
     }
   };
 
+  const handleEdit = (id: string) => {
+    setSelectedNotification(id);
+    setIsDialogOpen(true);
+  };
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
@@ -101,71 +108,86 @@ export const NotificationsList = () => {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Message</TableHead>
-          <TableHead>Priority</TableHead>
-          <TableHead>Position</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Start Date</TableHead>
-          <TableHead>End Date</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {notifications.map((notification) => (
-          <TableRow key={notification.id}>
-            <TableCell className="font-medium">{notification.message}</TableCell>
-            <TableCell>
-              <Badge className={`${getPriorityColor(notification.priority)} text-white`}>
-                {notification.priority}
-              </Badge>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                {notification.position === 'top' ? (
-                  <Badge variant="outline" className="flex items-center gap-1">
-                    <ArrowUp className="h-3 w-3" />
-                    Top Scroll
-                  </Badge>
-                ) : (
-                  <Badge variant="outline" className="flex items-center gap-1">
-                    <ArrowDown className="h-3 w-3" />
-                    Bottom Scroll
-                  </Badge>
-                )}
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge variant={notification.active ? "default" : "secondary"}>
-                {notification.active ? "Active" : "Inactive"}
-              </Badge>
-            </TableCell>
-            <TableCell>{format(new Date(notification.start_date), 'PPP')}</TableCell>
-            <TableCell>
-              {notification.end_date 
-                ? format(new Date(notification.end_date), 'PPP')
-                : "No end date"
-              }
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon">
-                  <Edit2 className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => handleDelete(notification.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </TableCell>
+    <>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Message</TableHead>
+            <TableHead>Priority</TableHead>
+            <TableHead>Position</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Start Date</TableHead>
+            <TableHead>End Date</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {notifications.map((notification) => (
+            <TableRow key={notification.id}>
+              <TableCell className="font-medium">{notification.message}</TableCell>
+              <TableCell>
+                <Badge className={`${getPriorityColor(notification.priority)} text-white`}>
+                  {notification.priority}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  {notification.position === 'top' ? (
+                    <Badge variant="outline" className="flex items-center gap-1">
+                      <ArrowUp className="h-3 w-3" />
+                      Top Scroll
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="flex items-center gap-1">
+                      <ArrowDown className="h-3 w-3" />
+                      Bottom Scroll
+                    </Badge>
+                  )}
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge variant={notification.active ? "default" : "secondary"}>
+                  {notification.active ? "Active" : "Inactive"}
+                </Badge>
+              </TableCell>
+              <TableCell>{format(new Date(notification.start_date), 'PPP')}</TableCell>
+              <TableCell>
+                {notification.end_date 
+                  ? format(new Date(notification.end_date), 'PPP')
+                  : "No end date"
+                }
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => handleEdit(notification.id)}
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => handleDelete(notification.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <NotificationDialog 
+        open={isDialogOpen} 
+        onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (!open) setSelectedNotification(null);
+        }}
+        notificationId={selectedNotification || undefined}
+      />
+    </>
   );
 };

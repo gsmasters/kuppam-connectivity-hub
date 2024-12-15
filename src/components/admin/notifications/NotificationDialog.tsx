@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,38 +11,85 @@ import { toast } from "sonner";
 interface NotificationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  notificationId?: string;
 }
 
-export const NotificationDialog = ({ open, onOpenChange }: NotificationDialogProps) => {
+export const NotificationDialog = ({ open, onOpenChange, notificationId }: NotificationDialogProps) => {
   const [message, setMessage] = useState("");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [position, setPosition] = useState<"top" | "bottom">("top");
   const [active, setActive] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  useEffect(() => {
+    if (notificationId && open) {
+      loadNotification();
+    } else {
+      resetForm();
+    }
+  }, [notificationId, open]);
+
+  const loadNotification = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('id', notificationId)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setMessage(data.message);
+        setPriority(data.priority);
+        setPosition(data.position);
+        setActive(data.active);
+      }
+    } catch (error) {
+      console.error('Error loading notification:', error);
+      toast.error("Failed to load notification");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
     try {
-      const { error } = await supabase
-        .from('notifications')
-        .insert({
-          message,
-          priority,
-          position,
-          active,
-          start_date: new Date().toISOString(),
-        });
+      if (notificationId) {
+        const { error } = await supabase
+          .from('notifications')
+          .update({
+            message,
+            priority,
+            position,
+            active,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', notificationId);
 
-      if (error) throw error;
+        if (error) throw error;
+        toast.success("Notification updated successfully");
+      } else {
+        const { error } = await supabase
+          .from('notifications')
+          .insert({
+            message,
+            priority,
+            position,
+            active,
+            start_date: new Date().toISOString(),
+          });
 
-      toast.success("Notification created successfully");
+        if (error) throw error;
+        toast.success("Notification created successfully");
+      }
+
       onOpenChange(false);
       resetForm();
     } catch (error) {
-      console.error('Error creating notification:', error);
-      toast.error("Failed to create notification");
+      console.error('Error saving notification:', error);
+      toast.error(notificationId ? "Failed to update notification" : "Failed to create notification");
     } finally {
       setSaving(false);
     }
@@ -59,7 +106,7 @@ export const NotificationDialog = ({ open, onOpenChange }: NotificationDialogPro
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create New Notification</DialogTitle>
+          <DialogTitle>{notificationId ? "Edit" : "Create New"} Notification</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
@@ -131,7 +178,7 @@ export const NotificationDialog = ({ open, onOpenChange }: NotificationDialogPro
               Cancel
             </Button>
             <Button type="submit" disabled={saving}>
-              {saving ? "Creating..." : "Create Notification"}
+              {saving ? (notificationId ? "Updating..." : "Creating...") : (notificationId ? "Update" : "Create")} Notification
             </Button>
           </div>
         </form>
