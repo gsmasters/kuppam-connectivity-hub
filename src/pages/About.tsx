@@ -67,7 +67,7 @@ const About = () => {
       // Then get the latest published content for this section
       const { data: contentData, error: contentError } = await supabase
         .from('section_content')
-        .select<'*', SectionContent>('content, version')
+        .select('*')
         .eq('section_id', sectionId)
         .eq('is_published', true)
         .order('version', { ascending: false })
