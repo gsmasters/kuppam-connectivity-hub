@@ -6,35 +6,33 @@ interface StaffSearchProps {
   suggestions?: string[];
 }
 
-export const StaffSearch = ({ searchQuery, onSearchChange, suggestions = [] }: StaffSearchProps) => {
+export const StaffSearch = ({ searchQuery, onSearchChange, suggestions }: StaffSearchProps) => {
   // Ensure we always have a valid array of suggestions
-  const validSuggestions = Array.isArray(suggestions) ? suggestions : [];
+  const validSuggestions = suggestions?.filter(Boolean) ?? [];
   
   return (
     <div className="relative max-w-sm">
-      <Command className="rounded-lg border shadow-md" shouldFilter={false}>
+      <Command className="rounded-lg border shadow-md">
         <CommandInput
           placeholder="Search by name, position, department..."
           value={searchQuery}
           onValueChange={onSearchChange}
           className="h-9"
         />
-        {searchQuery && (
+        {searchQuery && validSuggestions.length > 0 && (
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            {validSuggestions.length > 0 && (
-              <CommandGroup heading="Suggestions">
-                {validSuggestions.map((suggestion) => (
-                  <CommandItem
-                    key={suggestion}
-                    value={suggestion}
-                    onSelect={(value) => onSearchChange(value)}
-                  >
-                    {suggestion}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            )}
+            <CommandGroup heading="Suggestions">
+              {validSuggestions.map((suggestion) => (
+                <CommandItem
+                  key={suggestion}
+                  value={suggestion}
+                  onSelect={onSearchChange}
+                >
+                  {suggestion}
+                </CommandItem>
+              ))}
+            </CommandGroup>
           </CommandList>
         )}
       </Command>
