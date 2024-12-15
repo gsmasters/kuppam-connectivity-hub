@@ -10,7 +10,6 @@ import About from "./pages/About";
 import Departments from "./pages/Departments";
 import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
-import StaffPage from "./pages/admin/Staff";
 import { AdminLayout } from "./components/admin/AdminLayout";
 
 const App = () => {
@@ -36,7 +35,6 @@ const App = () => {
             <Route path="/admin/login" element={<Login />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="dashboard" element={<Dashboard />} />
-              <Route path="staff" element={<StaffPage />} />
             </Route>
           </Routes>
           <ContactBar />
