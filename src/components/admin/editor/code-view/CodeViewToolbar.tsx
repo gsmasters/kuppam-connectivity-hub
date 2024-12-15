@@ -24,12 +24,13 @@ export const CodeViewToolbar = ({
   };
 
   return (
-    <div className="flex items-center justify-between p-2 bg-muted">
+    <div className="flex items-center justify-between p-2 bg-[#1A1F2C] text-white">
       <div className="flex gap-2">
         <Button
           variant={codeType === 'html' ? "secondary" : "ghost"}
           size="sm"
           onClick={() => onCodeTypeChange('html')}
+          className={codeType === 'html' ? "bg-[#0EA5E9] hover:bg-[#0EA5E9]/90" : ""}
         >
           HTML
         </Button>
@@ -37,6 +38,7 @@ export const CodeViewToolbar = ({
           variant={codeType === 'css' ? "secondary" : "ghost"}
           size="sm"
           onClick={() => onCodeTypeChange('css')}
+          className={codeType === 'css' ? "bg-[#D946EF] hover:bg-[#D946EF]/90" : ""}
         >
           CSS
         </Button>

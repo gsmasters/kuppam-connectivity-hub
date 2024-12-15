@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { CodeViewToolbar } from "./CodeViewToolbar";
 
 interface CodeEditorProps {
   editor: any;
@@ -6,6 +7,7 @@ interface CodeEditorProps {
 }
 
 export const CodeEditor = ({ editor, onContentChange }: CodeEditorProps) => {
+  const [codeType, setCodeType] = useState<'html' | 'css'>('html');
   const [cssContent, setCssContent] = useState('');
 
   useEffect(() => {
@@ -47,13 +49,38 @@ export const CodeEditor = ({ editor, onContentChange }: CodeEditorProps) => {
     onContentChange(updatedHtml);
   };
 
+  const getCodeContent = () => {
+    if (!editor) return '';
+    return codeType === 'html' ? editor.getHTML() : cssContent;
+  };
+
+  const handleContentChange = (content: string) => {
+    if (codeType === 'html') {
+      editor?.commands.setContent(content);
+      onContentChange(content);
+      // Update CSS content when HTML changes
+      setCssContent(extractCSS(content));
+    } else {
+      handleCSSChange(content);
+    }
+  };
+
   return (
     <div className="border-t">
+      <CodeViewToolbar
+        codeType={codeType}
+        onCodeTypeChange={setCodeType}
+        getCodeContent={getCodeContent}
+      />
       <textarea
-        value={cssContent}
-        onChange={(e) => handleCSSChange(e.target.value)}
+        value={getCodeContent()}
+        onChange={(e) => handleContentChange(e.target.value)}
         className="w-full h-[400px] font-mono text-sm p-4 bg-background"
-        placeholder="/* Add your CSS styles here */"
+        style={{
+          color: codeType === 'css' ? '#D946EF' : '#0EA5E9',
+          backgroundColor: '#1A1F2C',
+        }}
+        placeholder={codeType === 'css' ? '/* CSS styles will appear here */' : '<!-- HTML content -->'}
       />
     </div>
   );
