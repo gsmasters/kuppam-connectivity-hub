@@ -93,9 +93,29 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   };
 
   const extractCSS = (html: string): string => {
-    const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
-    const matches = [...html.matchAll(styleRegex)];
-    return matches.map(match => match[1]).join('\n\n') || '/* No CSS styles found */';
+    // Extract both inline styles and style tags
+    const styleTagRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+    const inlineStyleRegex = /style="([^"]*)"/gi;
+    
+    let css = '';
+    
+    // Extract styles from style tags
+    const styleTagMatches = [...html.matchAll(styleTagRegex)];
+    if (styleTagMatches.length > 0) {
+      css += styleTagMatches.map(match => match[1]).join('\n\n');
+    }
+    
+    // Extract inline styles
+    const inlineStyles = [...html.matchAll(inlineStyleRegex)];
+    if (inlineStyles.length > 0) {
+      if (css) css += '\n\n/* Inline Styles */\n';
+      css += inlineStyles.map((match, index) => {
+        const styles = match[1];
+        return `.element-${index + 1} {\n  ${styles.split(';').join(';\n  ')}\n}`;
+      }).join('\n\n');
+    }
+    
+    return css || '/* No CSS styles found */';
   };
 
   const copyToClipboard = (text: string) => {
