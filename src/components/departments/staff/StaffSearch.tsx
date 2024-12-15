@@ -19,20 +19,23 @@ export const StaffSearch = ({ searchQuery, onSearchChange, suggestions }: StaffS
           onValueChange={onSearchChange}
           className="h-9"
         />
-        {searchQuery && validSuggestions.length > 0 && (
+        {searchQuery?.trim() && (
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Suggestions">
-              {validSuggestions.map((suggestion) => (
-                <CommandItem
-                  key={suggestion}
-                  value={suggestion}
-                  onSelect={onSearchChange}
-                >
-                  {suggestion}
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            {validSuggestions.length === 0 ? (
+              <CommandEmpty>No results found.</CommandEmpty>
+            ) : (
+              <CommandGroup heading="Suggestions">
+                {validSuggestions.map((suggestion) => (
+                  <CommandItem
+                    key={suggestion}
+                    value={suggestion}
+                    onSelect={onSearchChange}
+                  >
+                    {suggestion}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
           </CommandList>
         )}
       </Command>
