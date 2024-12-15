@@ -85,6 +85,7 @@ export type Database = {
           layout_width: number | null
           page: string
           section: string
+          section_type: Database["public"]["Enums"]["section_type"]
           title: string
           updated_at: string
         }
@@ -97,6 +98,7 @@ export type Database = {
           layout_width?: number | null
           page: string
           section: string
+          section_type: Database["public"]["Enums"]["section_type"]
           title: string
           updated_at?: string
         }
@@ -109,6 +111,7 @@ export type Database = {
           layout_width?: number | null
           page?: string
           section?: string
+          section_type?: Database["public"]["Enums"]["section_type"]
           title?: string
           updated_at?: string
         }
@@ -406,6 +409,36 @@ export type Database = {
         }
         Relationships: []
       }
+      website_sections: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          type: Database["public"]["Enums"]["section_type"]
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          type: Database["public"]["Enums"]["section_type"]
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          type?: Database["public"]["Enums"]["section_type"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -423,6 +456,14 @@ export type Database = {
         | "programs"
         | "staff"
       representative_type: "MPP" | "ZPTC" | "Sarpanch" | "MPTC"
+      section_type:
+        | "hero"
+        | "content"
+        | "programs"
+        | "stats"
+        | "staff"
+        | "contact"
+        | "about"
       staff_type:
         | "mandal_office"
         | "panchayat_secretary"
