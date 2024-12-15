@@ -69,6 +69,17 @@ export const Footer = () => {
                     AP Government Portal
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="https://www.niti.gov.in/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-primary flex items-center"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    NITI Aayog
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
