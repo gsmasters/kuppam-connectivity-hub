@@ -7,7 +7,7 @@ interface Notification {
   message: string;
   active: boolean;
   priority: 'low' | 'medium' | 'high';
-  position: string;
+  position: string; // Changed from 'top' | 'bottom' to string to match database
   created_at: string;
   updated_at: string;
   start_date: string;
@@ -71,11 +71,11 @@ export const NotificationTicker = () => {
   }, [notifications.length]);
 
   if (loading) {
-    return null;
+    return null; // Don't show anything while loading
   }
 
   if (notifications.length === 0) {
-    return null;
+    return null; // Don't show the ticker if there are no notifications
   }
 
   return (
@@ -84,10 +84,10 @@ export const NotificationTicker = () => {
         <div className="flex items-center space-x-2">
           <span className="font-semibold whitespace-nowrap">Latest Updates:</span>
           <div className="overflow-hidden flex-1">
-            <div>
+            <div className="animate-[slide_20s_linear_infinite]">
               <p className="flex items-center space-x-2">
                 <ArrowRight className="h-4 w-4" />
-                <span className="font-medium">{notifications[currentIndex]?.message}</span>
+                <span>{notifications[currentIndex]?.message}</span>
               </p>
             </div>
           </div>
