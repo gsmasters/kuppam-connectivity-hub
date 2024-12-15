@@ -57,9 +57,11 @@ export const StaffContactList = () => {
         </div>
         <StaffContent
           searchQuery={searchQuery}
+          mandalOfficeStaff={mandalOfficeStaff}
           mandalOfficers={mandalOfficers}
           sachivalayamStaff={sachivalayamStaff}
           electedRepresentatives={electedRepresentatives}
+          isLoadingMandalOffice={isLoadingMandalOffice}
           isLoadingMandalOfficers={isLoadingMandalOfficers}
           isLoadingSachivalayam={isLoadingSachivalayam}
           isLoadingRepresentatives={isLoadingRepresentatives}
