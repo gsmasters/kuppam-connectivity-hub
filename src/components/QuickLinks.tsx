@@ -5,14 +5,13 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Building, Users, Calendar } from "lucide-react";
+import { Building, Users, Calendar, ExternalLink } from "lucide-react";
 
 interface QuickLink {
   title: string;
   description: string;
   icon: React.ComponentType<any>;
   href: string;
-  external?: boolean;
 }
 
 export const QuickLinks = () => {
@@ -46,13 +45,14 @@ export const QuickLinks = () => {
             <a
               key={link.title}
               href={link.href}
-              target={link.external ? "_blank" : "_self"}
-              rel={link.external ? "noopener noreferrer" : undefined}
               className="transform transition-transform hover:scale-105"
             >
               <Card className="h-full border-t-4 border-t-[#DD4814] bg-white/90 backdrop-blur-sm hover:bg-white transition-colors">
                 <CardHeader>
-                  <link.icon className="h-8 w-8 text-[#DD4814] mb-2" />
+                  <div className="flex items-center justify-between">
+                    <link.icon className="h-8 w-8 text-[#DD4814]" />
+                    <ExternalLink className="h-4 w-4 text-[#DD4814]" />
+                  </div>
                   <CardTitle className="text-lg text-[#DD4814]">{link.title}</CardTitle>
                   <CardDescription className="text-gray-600">{link.description}</CardDescription>
                 </CardHeader>
