@@ -1,13 +1,7 @@
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FolderOpen } from "lucide-react";
-
-interface Section {
-  id: string;
-  title: string;
-  description: string | null;
-  content_type: 'text' | 'image' | 'table' | 'hero' | 'stats' | 'programs' | 'staff';
-}
+import { Section } from "@/types/content";
 
 interface PageSectionListProps {
   pageId: string;
