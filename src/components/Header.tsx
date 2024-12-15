@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 
 export const Header = () => {
   const navigation = [
-    { name: "About Us", href: "/about-us" },
+    { name: "Home", href: "/home" },
     { name: "Staff Directory", href: "/staff-directory" },
-    { name: "Programs", href: "/" }
+    { name: "Programs", href: "/home" }
   ];
 
   const MobileNav = () => (
