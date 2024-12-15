@@ -16,30 +16,61 @@ interface SectionContentResponse {
 }
 
 const About = () => {
-  const { data: aboutContent, isLoading } = useQuery({
+  const { data: aboutContent, isLoading, error } = useQuery({
     queryKey: ['about-content'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      console.log('Fetching about page content...');
+      
+      // First, get the page section ID for the about page's main content
+      const { data: pageSections, error: sectionError } = await supabase
+        .from('page_sections')
+        .select('id')
+        .eq('page', 'about')
+        .eq('section', 'main');
+
+      if (sectionError) {
+        console.error('Error fetching page section:', sectionError);
+        throw sectionError;
+      }
+
+      if (!pageSections || pageSections.length === 0) {
+        console.log('No page section found for about page');
+        return ''; // Return empty content if no section exists
+      }
+
+      const sectionId = pageSections[0].id;
+
+      // Then get the latest published content for this section
+      const { data: contentData, error: contentError } = await supabase
         .from('section_content')
         .select(`
-          content,
-          page_sections!inner (
-            page,
-            section
-          )
+          content
         `)
+        .eq('section_id', sectionId)
         .eq('is_published', true)
-        .eq('page_sections.page', 'about')
-        .eq('page_sections.section', 'main')
         .order('version', { ascending: false })
         .limit(1)
         .single();
 
-      if (error) throw error;
-      return (data as SectionContentResponse)?.content?.content || '';
+      if (contentError) {
+        if (contentError.code === 'PGRST116') {
+          console.log('No published content found for about page');
+          return ''; // Return empty content if no published content exists
+        }
+        console.error('Error fetching section content:', contentError);
+        throw contentError;
+      }
+
+      console.log('Content fetched successfully:', contentData);
+      return contentData?.content || '';
     },
-    staleTime: 1000, // Refetch after 1 second
+    staleTime: 1000 * 60, // Cache for 1 minute
+    retry: 1,
   });
+
+  if (error) {
+    console.error('Error in about page query:', error);
+  }
 
   return (
     <div className="min-h-screen flex flex-col pt-[4.5rem]">
@@ -53,9 +84,17 @@ const About = () => {
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-2/3" />
           </div>
+        ) : error ? (
+          <div className="text-red-500">
+            Failed to load content. Please try again later.
+          </div>
+        ) : !aboutContent ? (
+          <div className="text-gray-500 italic">
+            No content available yet.
+          </div>
         ) : (
           <div className="prose max-w-none">
-            {aboutContent?.split('\n').map((paragraph, index) => (
+            {aboutContent.split('\n').map((paragraph, index) => (
               <p key={index} className="text-lg text-gray-700 mt-4">
                 {paragraph}
               </p>
