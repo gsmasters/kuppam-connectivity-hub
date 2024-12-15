@@ -20,24 +20,6 @@ interface SectionContent {
   updated_at: string;
 }
 
-const defaultContent = `MPDO: Mandal Parishad Development Officer
-A Mandal Parishad Development Officer (MPDO), also known as a block development officer (BDO), is responsible for a number of tasks, including:
-
-Managing gram panchayats
-An MPDO in KUPPAM mandal manages 29 gram panchayats. 
-
-Inspecting gram panchayats
-An MPDO inspects all gram panchayats in their mandal every quarter. This includes physically verifying the properties of the gram panchayat. 
-
-Reconciling accounts
-An MPDO reconciles gram panchayat accounts with the local sub-treasury on a regular basis. 
-
-Ensuring regular activities
-An MPDO keeps a close watch on the villages in their jurisdiction to maintain regular activities like sanitation, drinking water, street lights etc.
-
-Mgnregs
-MPDO is a programming officer for MGREGS a central scheme for 100 days employment generation programme.`;
-
 const About = () => {
   const { toast } = useToast();
   const { data: aboutContent, isLoading, error, refetch } = useQuery({
@@ -45,45 +27,14 @@ const About = () => {
     queryFn: async () => {
       console.log('Fetching about page content...');
       
-      const { data: pageSections, error: sectionError } = await supabase
+      const { data: pageSections } = await supabase
         .from('page_sections')
         .select('id')
-        .eq('page', 'about')
+        .eq('page', 'about-us')
         .eq('section', 'main');
 
-      if (sectionError) {
-        console.error('Error fetching page section:', sectionError);
-        throw sectionError;
-      }
-
       if (!pageSections || pageSections.length === 0) {
-        const { data: newSection, error: createError } = await supabase
-          .from('page_sections')
-          .insert({
-            page: 'about',
-            section: 'main',
-            title: 'About Us',
-            content_type: 'text',
-            section_type: 'about'
-          })
-          .select()
-          .single();
-
-        if (createError) throw createError;
-        
-        const { error: contentError } = await supabase
-          .from('section_content')
-          .insert({
-            section_id: newSection.id,
-            content: { content: defaultContent },
-            version: 1,
-            is_published: true,
-            is_draft: false
-          });
-
-        if (contentError) throw contentError;
-        
-        return defaultContent;
+        throw new Error('Section not found');
       }
 
       const sectionId = pageSections[0].id;
@@ -98,20 +49,6 @@ const About = () => {
         .single();
 
       if (contentError) {
-        if (contentError.code === 'PGRST116') {
-          const { error: insertError } = await supabase
-            .from('section_content')
-            .insert({
-              section_id: sectionId,
-              content: { content: defaultContent },
-              version: 1,
-              is_published: true,
-              is_draft: false
-            });
-
-          if (insertError) throw insertError;
-          return defaultContent;
-        }
         console.error('Error fetching section content:', contentError);
         throw contentError;
       }
@@ -150,10 +87,6 @@ const About = () => {
     };
   }, [refetch, toast]);
 
-  if (error) {
-    console.error('Error in about page query:', error);
-  }
-
   return (
     <div className="min-h-screen flex flex-col">
       <LeadershipBanner />
@@ -175,13 +108,10 @@ const About = () => {
             No content available yet.
           </div>
         ) : (
-          <div className="prose max-w-none">
-            {aboutContent.split('\n').map((paragraph, index) => (
-              <p key={index} className="text-lg text-gray-700 mt-4">
-                {paragraph}
-              </p>
-            ))}
-          </div>
+          <div 
+            className="prose max-w-none"
+            dangerouslySetInnerHTML={{ __html: aboutContent }}
+          />
         )}
       </main>
       <Footer />
