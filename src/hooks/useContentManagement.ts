@@ -12,13 +12,15 @@ export const useContentManagement = () => {
   const [unsavedChanges, setUnsavedChanges] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
 
+  // Load sections and content
   useEffect(() => {
     const loadSections = async () => {
       try {
-        // First check if user is authenticated
+        console.log("Loading sections and content...");
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
+          console.error("No session found");
           toast({
             title: "Authentication Required",
             description: "Please log in to manage content",
@@ -27,12 +29,28 @@ export const useContentManagement = () => {
           return;
         }
 
-        const { data: sectionsData, error } = await supabase
+        // First load sections
+        const { data: sectionsData, error: sectionsError } = await supabase
           .from('page_sections')
           .select('*')
           .order('page');
 
-        if (error) throw error;
+        if (sectionsError) {
+          console.error("Error loading sections:", sectionsError);
+          throw sectionsError;
+        }
+
+        if (!sectionsData || sectionsData.length === 0) {
+          console.log("No sections found");
+          toast({
+            title: "No Content Sections",
+            description: "No content sections are configured",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        console.log("Sections loaded:", sectionsData.length);
 
         const groupedSections = sectionsData.reduce((acc: PageSection[], section) => {
           const pageIndex = acc.findIndex(p => p.id === section.page);
@@ -50,13 +68,19 @@ export const useContentManagement = () => {
 
         setSections(groupedSections);
 
+        // Then load content
         const { data: contentData, error: contentError } = await supabase
           .from('section_content')
           .select('*')
           .eq('is_published', true)
           .order('version', { ascending: false });
 
-        if (contentError) throw contentError;
+        if (contentError) {
+          console.error("Error loading content:", contentError);
+          throw contentError;
+        }
+
+        console.log("Content entries loaded:", contentData?.length || 0);
 
         const contentMap: Record<string, any> = {};
         contentData?.forEach(item => {
@@ -67,7 +91,7 @@ export const useContentManagement = () => {
 
         setContent(contentMap);
       } catch (error) {
-        console.error('Error loading sections:', error);
+        console.error('Error in loadSections:', error);
         toast({
           title: "Error",
           description: "Failed to load content sections",
@@ -80,6 +104,7 @@ export const useContentManagement = () => {
 
     loadSections();
 
+    // Set up real-time subscription
     const channel = supabase
       .channel('section_content_changes')
       .on(
@@ -87,12 +112,14 @@ export const useContentManagement = () => {
         {
           event: '*',
           schema: 'public',
-          table: 'section_content'
+          table: 'section_content',
+          filter: 'is_published=true'
         },
         (payload) => {
           console.log('Real-time update received:', payload);
           const newData = payload.new as SectionContent;
           if (newData && newData.section_id) {
+            console.log('Updating content for section:', newData.section_id);
             setContent(prev => ({
               ...prev,
               [newData.section_id]: newData.content
@@ -100,14 +127,18 @@ export const useContentManagement = () => {
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Realtime subscription status:', status);
+      });
 
     return () => {
+      console.log('Cleaning up realtime subscription');
       supabase.removeChannel(channel);
     };
   }, [toast]);
 
   const handleContentChange = (sectionId: string, newContent: any) => {
+    console.log('Content change for section:', sectionId);
     setContent(prev => ({
       ...prev,
       [sectionId]: newContent
@@ -119,12 +150,13 @@ export const useContentManagement = () => {
   };
 
   const handleSave = async (sectionId: string) => {
+    console.log('Saving content for section:', sectionId);
     setSaving(true);
     try {
-      // Check authentication before saving
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
+        console.error('No session found during save');
         toast({
           title: "Authentication Required",
           description: "Please log in to save content",
@@ -133,27 +165,50 @@ export const useContentManagement = () => {
         return;
       }
 
-      const { error } = await supabase
+      // Get the current version number
+      const { data: currentVersionData, error: versionError } = await supabase
+        .from('section_content')
+        .select('version')
+        .eq('section_id', sectionId)
+        .order('version', { ascending: false })
+        .limit(1);
+
+      if (versionError) {
+        console.error('Error getting current version:', versionError);
+        throw versionError;
+      }
+
+      const newVersion = currentVersionData && currentVersionData[0] 
+        ? currentVersionData[0].version + 1 
+        : 1;
+
+      console.log('Publishing new version:', newVersion);
+
+      // Insert new version
+      const { error: insertError } = await supabase
         .from('section_content')
         .insert({
           section_id: sectionId,
           content: content[sectionId],
+          version: newVersion,
           is_published: true
         });
 
-      if (error) {
-        if (error.code === '42501') {
+      if (insertError) {
+        console.error('Error publishing content:', insertError);
+        if (insertError.code === '42501') {
           toast({
             title: "Permission Denied",
             description: "You don't have permission to publish content",
             variant: "destructive",
           });
         } else {
-          throw error;
+          throw insertError;
         }
         return;
       }
 
+      console.log('Content published successfully');
       toast({
         title: "Success",
         description: "Content published successfully",
@@ -164,7 +219,7 @@ export const useContentManagement = () => {
         [sectionId]: false
       }));
     } catch (error) {
-      console.error('Error saving content:', error);
+      console.error('Error in handleSave:', error);
       toast({
         title: "Error",
         description: "Failed to publish content",

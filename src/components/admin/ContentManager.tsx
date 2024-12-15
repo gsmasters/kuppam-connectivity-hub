@@ -1,7 +1,8 @@
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { useContentManagement } from "@/hooks/useContentManagement";
 import { PageSectionList } from "./PageSectionList";
 import { SectionEditor } from "./SectionEditor";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export const ContentManager = () => {
   const {
@@ -21,6 +22,17 @@ export const ContentManager = () => {
       <div className="flex items-center justify-center p-8">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
+    );
+  }
+
+  if (!sections || sections.length === 0) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          No content sections found. Please configure content sections in the database.
+        </AlertDescription>
+      </Alert>
     );
   }
 
