@@ -4,6 +4,7 @@ import { filterStaff } from "@/utils/staff-helpers";
 import { StaffMember } from "@/types/staff";
 
 interface StaffContentProps {
+  activeTab: string;
   searchQuery: string;
   mandalOfficers: StaffMember[] | undefined;
   mandalOfficeStaff: StaffMember[] | undefined;
@@ -16,6 +17,7 @@ interface StaffContentProps {
 }
 
 export const StaffContent = ({
+  activeTab,
   searchQuery,
   mandalOfficers,
   mandalOfficeStaff,
@@ -27,7 +29,7 @@ export const StaffContent = ({
   isLoadingRepresentatives,
 }: StaffContentProps) => {
   return (
-    <Tabs defaultValue="mandal_officers" className="space-y-6">
+    <Tabs value={activeTab} className="space-y-6">
       <TabsContent value="mandal_officers" className="mt-6 space-y-6 px-4 sm:px-0">
         <StaffGrid 
           title="Mandal Level Officers"

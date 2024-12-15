@@ -8,10 +8,12 @@ interface StaffTabsProps {
     sachivalayam: number;
     representatives: number;
   };
+  activeTab?: string;
+  onTabChange?: (value: string) => void;
 }
 
-export const StaffTabs = ({ counts }: StaffTabsProps) => (
-  <Tabs defaultValue="mandal_officers" className="w-full">
+export const StaffTabs = ({ counts, activeTab = "mandal_officers", onTabChange }: StaffTabsProps) => (
+  <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
     <TabsList className="inline-flex h-auto items-center justify-start gap-4 rounded-xl bg-transparent p-0 w-full flex-wrap">
       <TabsTrigger 
         value="mandal_officers" 

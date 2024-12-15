@@ -9,6 +9,8 @@ import { StaffContent } from "@/components/staff/directory/StaffContent";
 
 export const StaffContactList = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("mandal_officers");
+  
   const {
     mandalOfficeStaff,
     mandalOfficers,
@@ -47,6 +49,8 @@ export const StaffContactList = () => {
       <CardContent className="px-0 sm:px-6">
         <div className="px-4 sm:px-0">
           <StaffTabs 
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
             counts={{
               mandal_office: mandalOfficeStaff?.filter(s => s.is_working !== false).length || 0,
               mandal_officers: mandalOfficers?.filter(s => s.is_working !== false).length || 0,
@@ -56,6 +60,7 @@ export const StaffContactList = () => {
           />
         </div>
         <StaffContent
+          activeTab={activeTab}
           searchQuery={searchQuery}
           mandalOfficeStaff={mandalOfficeStaff}
           mandalOfficers={mandalOfficers}
