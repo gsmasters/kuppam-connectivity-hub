@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -16,8 +15,6 @@ interface NotificationDialogProps {
 
 export const NotificationDialog = ({ open, onOpenChange, notificationId }: NotificationDialogProps) => {
   const [message, setMessage] = useState("");
-  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
-  const [position, setPosition] = useState<"top" | "bottom">("top");
   const [active, setActive] = useState(true);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,7 +30,6 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
   const loadNotification = async () => {
     try {
       setLoading(true);
-      console.log('Loading notification:', notificationId);
       
       const { data, error } = await supabase
         .from('notifications')
@@ -43,11 +39,8 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
 
       if (error) throw error;
 
-      console.log('Loaded notification data:', data);
       if (data) {
         setMessage(data.message);
-        setPriority(data.priority as "low" | "medium" | "high");
-        setPosition(data.position === "bottom" ? "bottom" : "top");
         setActive(data.active ?? true);
       }
     } catch (error) {
@@ -65,14 +58,11 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
     try {
       const notificationData = {
         message,
-        priority,
-        position,
         active,
         updated_at: new Date().toISOString(),
       };
 
       if (notificationId) {
-        console.log('Updating notification:', notificationId, notificationData);
         const { error } = await supabase
           .from('notifications')
           .update(notificationData)
@@ -81,7 +71,6 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
         if (error) throw error;
         toast.success("Notification updated successfully");
       } else {
-        console.log('Creating new notification:', notificationData);
         const { error } = await supabase
           .from('notifications')
           .insert({
@@ -105,8 +94,6 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
 
   const resetForm = () => {
     setMessage("");
-    setPriority("medium");
-    setPosition("top");
     setActive(true);
   };
 
@@ -131,46 +118,6 @@ export const NotificationDialog = ({ open, onOpenChange, notificationId }: Notif
                 placeholder="Enter notification message"
                 required
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Priority</Label>
-              <RadioGroup
-                value={priority}
-                onValueChange={(value: "low" | "medium" | "high") => setPriority(value)}
-                className="flex gap-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="low" id="low" />
-                  <Label htmlFor="low">Low</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="medium" id="medium" />
-                  <Label htmlFor="medium">Medium</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="high" id="high" />
-                  <Label htmlFor="high">High</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Position</Label>
-              <RadioGroup
-                value={position}
-                onValueChange={(value: "top" | "bottom") => setPosition(value)}
-                className="flex gap-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="top" id="top" />
-                  <Label htmlFor="top">Top</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="bottom" id="bottom" />
-                  <Label htmlFor="bottom">Bottom</Label>
-                </div>
-              </RadioGroup>
             </div>
 
             <div className="flex items-center justify-between">

@@ -6,8 +6,6 @@ interface Notification {
   id: string;
   message: string;
   active: boolean;
-  priority: 'low' | 'medium' | 'high';
-  position: string;
   created_at: string;
   updated_at: string;
   start_date: string;
@@ -84,26 +82,11 @@ export const NotificationTicker = () => {
     return null;
   }
 
-  const getPriorityGradient = (priority: 'low' | 'medium' | 'high') => {
-    switch (priority) {
-      case 'high':
-        return 'from-red-500 via-red-600 to-red-700';
-      case 'medium':
-        return 'from-amber-400 via-amber-500 to-[#DD4814]';
-      case 'low':
-        return 'from-green-500 via-green-600 to-green-700';
-      default:
-        return 'from-amber-400 via-amber-500 to-[#DD4814]';
-    }
-  };
-
   const currentNotification = notifications[currentIndex];
   const currentContact = contacts[currentIndex % contacts.length];
 
   return (
-    <div 
-      className={`bg-gradient-to-r ${showContacts ? 'from-amber-400 via-amber-500 to-[#DD4814]' : getPriorityGradient(currentNotification?.priority || 'medium')} py-2 text-white w-full`}
-    >
+    <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white w-full">
       <div className="container mx-auto px-4">
         <div className="flex items-center space-x-2">
           <span className="font-semibold whitespace-nowrap">
