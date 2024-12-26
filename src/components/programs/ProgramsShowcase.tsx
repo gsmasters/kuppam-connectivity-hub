@@ -1,12 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { Program } from "@/types/programs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,7 +9,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const ProgramsShowcase = () => {
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 3;
+  const itemsPerPage = 6; // Increased from 3 to show more items per page
 
   const { data: programs, isLoading } = useQuery({
     queryKey: ["programs"],
@@ -27,7 +20,10 @@ export const ProgramsShowcase = () => {
         .eq("is_active", true)
         .order("created_at", { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching programs:", error);
+        throw error;
+      }
       return data as Program[];
     },
   });
@@ -35,7 +31,7 @@ export const ProgramsShowcase = () => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[1, 2, 3].map((index) => (
+        {[1, 2, 3, 4, 5, 6].map((index) => (
           <Card key={index}>
             <CardContent className="p-0">
               <Skeleton className="h-48 rounded-t-lg" />
