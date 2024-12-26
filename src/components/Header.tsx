@@ -27,7 +27,7 @@ export const Header = () => {
             <Link
               key={item.name}
               to={item.href}
-              className="px-3 py-2 rounded-md text-gray-700 hover:text-primary hover:bg-gray-50 transition-all duration-200 text-base font-medium"
+              className="px-3 py-2 rounded-md text-gray-700 hover:text-primary hover:bg-gray-50 transition-all duration-200 text-base font-medium transform hover:scale-105"
             >
               {item.name}
             </Link>
@@ -57,7 +57,7 @@ export const Header = () => {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className="px-3 py-2 rounded-md text-gray-700 hover:text-primary hover:bg-gray-50 transition-all duration-200 text-sm font-medium"
+                    className="px-3 py-2 rounded-md text-gray-700 hover:text-primary hover:bg-gray-50 transition-all duration-300 text-sm font-medium transform hover:scale-110"
                   >
                     {item.name}
                   </Link>
