@@ -43,12 +43,13 @@ export const Header = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center space-x-8">
-              <div className="flex-shrink-0">
-                <Link 
-                  to="/" 
-                  className="text-xl sm:text-2xl font-bold text-primary hover:text-primary/90 transition-colors duration-200"
-                >
-                  KUPPAM MPDO
+              <div className="flex-shrink-0 flex items-center">
+                <Link to="/" className="flex items-center space-x-2">
+                  <img
+                    src="/lovable-uploads/0ca6e276-4d20-48ee-8b76-4e09222c5632.png"
+                    alt="Panchayati Raj Logo"
+                    className="h-12 w-auto"
+                  />
                 </Link>
               </div>
               <nav className="hidden sm:flex items-center space-x-1">
@@ -63,7 +64,13 @@ export const Header = () => {
                 ))}
               </nav>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
+              <Link 
+                to="/" 
+                className="text-xl sm:text-2xl font-bold text-primary hover:text-primary/90 transition-colors duration-200 hidden sm:block"
+              >
+                KUPPAM MPDO
+              </Link>
               <MobileNav />
             </div>
           </div>
