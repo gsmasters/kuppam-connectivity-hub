@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { ImagePreviewGrid } from "./ImagePreviewGrid";
 import { ExistingImagesGrid } from "./ExistingImagesGrid";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface FormData {
   title: string;
@@ -47,48 +48,52 @@ export const ProgramForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="title">Title</Label>
-        <Input
-          id="title"
-          {...register("title", { required: true })}
-          placeholder="Enter program title"
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          {...register("description", { required: true })}
-          placeholder="Enter program description"
-          rows={4}
-        />
-      </div>
+      <ScrollArea className="h-[calc(100vh-300px)]">
+        <div className="space-y-4 p-1">
+          <div className="space-y-2">
+            <Label htmlFor="title">Title</Label>
+            <Input
+              id="title"
+              {...register("title", { required: true })}
+              placeholder="Enter program title"
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              {...register("description", { required: true })}
+              placeholder="Enter program description"
+              rows={4}
+            />
+          </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="images">Images</Label>
-        {program?.image_url && (
-          <ExistingImagesGrid 
-            images={program.image_url.split(',')} 
-            title={program.title} 
-          />
-        )}
-        <Input
-          id="images"
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={onFileChange}
-          className="mb-2"
-        />
-        <ImagePreviewGrid 
-          previews={uploadPreviews}
-          onRemove={onRemovePreview}
-        />
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="images">Images</Label>
+            {program?.image_url && (
+              <ExistingImagesGrid 
+                images={program.image_url.split(',')} 
+                title={program.title} 
+              />
+            )}
+            <Input
+              id="images"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={onFileChange}
+              className="mb-2"
+            />
+            <ImagePreviewGrid 
+              previews={uploadPreviews}
+              onRemove={onRemovePreview}
+            />
+          </div>
+        </div>
+      </ScrollArea>
 
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-end gap-2 pt-4 border-t">
         <Button
           type="button"
           variant="outline"
