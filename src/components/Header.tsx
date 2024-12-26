@@ -46,7 +46,7 @@ export const Header = () => {
             <div className="flex-shrink-0">
               <Link to="/" className="flex items-center">
                 <img
-                  src="/uploads/panchayati-raj-logo.png"
+                  src="/lovable-uploads/0ca6e276-4d20-48ee-8b76-4e09222c5632.png"
                   alt="Panchayati Raj Logo"
                   className="h-12 w-auto transition-transform duration-300 hover:scale-110"
                 />
