@@ -10,6 +10,7 @@ import Programs from "./pages/Programs";
 import StaffDirectory from "./pages/StaffDirectory";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import Index from "./pages/Index";
+import GovernmentPortals from "./pages/GovernmentPortals";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient({
@@ -32,6 +33,7 @@ const App = () => {
             <Route path="/about-us" element={<About />} />
             <Route path="/programs" element={<Programs />} />
             <Route path="/staff-directory" element={<StaffDirectory />} />
+            <Route path="/government-portals" element={<GovernmentPortals />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
           <ContactBar />
