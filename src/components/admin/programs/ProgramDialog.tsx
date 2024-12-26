@@ -79,7 +79,7 @@ export const ProgramDialog = ({
           .update({
             title: data.title,
             description: data.description,
-            image_url: image_urls[0] || program.image_url, // Keep existing image if no new ones uploaded
+            image_url: image_urls[0] || program.image_url,
             updated_at: new Date().toISOString(),
           })
           .eq("id", program.id);
@@ -89,7 +89,7 @@ export const ProgramDialog = ({
         const { error } = await supabase.from("programs").insert({
           title: data.title,
           description: data.description,
-          image_url: image_urls[0], // Use first image as main image
+          image_url: image_urls[0],
           is_active: true,
         });
 
@@ -138,6 +138,15 @@ export const ProgramDialog = ({
           </div>
           <div className="space-y-2">
             <Label htmlFor="images">Images</Label>
+            {program?.image_url && (
+              <div className="mb-2">
+                <img 
+                  src={program.image_url} 
+                  alt={program.title}
+                  className="w-32 h-32 object-cover rounded-lg"
+                />
+              </div>
+            )}
             <Input
               id="images"
               type="file"
