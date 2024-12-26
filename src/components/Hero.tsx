@@ -31,12 +31,6 @@ const highlights = [
     description: "Implementing innovative schemes for rural growth and welfare",
     icon: FileText,
     color: "text-accent"
-  },
-  {
-    title: "Our Vision",
-    description: "Building a stronger, more prosperous future for Kuppam Mandal",
-    icon: Target,
-    color: "text-primary"
   }
 ];
 
@@ -93,7 +87,7 @@ export const Hero = () => {
                       <p className="text-lg sm:text-xl text-gray-600 max-w-2xl leading-relaxed">
                         {item.description}
                       </p>
-                      {index === 2 && randomProgram && (
+                      {randomProgram && (
                         <div className="mt-6 w-full max-w-md">
                           <div className="relative h-48 w-full rounded-lg overflow-hidden">
                             <img
