@@ -3,10 +3,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Program } from "@/types/programs";
 import { Button } from "@/components/ui/button";
-import { Plus, Pencil, Trash2, Check, X } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { ProgramDialog } from "./ProgramDialog";
+import { BatchProgramUpload } from "./components/BatchProgramUpload";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const ProgramsManager = () => {
   const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
@@ -89,91 +91,104 @@ export const ProgramsManager = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Programs Management</h2>
-        <div className="flex gap-2">
-          {selectedPrograms.length > 0 && (
-            <Button 
-              variant="destructive" 
-              onClick={() => handleDelete(selectedPrograms)}
-              className="gap-2"
-            >
-              <Trash2 className="h-4 w-4" />
-              Delete Selected ({selectedPrograms.length})
-            </Button>
-          )}
-          <Button onClick={() => setIsDialogOpen(true)} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Add Program
-          </Button>
-        </div>
-      </div>
+      <Tabs defaultValue="list" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="list">Program List</TabsTrigger>
+          <TabsTrigger value="batch">Batch Upload</TabsTrigger>
+        </TabsList>
 
-      <div className="space-y-4">
-        {programs?.length > 0 && (
-          <div className="flex items-center gap-2">
-            <Checkbox
-              checked={selectedPrograms.length === programs.length}
-              onCheckedChange={handleSelectAll}
-              aria-label="Select all programs"
-            />
-            <span className="text-sm text-muted-foreground">
-              {selectedPrograms.length === programs.length 
-                ? "Deselect all" 
-                : "Select all"}
-            </span>
-          </div>
-        )}
-
-        <div className="grid gap-4">
-          {programs?.map((program) => (
-            <div
-              key={program.id}
-              className="flex items-center justify-between p-4 border rounded-lg"
-            >
-              <div className="flex items-center gap-4">
-                <Checkbox
-                  checked={selectedPrograms.includes(program.id)}
-                  onCheckedChange={() => toggleProgramSelection(program.id)}
-                  aria-label={`Select ${program.title}`}
-                />
-                <div className="h-16 w-16 relative rounded overflow-hidden">
-                  <img
-                    src={getFirstImageUrl(program.image_url)}
-                    alt={program.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = '/placeholder.svg';
-                    }}
-                  />
-                </div>
-                <div>
-                  <h3 className="font-medium">{program.title}</h3>
-                  <p className="text-sm text-muted-foreground line-clamp-1">
-                    {program.description}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleEdit(program)}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => handleDelete([program.id])}
+        <TabsContent value="list" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Programs Management</h2>
+            <div className="flex gap-2">
+              {selectedPrograms.length > 0 && (
+                <Button 
+                  variant="destructive" 
+                  onClick={() => handleDelete(selectedPrograms)}
+                  className="gap-2"
                 >
                   <Trash2 className="h-4 w-4" />
+                  Delete Selected ({selectedPrograms.length})
                 </Button>
-              </div>
+              )}
+              <Button onClick={() => setIsDialogOpen(true)} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add Program
+              </Button>
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+
+          <div className="space-y-4">
+            {programs?.length > 0 && (
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  checked={selectedPrograms.length === programs.length}
+                  onCheckedChange={handleSelectAll}
+                  aria-label="Select all programs"
+                />
+                <span className="text-sm text-muted-foreground">
+                  {selectedPrograms.length === programs.length 
+                    ? "Deselect all" 
+                    : "Select all"}
+                </span>
+              </div>
+            )}
+
+            <div className="grid gap-4">
+              {programs?.map((program) => (
+                <div
+                  key={program.id}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
+                  <div className="flex items-center gap-4">
+                    <Checkbox
+                      checked={selectedPrograms.includes(program.id)}
+                      onCheckedChange={() => toggleProgramSelection(program.id)}
+                      aria-label={`Select ${program.title}`}
+                    />
+                    <div className="h-16 w-16 relative rounded overflow-hidden">
+                      <img
+                        src={getFirstImageUrl(program.image_url)}
+                        alt={program.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = '/placeholder.svg';
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">{program.title}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-1">
+                        {program.description}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleEdit(program)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => handleDelete([program.id])}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="batch">
+          <BatchProgramUpload />
+        </TabsContent>
+      </Tabs>
 
       <ProgramDialog
         open={isDialogOpen}
