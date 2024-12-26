@@ -222,6 +222,36 @@ export type Database = {
         }
         Relationships: []
       }
+      programs: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          image_url: string
+          is_active: boolean | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          image_url: string
+          is_active?: boolean | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sachivalayam_staff: {
         Row: {
           cfms: string | null
