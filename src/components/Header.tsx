@@ -43,12 +43,13 @@ export const Header = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center space-x-8">
-              <div className="flex-shrink-0">
-                <Link 
-                  to="/" 
-                  className="text-xl sm:text-2xl font-bold text-primary hover:text-primary/90 transition-colors duration-200"
-                >
-                  KUPPAM MPDO
+              <div className="flex-shrink-0 flex items-center space-x-4">
+                <Link to="/" className="flex items-center space-x-4">
+                  <img 
+                    src="/lovable-uploads/d0c92275-850f-4083-9679-58000b7ba9e0.png" 
+                    alt="Government of Andhra Pradesh and Panchayati Raj" 
+                    className="h-12 w-auto"
+                  />
                 </Link>
               </div>
               <nav className="hidden sm:flex items-center space-x-1">
