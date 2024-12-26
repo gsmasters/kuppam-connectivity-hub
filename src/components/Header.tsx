@@ -67,7 +67,7 @@ export const Header = () => {
             <div className="flex items-center space-x-6 pr-4">
               <Link 
                 to="/" 
-                className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-[#DD4814] via-[#E9C46A] to-[#F4A261] text-transparent bg-clip-text hover:opacity-90 transition-all duration-300 transform hover:scale-105 tracking-wide font-sans"
+                className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-[#DD4814] via-[#E9C46A] to-[#F4A261] text-transparent bg-clip-text hover:opacity-90 transition-all duration-300 transform hover:scale-105 tracking-wide font-sans"
               >
                 KUPPAM MPDO
               </Link>
