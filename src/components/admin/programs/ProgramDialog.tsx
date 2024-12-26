@@ -26,7 +26,7 @@ interface ProgramDialogProps {
 interface FormData {
   title: string;
   description: string;
-  image: FileList;
+  images: FileList;
 }
 
 export const ProgramDialog = ({
@@ -49,25 +49,28 @@ export const ProgramDialog = ({
 
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
-      let image_url = program?.image_url;
+      let image_urls: string[] = [];
 
-      if (data.image?.length > 0) {
-        const file = data.image[0];
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `program-images/${fileName}`;
+      if (data.images?.length > 0) {
+        const uploadPromises = Array.from(data.images).map(async (file) => {
+          const fileExt = file.name.split(".").pop();
+          const fileName = `${Math.random()}.${fileExt}`;
+          const filePath = `program-images/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from("content-images")
-          .upload(filePath, file);
+          const { error: uploadError } = await supabase.storage
+            .from("content-images")
+            .upload(filePath, file);
 
-        if (uploadError) throw uploadError;
+          if (uploadError) throw uploadError;
 
-        const { data: { publicUrl } } = supabase.storage
-          .from("content-images")
-          .getPublicUrl(filePath);
+          const { data: { publicUrl } } = supabase.storage
+            .from("content-images")
+            .getPublicUrl(filePath);
 
-        image_url = publicUrl;
+          return publicUrl;
+        });
+
+        image_urls = await Promise.all(uploadPromises);
       }
 
       if (program) {
@@ -76,7 +79,7 @@ export const ProgramDialog = ({
           .update({
             title: data.title,
             description: data.description,
-            image_url,
+            image_url: image_urls[0] || program.image_url, // Keep existing image if no new ones uploaded
             updated_at: new Date().toISOString(),
           })
           .eq("id", program.id);
@@ -86,7 +89,7 @@ export const ProgramDialog = ({
         const { error } = await supabase.from("programs").insert({
           title: data.title,
           description: data.description,
-          image_url,
+          image_url: image_urls[0], // Use first image as main image
           is_active: true,
         });
 
@@ -134,12 +137,13 @@ export const ProgramDialog = ({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="image">Image</Label>
+            <Label htmlFor="images">Images</Label>
             <Input
-              id="image"
+              id="images"
               type="file"
               accept="image/*"
-              {...register("image")}
+              multiple
+              {...register("images")}
             />
           </div>
           <div className="flex justify-end gap-2">
