@@ -27,8 +27,8 @@ const App = () => {
           <Toaster />
           <Sonner />
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/home" element={<Navigate to="/" replace />} />
+            <Route path="/" element={<Navigate to="/about-us" replace />} />
+            <Route path="/home" element={<Index />} />
             <Route path="/about-us" element={<About />} />
             <Route path="/staff-directory" element={<StaffDirectory />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
