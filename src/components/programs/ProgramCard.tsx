@@ -13,10 +13,16 @@ export const ProgramCard = ({ program }: ProgramCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const [randomImageIndex, setRandomImageIndex] = useState(0);
   
   const images = program.image_url.includes(',') 
     ? program.image_url.split(',').map(url => url.trim())
     : [program.image_url];
+
+  // Set a random image for the card preview when component mounts
+  useEffect(() => {
+    setRandomImageIndex(Math.floor(Math.random() * images.length));
+  }, [images.length]);
 
   useEffect(() => {
     if (!isOpen || !isAutoScrolling || images.length <= 1) return;
@@ -56,15 +62,20 @@ export const ProgramCard = ({ program }: ProgramCardProps) => {
         <CardContent className="p-0">
           <div className="h-[200px] relative">
             <img
-              src={images[0]}
+              src={images[randomImageIndex]}
               alt={program.title}
               className="w-full h-full object-cover"
               loading="lazy"
               onError={(e) => {
-                console.error("Error loading image:", images[0]);
+                console.error("Error loading image:", images[randomImageIndex]);
                 e.currentTarget.src = '/placeholder.svg';
               }}
             />
+            {images.length > 1 && (
+              <div className="absolute bottom-2 right-2 bg-black/50 text-white px-2 py-1 rounded-full text-xs">
+                +{images.length - 1} more
+              </div>
+            )}
           </div>
           <div className="p-4">
             <h3 className="font-semibold text-lg mb-2 line-clamp-1">{program.title}</h3>
