@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Program } from "@/types/programs";
@@ -9,24 +8,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2, X } from "lucide-react";
+import { ProgramForm } from "./components/ProgramForm";
 
 interface ProgramDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   program: Program | null;
   onClose: () => void;
-}
-
-interface FormData {
-  title: string;
-  description: string;
-  images: FileList;
 }
 
 interface UploadPreview {
@@ -41,19 +30,14 @@ export const ProgramDialog = ({
   program,
   onClose,
 }: ProgramDialogProps) => {
-  const { register, handleSubmit, reset, setValue } = useForm<FormData>();
-  const queryClient = useQueryClient();
   const [uploadPreviews, setUploadPreviews] = useState<UploadPreview[]>([]);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (program) {
-      setValue("title", program.title);
-      setValue("description", program.description);
-    } else {
-      reset();
+    if (!open) {
+      setUploadPreviews([]);
     }
-    setUploadPreviews([]);
-  }, [program, setValue, reset]);
+  }, [open]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -73,10 +57,9 @@ export const ProgramDialog = ({
   };
 
   const mutation = useMutation({
-    mutationFn: async (data: FormData) => {
+    mutationFn: async (data: any) => {
       let image_urls: string[] = [];
 
-      // Update upload status for all files
       if (uploadPreviews.length > 0) {
         const updatedPreviews = [...uploadPreviews];
         
@@ -85,7 +68,6 @@ export const ProgramDialog = ({
           if (preview.status === 'complete') continue;
 
           try {
-            // Update status to uploading
             updatedPreviews[i] = { ...preview, status: 'uploading' };
             setUploadPreviews(updatedPreviews);
 
@@ -105,7 +87,6 @@ export const ProgramDialog = ({
 
             image_urls.push(publicUrl);
 
-            // Update status to complete
             updatedPreviews[i] = { ...preview, status: 'complete' };
             setUploadPreviews(updatedPreviews);
           } catch (error) {
@@ -118,7 +99,6 @@ export const ProgramDialog = ({
       }
 
       if (program) {
-        // If updating, combine new images with existing ones if they exist
         const existingImages = program.image_url.includes(',') 
           ? program.image_url.split(',').map(url => url.trim())
           : [program.image_url];
@@ -166,100 +146,15 @@ export const ProgramDialog = ({
             {program ? "Edit Program" : "Add New Program"}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              {...register("title", { required: true })}
-              placeholder="Enter program title"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              {...register("description", { required: true })}
-              placeholder="Enter program description"
-              rows={4}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="images">Images</Label>
-            {program?.image_url && (
-              <div className="grid grid-cols-4 gap-2 mb-2">
-                {program.image_url.split(',').map((url, index) => (
-                  <img 
-                    key={index}
-                    src={url.trim()} 
-                    alt={`${program.title} - Image ${index + 1}`}
-                    className="w-full aspect-video object-cover rounded-lg"
-                  />
-                ))}
-              </div>
-            )}
-            <Input
-              id="images"
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleFileChange}
-              className="mb-2"
-            />
-            {uploadPreviews.length > 0 && (
-              <div className="grid grid-cols-4 gap-2">
-                {uploadPreviews.map((preview, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={preview.preview}
-                      alt={`Upload preview ${index + 1}`}
-                      className="w-full aspect-video object-cover rounded-lg"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
-                      {preview.status === 'uploading' && (
-                        <Loader2 className="h-6 w-6 text-white animate-spin" />
-                      )}
-                      {preview.status === 'complete' && (
-                        <div className="text-green-400 text-sm font-medium">Uploaded</div>
-                      )}
-                      {preview.status === 'error' && (
-                        <div className="text-red-400 text-sm font-medium">Error</div>
-                      )}
-                    </div>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute top-1 right-1 h-6 w-6"
-                      onClick={() => removePreview(index)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={mutation.isPending}
-              className="gap-2"
-            >
-              {mutation.isPending && (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              )}
-              {program ? "Update" : "Create"}
-            </Button>
-          </div>
-        </form>
+        <ProgramForm
+          program={program}
+          uploadPreviews={uploadPreviews}
+          onSubmit={(data) => mutation.mutate(data)}
+          onFileChange={handleFileChange}
+          onRemovePreview={removePreview}
+          isPending={mutation.isPending}
+          onClose={onClose}
+        />
       </DialogContent>
     </Dialog>
   );
