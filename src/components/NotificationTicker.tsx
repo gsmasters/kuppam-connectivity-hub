@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
@@ -42,11 +41,8 @@ export const NotificationTicker = () => {
         <div className="flex items-center gap-6">
           <span className="font-semibold whitespace-nowrap shrink-0">Latest Updates:</span>
           <div className="overflow-hidden flex-1">
-            <div className="flex items-center gap-3">
-              <ArrowRight className="h-4 w-4 shrink-0" />
-              <div className="animate-[slide_15s_linear_infinite] whitespace-nowrap overflow-hidden">
-                <span className="inline-block">{notifications[currentIndex]?.message}</span>
-              </div>
+            <div className="animate-[slide_15s_linear_infinite] whitespace-nowrap overflow-hidden">
+              <span className="inline-block">{notifications[currentIndex]?.message}</span>
             </div>
           </div>
         </div>
