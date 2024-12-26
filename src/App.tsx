@@ -3,8 +3,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { MainLayout } from "@/components/layouts/MainLayout";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ContactBar } from "@/components/ContactBar";
 import About from "./pages/About";
 import Programs from "./pages/Programs";
 import StaffDirectory from "./pages/StaffDirectory";
@@ -28,12 +28,13 @@ const App = () => {
           <Toaster />
           <Sonner />
           <Routes>
-            <Route path="/" element={<MainLayout><Index /></MainLayout>} />
-            <Route path="/about-us" element={<MainLayout><About /></MainLayout>} />
-            <Route path="/programs" element={<MainLayout><Programs /></MainLayout>} />
-            <Route path="/staff-directory" element={<MainLayout><StaffDirectory /></MainLayout>} />
+            <Route path="/" element={<Index />} />
+            <Route path="/about-us" element={<About />} />
+            <Route path="/programs" element={<Programs />} />
+            <Route path="/staff-directory" element={<StaffDirectory />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
+          <ContactBar />
         </TooltipProvider>
       </BrowserRouter>
     </QueryClientProvider>

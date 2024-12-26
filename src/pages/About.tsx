@@ -1,3 +1,6 @@
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { LeadershipBanner } from "@/components/LeadershipBanner";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -86,31 +89,36 @@ const About = () => {
   }, [refetch, toast]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">About Us</h1>
-      {isLoading ? (
-        <div className="space-y-4">
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-2/3" />
-        </div>
-      ) : error ? (
-        <div className="text-red-500">
-          Failed to load content. Please try again later.
-        </div>
-      ) : !aboutContent ? (
-        <div className="text-gray-500 italic">
-          No content available yet.
-        </div>
-      ) : (
-        <>
-          <div 
-            className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: aboutContent }}
-          />
-          <DepartmentsList />
-        </>
-      )}
+    <div className="min-h-screen flex flex-col">
+      <LeadershipBanner />
+      <Header />
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">About Us</h1>
+        {isLoading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-2/3" />
+          </div>
+        ) : error ? (
+          <div className="text-red-500">
+            Failed to load content. Please try again later.
+          </div>
+        ) : !aboutContent ? (
+          <div className="text-gray-500 italic">
+            No content available yet.
+          </div>
+        ) : (
+          <>
+            <div 
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: aboutContent }}
+            />
+            <DepartmentsList />
+          </>
+        )}
+      </main>
+      <Footer />
     </div>
   );
 };
