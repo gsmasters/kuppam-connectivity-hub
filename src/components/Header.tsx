@@ -41,18 +41,21 @@ export const Header = () => {
     <>
       <header className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center space-x-8">
-              <div className="flex-shrink-0 flex items-center">
-                <Link to="/" className="flex items-center space-x-2">
-                  <img
-                    src="/lovable-uploads/0ca6e276-4d20-48ee-8b76-4e09222c5632.png"
-                    alt="Panchayati Raj Logo"
-                    className="h-12 w-auto transition-transform duration-300 hover:scale-110"
-                  />
-                </Link>
-              </div>
-              <nav className="hidden sm:flex items-center space-x-1">
+          <div className="flex justify-between items-center h-16">
+            {/* Left side with logo */}
+            <div className="flex-shrink-0">
+              <Link to="/" className="flex items-center">
+                <img
+                  src="/lovable-uploads/0ca6e276-4d20-48ee-8b76-4e09222c5632.png"
+                  alt="Panchayati Raj Logo"
+                  className="h-12 w-auto transition-transform duration-300 hover:scale-110"
+                />
+              </Link>
+            </div>
+
+            {/* Centered navigation */}
+            <nav className="hidden sm:flex flex-1 justify-center items-center">
+              <div className="flex space-x-4">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
@@ -62,9 +65,11 @@ export const Header = () => {
                     {item.name}
                   </Link>
                 ))}
-              </nav>
-            </div>
-            <div className="flex items-center space-x-6 pr-4">
+              </div>
+            </nav>
+
+            {/* Right side with title and mobile menu */}
+            <div className="flex items-center space-x-6">
               <Link 
                 to="/" 
                 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-[#DD4814] via-[#E9C46A] to-[#F4A261] text-transparent bg-clip-text hover:opacity-90 transition-all duration-300 transform hover:scale-105 tracking-wide font-sans"
