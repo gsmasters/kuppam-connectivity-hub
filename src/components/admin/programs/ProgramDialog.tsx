@@ -59,7 +59,12 @@ export const ProgramDialog = ({
   };
 
   const removePreview = (index: number) => {
-    setUploadPreviews(prev => prev.filter((_, i) => i !== index));
+    setUploadPreviews(prev => {
+      const newPreviews = [...prev];
+      URL.revokeObjectURL(newPreviews[index].preview);
+      newPreviews.splice(index, 1);
+      return newPreviews;
+    });
   };
 
   const mutation = useMutation({
