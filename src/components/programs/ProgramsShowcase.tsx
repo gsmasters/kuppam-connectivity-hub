@@ -4,6 +4,7 @@ import { Program } from "@/types/programs";
 import { useState } from "react";
 import { ProgramsGrid } from "./ProgramsGrid";
 import { Pagination } from "./Pagination";
+import { toast } from "sonner";
 
 export const ProgramsShowcase = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -12,6 +13,7 @@ export const ProgramsShowcase = () => {
   const { data: programs, isLoading } = useQuery({
     queryKey: ["programs"],
     queryFn: async () => {
+      console.log("Fetching programs...");
       const { data, error } = await supabase
         .from("programs")
         .select("*")
@@ -20,8 +22,11 @@ export const ProgramsShowcase = () => {
       
       if (error) {
         console.error("Error fetching programs:", error);
+        toast.error("Failed to load programs");
         throw error;
       }
+
+      console.log("Programs fetched:", data);
       return data as Program[];
     },
   });
@@ -29,6 +34,9 @@ export const ProgramsShowcase = () => {
   const totalPages = programs ? Math.ceil(programs.length / itemsPerPage) : 0;
   const startIndex = currentPage * itemsPerPage;
   const displayedPrograms = programs?.slice(startIndex, startIndex + itemsPerPage) || [];
+
+  console.log("Total programs:", programs?.length);
+  console.log("Displayed programs:", displayedPrograms.length);
 
   return (
     <div className="space-y-6">

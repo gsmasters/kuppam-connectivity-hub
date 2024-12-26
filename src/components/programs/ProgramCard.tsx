@@ -6,6 +6,8 @@ interface ProgramCardProps {
 }
 
 export const ProgramCard = ({ program }: ProgramCardProps) => {
+  console.log("Rendering program:", program);
+  
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <CardContent className="p-0">
@@ -15,6 +17,7 @@ export const ProgramCard = ({ program }: ProgramCardProps) => {
             alt={program.title}
             className="w-full h-full object-cover"
             onError={(e) => {
+              console.error("Error loading image:", program.image_url);
               e.currentTarget.src = '/placeholder.svg';
             }}
           />
