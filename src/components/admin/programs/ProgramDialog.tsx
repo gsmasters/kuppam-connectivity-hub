@@ -24,6 +24,12 @@ interface UploadPreview {
   status: 'pending' | 'uploading' | 'complete' | 'error';
 }
 
+interface ProgramData {
+  title: string;
+  description: string;
+  images: File[];
+}
+
 export const ProgramDialog = ({
   open,
   onOpenChange,
@@ -57,7 +63,7 @@ export const ProgramDialog = ({
   };
 
   const mutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: ProgramData) => {
       let image_urls: string[] = [];
 
       if (uploadPreviews.length > 0) {

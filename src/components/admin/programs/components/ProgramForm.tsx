@@ -3,16 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { ImagePreviewGrid } from "./ImagePreviewGrid";
-import { ExistingImagesGrid } from "./ExistingImagesGrid";
+import { Loader2, X } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-interface FormData {
-  title: string;
-  description: string;
-  images: FileList;
-}
 
 interface UploadPreview {
   file: File;
@@ -23,7 +15,7 @@ interface UploadPreview {
 interface ProgramFormProps {
   program: any;
   uploadPreviews: UploadPreview[];
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: any) => void;
   onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onRemovePreview: (index: number) => void;
   isPending: boolean;
@@ -39,7 +31,7 @@ export const ProgramForm = ({
   isPending,
   onClose
 }: ProgramFormProps) => {
-  const { register, handleSubmit } = useForm<FormData>({
+  const { register, handleSubmit } = useForm({
     defaultValues: {
       title: program?.title || '',
       description: program?.description || ''
@@ -72,10 +64,17 @@ export const ProgramForm = ({
           <div className="space-y-2">
             <Label htmlFor="images">Images</Label>
             {program?.image_url && (
-              <ExistingImagesGrid 
-                images={program.image_url.split(',')} 
-                title={program.title} 
-              />
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+                {program.image_url.split(',').map((url: string, index: number) => (
+                  <div key={index} className="relative aspect-video">
+                    <img
+                      src={url.trim()}
+                      alt={`${program.title} - Image ${index + 1}`}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  </div>
+                ))}
+              </div>
             )}
             <Input
               id="images"
@@ -85,10 +84,39 @@ export const ProgramForm = ({
               onChange={onFileChange}
               className="mb-2"
             />
-            <ImagePreviewGrid 
-              previews={uploadPreviews}
-              onRemove={onRemovePreview}
-            />
+            {uploadPreviews.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {uploadPreviews.map((preview, index) => (
+                  <div key={index} className="relative aspect-video group">
+                    <img
+                      src={preview.preview}
+                      alt={`Upload preview ${index + 1}`}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      {preview.status === 'uploading' && (
+                        <Loader2 className="h-6 w-6 text-white animate-spin" />
+                      )}
+                      {preview.status === 'complete' && (
+                        <span className="text-green-400 text-sm font-medium">Uploaded</span>
+                      )}
+                      {preview.status === 'error' && (
+                        <span className="text-red-400 text-sm font-medium">Error</span>
+                      )}
+                    </div>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => onRemovePreview(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </ScrollArea>
