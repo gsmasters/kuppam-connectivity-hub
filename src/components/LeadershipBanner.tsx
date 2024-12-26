@@ -8,7 +8,7 @@ export const LeadershipBanner = () => {
             <img
               src="/lovable-uploads/11889f01-b523-4671-b93b-457ede5835f4.png"
               alt="TDP President Sri Nara Chandrababu Naidu"
-              className="h-16 md:h-24 w-auto transition-all duration-300 ease-in-out hover:scale-105"
+              className="h-16 md:h-24 w-auto object-contain shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-110"
               loading="eager"
             />
           </div>
@@ -28,7 +28,7 @@ export const LeadershipBanner = () => {
             <img
               src="/lovable-uploads/381e55c7-ff55-497a-ab2f-729bc3e1c9fd.png"
               alt="Jana Sena President Sri Konidala Pawan Kalyan"
-              className="h-16 md:h-24 w-auto transition-all duration-300 ease-in-out hover:scale-105"
+              className="h-16 md:h-24 w-auto object-contain shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-110"
               loading="eager"
             />
           </div>
