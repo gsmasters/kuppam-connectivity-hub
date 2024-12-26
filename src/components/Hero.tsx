@@ -9,6 +9,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import Autoplay from "embla-carousel-autoplay";
 import { useRef } from "react";
 import { Building, Users, FileText, Target } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Program } from "@/types/programs";
 
 const highlights = [
   {
@@ -42,6 +45,28 @@ export const Hero = () => {
     Autoplay({ delay: 4000, stopOnInteraction: true })
   );
 
+  const { data: programs } = useQuery({
+    queryKey: ["featured-programs"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("programs")
+        .select("*")
+        .eq("is_active", true);
+
+      if (error) {
+        console.error("Error fetching programs:", error);
+        return [];
+      }
+
+      return data as Program[];
+    },
+  });
+
+  // Get a random program if available
+  const randomProgram = programs && programs.length > 0
+    ? programs[Math.floor(Math.random() * programs.length)]
+    : null;
+
   return (
     <section className="bg-gradient-to-b from-white to-gray-50 py-12">
       <div className="container mx-auto px-4">
@@ -68,6 +93,27 @@ export const Hero = () => {
                       <p className="text-lg sm:text-xl text-gray-600 max-w-2xl leading-relaxed">
                         {item.description}
                       </p>
+                      {index === 2 && randomProgram && (
+                        <div className="mt-6 w-full max-w-md">
+                          <div className="relative h-48 w-full rounded-lg overflow-hidden">
+                            <img
+                              src={randomProgram.image_url.split(',')[0].trim()}
+                              alt={randomProgram.title}
+                              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                              onError={(e) => {
+                                console.error("Error loading image:", randomProgram.image_url);
+                                e.currentTarget.src = '/placeholder.svg';
+                              }}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                            <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                              <h4 className="text-lg font-semibold truncate">
+                                {randomProgram.title}
+                              </h4>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
