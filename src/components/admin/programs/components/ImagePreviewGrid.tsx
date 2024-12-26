@@ -17,7 +17,7 @@ export const ImagePreviewGrid = ({ previews, onRemove }: ImagePreviewGridProps) 
   if (!previews.length) return null;
 
   return (
-    <ScrollArea className="h-[400px] w-full rounded-md border">
+    <ScrollArea className="h-[200px] w-full rounded-md border">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4">
         {previews.map((preview, index) => (
           <div key={index} className="relative group">

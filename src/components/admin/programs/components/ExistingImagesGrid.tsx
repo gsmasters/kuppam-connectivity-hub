@@ -9,7 +9,7 @@ export const ExistingImagesGrid = ({ images, title }: ExistingImagesGridProps) =
   if (!images?.length) return null;
 
   return (
-    <ScrollArea className="h-[400px] w-full rounded-md border">
+    <ScrollArea className="h-[200px] w-full rounded-md border">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4">
         {images.map((url, index) => (
           <div key={index} className="aspect-video relative rounded-lg overflow-hidden">
