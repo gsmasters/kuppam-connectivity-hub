@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ContactBar } from "@/components/ContactBar";
 import About from "./pages/About";
+import Programs from "./pages/Programs";
 import StaffDirectory from "./pages/StaffDirectory";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 
@@ -28,6 +29,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/about-us" replace />} />
             <Route path="/about-us" element={<About />} />
+            <Route path="/programs" element={<Programs />} />
             <Route path="/staff-directory" element={<StaffDirectory />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
