@@ -74,12 +74,19 @@ export const ProgramDialog = ({
       }
 
       if (program) {
+        // If updating, combine new images with existing ones if they exist
+        const existingImages = program.image_url.includes(',') 
+          ? program.image_url.split(',').map(url => url.trim())
+          : [program.image_url];
+        
+        const allImages = [...existingImages, ...image_urls];
+        
         const { error } = await supabase
           .from("programs")
           .update({
             title: data.title,
             description: data.description,
-            image_url: image_urls[0] || program.image_url,
+            image_url: allImages.join(', '),
             updated_at: new Date().toISOString(),
           })
           .eq("id", program.id);
@@ -89,7 +96,7 @@ export const ProgramDialog = ({
         const { error } = await supabase.from("programs").insert({
           title: data.title,
           description: data.description,
-          image_url: image_urls[0],
+          image_url: image_urls.join(', '),
           is_active: true,
         });
 
@@ -106,10 +113,6 @@ export const ProgramDialog = ({
       toast.error(program ? "Failed to update program" : "Failed to create program");
     },
   });
-
-  const onSubmit = (data: FormData) => {
-    mutation.mutate(data);
-  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -140,12 +143,15 @@ export const ProgramDialog = ({
           <div className="space-y-2">
             <Label htmlFor="images">Images</Label>
             {program?.image_url && (
-              <div className="mb-2">
-                <img 
-                  src={program.image_url} 
-                  alt={program.title}
-                  className="w-32 h-32 object-cover rounded-lg"
-                />
+              <div className="grid grid-cols-4 gap-2 mb-2">
+                {program.image_url.split(',').map((url, index) => (
+                  <img 
+                    key={index}
+                    src={url.trim()} 
+                    alt={`${program.title} - Image ${index + 1}`}
+                    className="w-full aspect-video object-cover rounded-lg"
+                  />
+                ))}
               </div>
             )}
             <Input
