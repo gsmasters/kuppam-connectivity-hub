@@ -65,6 +65,7 @@ export const ProgramCard = ({ program }: ProgramCardProps) => {
               src={images[randomImageIndex]}
               alt={program.title}
               className="w-full h-full object-cover"
+              style={{ objectPosition: 'center' }}
               loading="lazy"
               onError={(e) => {
                 console.error("Error loading image:", images[randomImageIndex]);
@@ -93,19 +94,36 @@ export const ProgramCard = ({ program }: ProgramCardProps) => {
           </DialogHeader>
           <div className="space-y-6">
             <div className="relative">
-              <motion.img
+              <motion.div
                 key={currentImageIndex}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                src={images[currentImageIndex]}
-                alt={`${program.title} - Image ${currentImageIndex + 1}`}
-                className="w-full h-[400px] md:h-[500px] rounded-lg object-cover"
-                loading="lazy"
-                onError={(e) => {
-                  e.currentTarget.src = '/placeholder.svg';
+                className="relative w-full"
+                style={{ 
+                  minHeight: '400px',
+                  maxHeight: '70vh',
+                  overflow: 'hidden'
                 }}
-              />
+              >
+                <img
+                  src={images[currentImageIndex]}
+                  alt={`${program.title} - Image ${currentImageIndex + 1}`}
+                  className="w-full h-full object-contain"
+                  style={{ 
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    maxHeight: '100%',
+                    maxWidth: '100%'
+                  }}
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.src = '/placeholder.svg';
+                  }}
+                />
+              </motion.div>
               {images.length > 1 && (
                 <>
                   <button
