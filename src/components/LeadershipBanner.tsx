@@ -17,7 +17,7 @@ export const LeadershipBanner = () => {
           <div className="w-1/4 flex justify-center">
             <div className="bg-primary/10 rounded-full p-4 hover:bg-primary/20 transition-all duration-300">
               <img
-                src="/lovable-uploads/e1944a3b-0d70-4eed-861b-d2818beee246.png"
+                src="/lovable-uploads/98fc557c-f030-47e5-b436-9ca89f17cab7.png"
                 alt="Government of Andhra Pradesh"
                 className="h-28 w-28 object-contain transition-all duration-300 transform hover:scale-105"
                 loading="eager"
