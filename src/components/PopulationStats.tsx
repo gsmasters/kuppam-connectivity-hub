@@ -26,7 +26,12 @@ export const PopulationStats = () => {
     { gender: 'Female', count: 14394, percentage: 39.61 },
   ];
 
-  const COLORS = ['#0ea5e9', '#f43f5e', '#10b981'];
+  // Soft, gender-neutral colors
+  const COLORS = ['#E5DEFF', '#FFDEE2', '#D3E4FD'];
+  const CHART_COLORS = {
+    male: '#D3E4FD',    // Soft blue
+    female: '#FFDEE2',  // Soft pink
+  };
 
   const pieData = populationData.map(item => ({
     name: item.category,
@@ -34,30 +39,37 @@ export const PopulationStats = () => {
   }));
 
   return (
-    <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-pink-50">
+    <section className="py-16 bg-gradient-to-br from-[#F1F0FB] via-white to-[#F8F9FA]">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
           Kuppam Mandal Demographics
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <Card className="border-t-4 border-t-blue-500 hover:shadow-lg transition-shadow">
+          <Card className="border-t-4 border-t-[#D3E4FD] hover:shadow-lg transition-shadow">
             <CardHeader>
-              <Users className="h-8 w-8 text-blue-500 mb-2" />
+              <Users className="h-8 w-8 text-[#8E9196] mb-2" />
               <CardTitle className="text-lg">Total Population</CardTitle>
               <CardDescription>Census 2011</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-gray-900">{totalPopulation.total.toLocaleString()}</div>
-              <div className="text-sm text-gray-600 mt-2">
-                Male: {totalPopulation.male.toLocaleString()} | Female: {totalPopulation.female.toLocaleString()}
+              <div className="flex items-center justify-between mt-4">
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-5 w-5 text-[#D3E4FD]" />
+                  <span className="text-sm text-gray-600">{totalPopulation.male.toLocaleString()}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-5 w-5 text-[#FFDEE2]" />
+                  <span className="text-sm text-gray-600">{totalPopulation.female.toLocaleString()}</span>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-t-4 border-t-rose-500 hover:shadow-lg transition-shadow">
+          <Card className="border-t-4 border-t-[#FFDEE2] hover:shadow-lg transition-shadow">
             <CardHeader>
-              <UserRound className="h-8 w-8 text-rose-500 mb-2" />
+              <UserRound className="h-8 w-8 text-[#8E9196] mb-2" />
               <CardTitle className="text-lg">Gender Ratio</CardTitle>
               <CardDescription>Females per 1000 Males</CardDescription>
             </CardHeader>
@@ -69,23 +81,30 @@ export const PopulationStats = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-t-4 border-t-emerald-500 hover:shadow-lg transition-shadow">
+          <Card className="border-t-4 border-t-[#E5DEFF] hover:shadow-lg transition-shadow">
             <CardHeader>
-              <Percent className="h-8 w-8 text-emerald-500 mb-2" />
+              <Percent className="h-8 w-8 text-[#8E9196] mb-2" />
               <CardTitle className="text-lg">Literacy Rate</CardTitle>
               <CardDescription>Overall</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-gray-900">46.50%</div>
-              <div className="text-sm text-gray-600 mt-2">
-                Male: 53.17% | Female: 39.61%
+              <div className="flex items-center justify-between mt-4">
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-5 w-5 text-[#D3E4FD]" />
+                  <span className="text-sm text-gray-600">53.17%</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-5 w-5 text-[#FFDEE2]" />
+                  <span className="text-sm text-gray-600">39.61%</span>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-t-4 border-t-purple-500 hover:shadow-lg transition-shadow">
+          <Card className="border-t-4 border-t-[#aaadb0] hover:shadow-lg transition-shadow">
             <CardHeader>
-              <Building2 className="h-8 w-8 text-purple-500 mb-2" />
+              <Building2 className="h-8 w-8 text-[#8E9196] mb-2" />
               <CardTitle className="text-lg">Population Density</CardTitle>
               <CardDescription>Per Square KM</CardDescription>
             </CardHeader>
@@ -112,7 +131,7 @@ export const PopulationStats = () => {
                     cx="50%"
                     cy="50%"
                     outerRadius={100}
-                    fill="#0ea5e9"
+                    fill="#D3E4FD"
                     dataKey="value"
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
                   >
@@ -139,8 +158,8 @@ export const PopulationStats = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="male" name="Male" fill="#0ea5e9" />
-                  <Bar dataKey="female" name="Female" fill="#f43f5e" />
+                  <Bar dataKey="male" name="Male" fill={CHART_COLORS.male} />
+                  <Bar dataKey="female" name="Female" fill={CHART_COLORS.female} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>

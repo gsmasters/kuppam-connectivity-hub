@@ -2,7 +2,6 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
 import { LeadershipBanner } from "@/components/LeadershipBanner";
-import { ProgramHighlights } from "@/components/ProgramHighlights";
 import { PopulationStats } from "@/components/PopulationStats";
 
 const Index = () => {
@@ -13,7 +12,6 @@ const Index = () => {
         <Header />
         <main className="flex-grow">
           <Hero />
-          <ProgramHighlights />
           <PopulationStats />
         </main>
         <Footer />
