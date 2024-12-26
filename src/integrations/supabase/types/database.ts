@@ -1,5 +1,6 @@
+import { Json } from './json';
 import { ProgramsTable } from './tables/programs';
-import { ElectedRepresentativesTable } from './tables';
+import { ElectedRepresentativesTable } from './tables/elected_representatives';
 
 export interface Database {
   public: {
