@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
 interface ProgramDialogProps {
   open: boolean;
@@ -29,6 +29,12 @@ interface FormData {
   images: FileList;
 }
 
+interface UploadPreview {
+  file: File;
+  preview: string;
+  status: 'pending' | 'uploading' | 'complete' | 'error';
+}
+
 export const ProgramDialog = ({
   open,
   onOpenChange,
@@ -37,6 +43,7 @@ export const ProgramDialog = ({
 }: ProgramDialogProps) => {
   const { register, handleSubmit, reset, setValue } = useForm<FormData>();
   const queryClient = useQueryClient();
+  const [uploadPreviews, setUploadPreviews] = useState<UploadPreview[]>([]);
 
   useEffect(() => {
     if (program) {
@@ -45,32 +52,69 @@ export const ProgramDialog = ({
     } else {
       reset();
     }
+    setUploadPreviews([]);
   }, [program, setValue, reset]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    const newPreviews = Array.from(files).map(file => ({
+      file,
+      preview: URL.createObjectURL(file),
+      status: 'pending' as const
+    }));
+
+    setUploadPreviews(prev => [...prev, ...newPreviews]);
+  };
+
+  const removePreview = (index: number) => {
+    setUploadPreviews(prev => prev.filter((_, i) => i !== index));
+  };
 
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
       let image_urls: string[] = [];
 
-      if (data.images?.length > 0) {
-        const uploadPromises = Array.from(data.images).map(async (file) => {
-          const fileExt = file.name.split(".").pop();
-          const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-          const filePath = `programs/${fileName}`;
+      // Update upload status for all files
+      if (uploadPreviews.length > 0) {
+        const updatedPreviews = [...uploadPreviews];
+        
+        for (let i = 0; i < uploadPreviews.length; i++) {
+          const preview = uploadPreviews[i];
+          if (preview.status === 'complete') continue;
 
-          const { error: uploadError } = await supabase.storage
-            .from("content-images")
-            .upload(filePath, file);
+          try {
+            // Update status to uploading
+            updatedPreviews[i] = { ...preview, status: 'uploading' };
+            setUploadPreviews(updatedPreviews);
 
-          if (uploadError) throw uploadError;
+            const fileExt = preview.file.name.split(".").pop();
+            const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const filePath = `programs/${fileName}`;
 
-          const { data: { publicUrl } } = supabase.storage
-            .from("content-images")
-            .getPublicUrl(filePath);
+            const { error: uploadError } = await supabase.storage
+              .from("content-images")
+              .upload(filePath, preview.file);
 
-          return publicUrl;
-        });
+            if (uploadError) throw uploadError;
 
-        image_urls = await Promise.all(uploadPromises);
+            const { data: { publicUrl } } = supabase.storage
+              .from("content-images")
+              .getPublicUrl(filePath);
+
+            image_urls.push(publicUrl);
+
+            // Update status to complete
+            updatedPreviews[i] = { ...preview, status: 'complete' };
+            setUploadPreviews(updatedPreviews);
+          } catch (error) {
+            console.error('Error uploading file:', error);
+            updatedPreviews[i] = { ...preview, status: 'error' };
+            setUploadPreviews(updatedPreviews);
+            throw error;
+          }
+        }
       }
 
       if (program) {
@@ -122,7 +166,7 @@ export const ProgramDialog = ({
             {program ? "Edit Program" : "Add New Program"}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="title">Title</Label>
             <Input
@@ -159,8 +203,42 @@ export const ProgramDialog = ({
               type="file"
               accept="image/*"
               multiple
-              {...register("images")}
+              onChange={handleFileChange}
+              className="mb-2"
             />
+            {uploadPreviews.length > 0 && (
+              <div className="grid grid-cols-4 gap-2">
+                {uploadPreviews.map((preview, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={preview.preview}
+                      alt={`Upload preview ${index + 1}`}
+                      className="w-full aspect-video object-cover rounded-lg"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
+                      {preview.status === 'uploading' && (
+                        <Loader2 className="h-6 w-6 text-white animate-spin" />
+                      )}
+                      {preview.status === 'complete' && (
+                        <div className="text-green-400 text-sm font-medium">Uploaded</div>
+                      )}
+                      {preview.status === 'error' && (
+                        <div className="text-red-400 text-sm font-medium">Error</div>
+                      )}
+                    </div>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-1 right-1 h-6 w-6"
+                      onClick={() => removePreview(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex justify-end gap-2">
             <Button
