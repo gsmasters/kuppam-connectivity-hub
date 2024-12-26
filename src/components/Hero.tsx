@@ -38,26 +38,9 @@ export const Hero = () => {
 
   useEffect(() => {
     if (programs && programs.length > 0) {
-      // Create an array of all available images from all programs
-      const allImages = programs.flatMap(program => 
-        program.image_url.split(',').map(url => ({
-          url: url.trim(),
-          programId: program.id,
-          title: program.title,
-          description: program.description
-        }))
-      );
-
-      // Shuffle the images array
-      const shuffledImages = [...allImages].sort(() => Math.random() - 0.5);
-
-      // Create new program objects with randomized images
-      const randomized = programs.map((program, index) => ({
-        ...program,
-        image_url: shuffledImages[index % shuffledImages.length].url
-      }));
-
-      setRandomizedPrograms(randomized);
+      // Create a shuffled copy of the programs array
+      const shuffledPrograms = [...programs].sort(() => Math.random() - 0.5);
+      setRandomizedPrograms(shuffledPrograms);
     }
   }, [programs]);
 
@@ -90,7 +73,7 @@ export const Hero = () => {
                       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
                       <div className="absolute inset-0 p-2">
                         <img
-                          src={program.image_url}
+                          src={program.image_url.split(',')[0].trim()}
                           alt={program.title}
                           className="w-full h-full object-cover rounded-lg transition-transform duration-700 group-hover:scale-105"
                           style={{ objectFit: 'cover' }}
