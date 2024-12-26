@@ -19,10 +19,10 @@ export const ProgramCard = ({ program }: ProgramCardProps) => {
     ? program.image_url.split(',').map(url => url.trim())
     : [program.image_url];
 
-  // Set a random image for the card preview when component mounts
+  // Update random image index whenever the component mounts or program changes
   useEffect(() => {
     setRandomImageIndex(Math.floor(Math.random() * images.length));
-  }, [images.length]);
+  }, [program.id, images.length]); // Added program.id as dependency to ensure it updates when program changes
 
   useEffect(() => {
     if (!isOpen || !isAutoScrolling || images.length <= 1) return;
