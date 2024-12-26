@@ -14,33 +14,30 @@ export const ProgramCard = ({ program }: ProgramCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   
-  // Split the image URLs if they exist, otherwise use a single image
   const images = program.image_url.includes(',') 
     ? program.image_url.split(',').map(url => url.trim())
     : [program.image_url];
 
-  // Auto-scroll effect
   useEffect(() => {
     if (!isOpen || !isAutoScrolling || images.length <= 1) return;
 
     const timer = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    }, 3000); // Change image every 3 seconds
+    }, 3000);
 
     return () => clearInterval(timer);
   }, [isOpen, isAutoScrolling, images.length]);
 
   const nextImage = () => {
-    setIsAutoScrolling(false); // Pause auto-scroll when manually navigating
+    setIsAutoScrolling(false);
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
   const previousImage = () => {
-    setIsAutoScrolling(false); // Pause auto-scroll when manually navigating
+    setIsAutoScrolling(false);
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
-  // Resume auto-scroll after 5 seconds of no manual interaction
   useEffect(() => {
     if (!isAutoScrolling) {
       const timer = setTimeout(() => {
@@ -61,11 +58,12 @@ export const ProgramCard = ({ program }: ProgramCardProps) => {
           onClick={() => setIsOpen(true)}
         >
           <CardContent className="p-0">
-            <div className="aspect-video relative">
+            <div className="h-[200px] relative">
               <img
                 src={images[0]}
                 alt={program.title}
                 className="w-full h-full object-cover"
+                loading="lazy"
                 onError={(e) => {
                   console.error("Error loading image:", images[0]);
                   e.currentTarget.src = '/placeholder.svg';
@@ -96,7 +94,8 @@ export const ProgramCard = ({ program }: ProgramCardProps) => {
                 transition={{ duration: 0.5 }}
                 src={images[currentImageIndex]}
                 alt={`${program.title} - Image ${currentImageIndex + 1}`}
-                className="w-full rounded-lg object-cover max-h-[500px]"
+                className="w-full h-[400px] md:h-[500px] rounded-lg object-cover"
+                loading="lazy"
                 onError={(e) => {
                   e.currentTarget.src = '/placeholder.svg';
                 }}
@@ -141,27 +140,6 @@ export const ProgramCard = ({ program }: ProgramCardProps) => {
                 </div>
               )}
             </div>
-            
-            {images.length > 1 && (
-              <div className="grid grid-cols-4 gap-2 mt-4">
-                {images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`${program.title} thumbnail ${index + 1}`}
-                    className={`w-full aspect-video object-cover rounded cursor-pointer transition-all
-                      ${currentImageIndex === index ? 'ring-2 ring-primary' : 'opacity-70 hover:opacity-100'}`}
-                    onClick={() => {
-                      setIsAutoScrolling(false);
-                      setCurrentImageIndex(index);
-                    }}
-                    onError={(e) => {
-                      e.currentTarget.src = '/placeholder.svg';
-                    }}
-                  />
-                ))}
-              </div>
-            )}
             
             <p className="text-base leading-relaxed">
               {program.description}

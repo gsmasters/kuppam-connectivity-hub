@@ -51,13 +51,14 @@ export const ProgramGallery = () => {
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={index}>
-              <div className="relative aspect-video">
+              <div className="relative h-[400px] md:h-[500px]">
                 <img
                   src={image.src}
                   alt={image.alt}
                   className="w-full h-full object-cover rounded-lg"
+                  loading="lazy"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4 rounded-b-lg">
+                <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4 rounded-b-lg backdrop-blur-sm">
                   <p className="text-sm sm:text-base">{image.caption}</p>
                 </div>
               </div>
