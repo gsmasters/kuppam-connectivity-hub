@@ -15,14 +15,12 @@ export const LeadershipBanner = () => {
 
           {/* Center AP Government Logo */}
           <div className="w-1/4 flex justify-center">
-            <div className="bg-white bg-opacity-90 rounded-full p-4 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-              <img
-                src="/lovable-uploads/e1944a3b-0d70-4eed-861b-d2818beee246.png"
-                alt="Government of Andhra Pradesh"
-                className="h-20 w-20 object-contain"
-                loading="eager"
-              />
-            </div>
+            <img
+              src="/lovable-uploads/e1944a3b-0d70-4eed-861b-d2818beee246.png"
+              alt="Government of Andhra Pradesh"
+              className="h-28 w-28 object-contain transition-all duration-300 transform hover:scale-105"
+              loading="eager"
+            />
           </div>
 
           {/* Right Leader */}
