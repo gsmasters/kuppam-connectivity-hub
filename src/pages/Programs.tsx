@@ -7,8 +7,10 @@ const Programs = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Our Programs</h1>
-        <ProgramsShowcase />
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold mb-8">Our Programs</h1>
+          <ProgramsShowcase />
+        </div>
       </main>
       <Footer />
     </div>
