@@ -7,8 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { DepartmentsList } from "@/components/about/DepartmentsList";
-import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
 
 interface SectionContent {
   id: string;
@@ -90,26 +88,12 @@ const About = () => {
     };
   }, [refetch, toast]);
 
-  const handleDownload = () => {
-    window.location.href = 'https://github.com/yourusername/your-repo/archive/refs/heads/main.zip';
-  };
-
   return (
     <div className="min-h-screen flex flex-col">
       <LeadershipBanner />
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">About Us</h1>
-          <Button 
-            onClick={handleDownload}
-            className="flex items-center gap-2"
-            variant="outline"
-          >
-            <Download className="h-4 w-4" />
-            Download Source Code
-          </Button>
-        </div>
+        <h1 className="text-3xl font-bold mb-6">About Us</h1>
         {isLoading ? (
           <div className="space-y-4">
             <Skeleton className="h-4 w-3/4" />
