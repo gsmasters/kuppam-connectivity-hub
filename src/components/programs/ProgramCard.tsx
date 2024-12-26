@@ -49,36 +49,31 @@ export const ProgramCard = ({ program }: ProgramCardProps) => {
 
   return (
     <>
-      <motion.div
-        whileHover={{ scale: 1.02 }}
-        transition={{ duration: 0.2 }}
+      <Card 
+        className="overflow-hidden cursor-pointer transition-shadow duration-200 hover:shadow-md"
+        onClick={() => setIsOpen(true)}
       >
-        <Card 
-          className="overflow-hidden cursor-pointer hover:shadow-xl transition-shadow"
-          onClick={() => setIsOpen(true)}
-        >
-          <CardContent className="p-0">
-            <div className="h-[200px] relative">
-              <img
-                src={images[0]}
-                alt={program.title}
-                className="w-full h-full object-cover"
-                loading="lazy"
-                onError={(e) => {
-                  console.error("Error loading image:", images[0]);
-                  e.currentTarget.src = '/placeholder.svg';
-                }}
-              />
-            </div>
-            <div className="p-4">
-              <h3 className="font-semibold text-lg mb-2 line-clamp-1">{program.title}</h3>
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {program.description}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+        <CardContent className="p-0">
+          <div className="h-[200px] relative">
+            <img
+              src={images[0]}
+              alt={program.title}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              onError={(e) => {
+                console.error("Error loading image:", images[0]);
+                e.currentTarget.src = '/placeholder.svg';
+              }}
+            />
+          </div>
+          <div className="p-4">
+            <h3 className="font-semibold text-lg mb-2 line-clamp-1">{program.title}</h3>
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {program.description}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-w-4xl">
