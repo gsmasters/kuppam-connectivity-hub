@@ -88,15 +88,18 @@ export const Hero = () => {
                   >
                     <div className="aspect-[21/9] w-full relative group">
                       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
-                      <img
-                        src={program.image_url}
-                        alt={program.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        onError={(e) => {
-                          console.error("Error loading image:", program.image_url);
-                          e.currentTarget.src = '/placeholder.svg';
-                        }}
-                      />
+                      <div className="absolute inset-0 p-2">
+                        <img
+                          src={program.image_url}
+                          alt={program.title}
+                          className="w-full h-full object-cover rounded-lg transition-transform duration-700 group-hover:scale-105"
+                          style={{ objectFit: 'cover' }}
+                          onError={(e) => {
+                            console.error("Error loading image:", program.image_url);
+                            e.currentTarget.src = '/placeholder.svg';
+                          }}
+                        />
+                      </div>
                       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8">
                         <motion.div
                           initial={{ y: 20, opacity: 0 }}
