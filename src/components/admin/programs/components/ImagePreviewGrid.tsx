@@ -43,7 +43,7 @@ export const ImagePreviewGrid = ({ previews, onRemove }: ImagePreviewGridProps) 
               type="button"
               variant="destructive"
               size="icon"
-              className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute -top-2 -right-2 h-6 w-6 opacity-100 shadow-md hover:opacity-90"
               onClick={() => onRemove(index)}
             >
               <X className="h-4 w-4" />
