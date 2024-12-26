@@ -8,14 +8,12 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <LeadershipBanner />
-      <div>
-        <Header />
-        <main className="flex-grow">
-          <Hero />
-          <PopulationStats />
-        </main>
-        <Footer />
-      </div>
+      <Header />
+      <main className="flex-grow">
+        <Hero />
+        <PopulationStats />
+      </main>
+      <Footer />
     </div>
   );
 };
