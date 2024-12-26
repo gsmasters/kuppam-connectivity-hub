@@ -54,8 +54,8 @@ export const ProgramDialog = ({
       if (data.images?.length > 0) {
         const uploadPromises = Array.from(data.images).map(async (file) => {
           const fileExt = file.name.split(".").pop();
-          const fileName = `${Math.random()}.${fileExt}`;
-          const filePath = `program-images/${fileName}`;
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+          const filePath = `programs/${fileName}`;
 
           const { error: uploadError } = await supabase.storage
             .from("content-images")
@@ -101,7 +101,8 @@ export const ProgramDialog = ({
       toast.success(program ? "Program updated successfully" : "Program created successfully");
       onClose();
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Error:', error);
       toast.error(program ? "Failed to update program" : "Failed to create program");
     },
   });
