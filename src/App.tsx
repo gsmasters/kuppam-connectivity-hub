@@ -9,6 +9,7 @@ import About from "./pages/About";
 import Programs from "./pages/Programs";
 import StaffDirectory from "./pages/StaffDirectory";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import Index from "./pages/Index";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient({
@@ -27,7 +28,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <Routes>
-            <Route path="/" element={<Navigate to="/about-us" replace />} />
+            <Route path="/" element={<Index />} />
             <Route path="/about-us" element={<About />} />
             <Route path="/programs" element={<Programs />} />
             <Route path="/staff-directory" element={<StaffDirectory />} />

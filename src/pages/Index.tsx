@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
 import { LeadershipBanner } from "@/components/LeadershipBanner";
 import { PopulationStats } from "@/components/PopulationStats";
+import { PageHighlights } from "@/components/PageHighlights";
 
 const Index = () => {
   return (
@@ -12,6 +13,7 @@ const Index = () => {
         <Header />
         <main className="flex-grow">
           <Hero />
+          <PageHighlights />
           <PopulationStats />
         </main>
         <Footer />
