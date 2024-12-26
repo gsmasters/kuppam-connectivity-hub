@@ -38,9 +38,16 @@ export const Hero = () => {
 
   useEffect(() => {
     if (programs && programs.length > 0) {
-      // Create a shuffled copy of the programs array
-      const shuffledPrograms = [...programs].sort(() => Math.random() - 0.5);
-      setRandomizedPrograms(shuffledPrograms);
+      // Create programs with randomized image selection
+      const programsWithRandomImages = programs.map(program => {
+        const images = program.image_url.split(',').map(url => url.trim());
+        const randomIndex = Math.floor(Math.random() * images.length);
+        return {
+          ...program,
+          randomImage: images[randomIndex]
+        };
+      });
+      setRandomizedPrograms(programsWithRandomImages);
     }
   }, [programs]);
 
@@ -73,12 +80,12 @@ export const Hero = () => {
                       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
                       <div className="absolute inset-0 p-2">
                         <img
-                          src={program.image_url.split(',')[0].trim()}
+                          src={program.randomImage}
                           alt={program.title}
                           className="w-full h-full object-cover rounded-lg transition-transform duration-700 group-hover:scale-105"
                           style={{ objectFit: 'cover' }}
                           onError={(e) => {
-                            console.error("Error loading image:", program.image_url);
+                            console.error("Error loading image:", program.randomImage);
                             e.currentTarget.src = '/placeholder.svg';
                           }}
                         />
