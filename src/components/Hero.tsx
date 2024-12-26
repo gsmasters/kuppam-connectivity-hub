@@ -38,15 +38,32 @@ export const Hero = () => {
 
   useEffect(() => {
     if (programs && programs.length > 0) {
-      // Create programs with randomized image selection
+      // Create programs with non-repeating randomized image selection
+      const usedImages = new Set<string>();
+      
       const programsWithRandomImages = programs.map(program => {
         const images = program.image_url.split(',').map(url => url.trim());
-        const randomIndex = Math.floor(Math.random() * images.length);
+        const availableImages = images.filter(img => !usedImages.has(img));
+        
+        // If all images have been used, reset the used images set
+        if (availableImages.length === 0) {
+          usedImages.clear();
+          availableImages.push(...images);
+        }
+        
+        // Select a random image from available ones
+        const randomIndex = Math.floor(Math.random() * availableImages.length);
+        const selectedImage = availableImages[randomIndex];
+        
+        // Mark the image as used
+        usedImages.add(selectedImage);
+        
         return {
           ...program,
-          randomImage: images[randomIndex]
+          randomImage: selectedImage
         };
       });
+      
       setRandomizedPrograms(programsWithRandomImages);
     }
   }, [programs]);

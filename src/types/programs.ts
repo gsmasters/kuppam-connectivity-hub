@@ -6,4 +6,5 @@ export interface Program {
   created_at: string;
   updated_at: string;
   is_active: boolean;
+  randomImage?: string;
 }
