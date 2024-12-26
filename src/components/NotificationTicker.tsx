@@ -39,13 +39,13 @@ export const NotificationTicker = () => {
   return (
     <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-[#DD4814] py-2 text-white overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="flex items-center gap-4">
-          <span className="font-semibold whitespace-nowrap min-w-fit">Latest Updates:</span>
-          <div className="overflow-hidden flex-1 relative">
-            <div className="flex items-center space-x-2">
-              <ArrowRight className="h-4 w-4 flex-shrink-0" />
-              <div className="animate-[slide_15s_linear_infinite] whitespace-nowrap">
-                <span>{notifications[currentIndex]?.message}</span>
+        <div className="flex items-center gap-6">
+          <span className="font-semibold whitespace-nowrap shrink-0">Latest Updates:</span>
+          <div className="overflow-hidden flex-1">
+            <div className="flex items-center gap-3">
+              <ArrowRight className="h-4 w-4 shrink-0" />
+              <div className="animate-[slide_15s_linear_infinite] whitespace-nowrap overflow-hidden">
+                <span className="inline-block">{notifications[currentIndex]?.message}</span>
               </div>
             </div>
           </div>
