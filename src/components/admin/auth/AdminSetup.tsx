@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -16,6 +15,18 @@ export const AdminSetup = () => {
     setLoading(true);
 
     try {
+      // First check if password already exists
+      const { data: existingSettings } = await supabase
+        .from('admin_settings')
+        .select('*')
+        .single();
+
+      if (existingSettings) {
+        toast.error('Admin password is already set');
+        navigate('/admin/login');
+        return;
+      }
+
       const hashedPassword = await bcrypt.hash('Admin@2024', 10);
       
       const { error } = await supabase
@@ -28,7 +39,7 @@ export const AdminSetup = () => {
       navigate('/admin/login');
     } catch (error) {
       console.error('Setup error:', error);
-      toast.error('An error occurred during setup');
+      toast.error('Failed to set admin password');
     } finally {
       setLoading(false);
     }
