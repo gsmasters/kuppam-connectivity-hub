@@ -69,7 +69,10 @@ export const Hero = () => {
   }
 
   return (
-    <section className="bg-gradient-to-b from-white to-gray-50 py-4 sm:py-8">
+    <section 
+      className="bg-gradient-to-b from-white to-gray-50 py-4 sm:py-8"
+      aria-label="Featured Programs Carousel"
+    >
       <div className="container mx-auto px-2 sm:px-4">
         <Carousel
           plugins={[plugin.current]}
@@ -78,23 +81,32 @@ export const Hero = () => {
             align: "start",
             loop: true,
           }}
+          aria-label="Programs showcase carousel"
         >
           <CarouselContent>
-            {randomizedPrograms.map((program) => (
+            {randomizedPrograms.map((program, index) => (
               <CarouselItem key={program.id}>
-                <Link to="/programs" className="block">
+                <Link 
+                  to="/programs" 
+                  className="block"
+                  aria-label={`View details for ${program.title}`}
+                >
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
                     className="relative rounded-lg sm:rounded-xl overflow-hidden border-4 sm:border-8 border-white shadow-lg sm:shadow-2xl mx-2 sm:mx-4"
+                    role="article"
                   >
                     <div className="aspect-[16/9] sm:aspect-[21/9] w-full relative group">
-                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
+                      <div 
+                        className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" 
+                        aria-hidden="true"
+                      />
                       <div className="absolute inset-0 p-1 sm:p-2">
                         <img
                           src={program.randomImage}
-                          alt={program.title}
+                          alt={`Featured image for ${program.title}`}
                           className="w-full h-full object-cover rounded-md sm:rounded-lg transition-transform duration-700 group-hover:scale-105"
                           style={{ objectFit: 'cover' }}
                           onError={(e) => {
@@ -103,7 +115,10 @@ export const Hero = () => {
                           }}
                         />
                       </div>
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 sm:p-8">
+                      <div 
+                        className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 sm:p-8"
+                        role="contentinfo"
+                      >
                         <motion.div
                           initial={{ y: 20, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
@@ -123,8 +138,14 @@ export const Hero = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden sm:flex -left-4" />
-          <CarouselNext className="hidden sm:flex -right-4" />
+          <CarouselPrevious 
+            className="hidden sm:flex -left-4" 
+            aria-label="Previous slide"
+          />
+          <CarouselNext 
+            className="hidden sm:flex -right-4" 
+            aria-label="Next slide"
+          />
         </Carousel>
       </div>
     </section>
