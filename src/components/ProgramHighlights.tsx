@@ -28,18 +28,31 @@ export const ProgramHighlights = () => {
 
   if (isLoading) {
     return (
-      <section className="py-12 bg-gradient-to-b from-white to-gray-50">
+      <section 
+        className="py-12 bg-gradient-to-b from-white to-gray-50"
+        aria-label="Featured programs loading state"
+      >
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">Featured Programs</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            role="list"
+            aria-label="Loading program cards"
+          >
             {[1, 2, 3].map((index) => (
-              <Card key={index} className="h-full">
-                <CardContent className="p-6">
-                  <Skeleton className="h-48 w-full mb-4" />
-                  <Skeleton className="h-6 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-full" />
-                </CardContent>
-              </Card>
+              <div 
+                key={index}
+                role="listitem"
+                aria-label="Loading program card"
+              >
+                <Card className="h-full">
+                  <CardContent className="p-6">
+                    <Skeleton className="h-48 w-full mb-4" />
+                    <Skeleton className="h-6 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-full" />
+                  </CardContent>
+                </Card>
+              </div>
             ))}
           </div>
         </div>
@@ -52,35 +65,61 @@ export const ProgramHighlights = () => {
   }
 
   return (
-    <section className="py-12 bg-gradient-to-b from-white to-gray-50">
+    <section 
+      className="py-12 bg-gradient-to-b from-white to-gray-50"
+      aria-labelledby="featured-programs-title"
+    >
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">Featured Programs</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <h2 
+          id="featured-programs-title"
+          className="text-3xl font-bold text-center mb-8"
+        >
+          Featured Programs
+        </h2>
+        <div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          role="list"
+          aria-label="Featured programs list"
+        >
           {programs.map((program) => {
             const firstImage = program.image_url.split(',')[0].trim();
             
             return (
-              <Link key={program.id} to={`/programs`}>
-                <Card className="h-full transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-                  <CardContent className="p-0">
-                    <div className="h-48 relative">
-                      <img
-                        src={firstImage}
-                        alt={program.title}
-                        className="w-full h-full object-cover rounded-t-lg"
-                        onError={(e) => {
-                          console.error("Error loading image:", firstImage);
-                          e.currentTarget.src = '/placeholder.svg';
-                        }}
-                      />
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-semibold mb-2 line-clamp-1">{program.title}</h3>
-                      <p className="text-gray-600 line-clamp-2">{program.description}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+              <div 
+                key={program.id}
+                role="listitem"
+                aria-label={`Program: ${program.title}`}
+              >
+                <Link 
+                  to={`/programs`}
+                  className="block h-full"
+                  aria-label={`View details for ${program.title}`}
+                >
+                  <Card className="h-full transition-transform duration-300 hover:scale-105 hover:shadow-lg">
+                    <CardContent className="p-0">
+                      <div className="h-48 relative">
+                        <img
+                          src={firstImage}
+                          alt={`Featured image for ${program.title}`}
+                          className="w-full h-full object-cover rounded-t-lg"
+                          onError={(e) => {
+                            console.error("Error loading image:", firstImage);
+                            e.currentTarget.src = '/placeholder.svg';
+                          }}
+                        />
+                      </div>
+                      <div className="p-6">
+                        <h3 className="text-xl font-semibold mb-2 line-clamp-1">
+                          {program.title}
+                        </h3>
+                        <p className="text-gray-600 line-clamp-2">
+                          {program.description}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
             );
           })}
         </div>
