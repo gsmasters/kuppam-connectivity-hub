@@ -1,5 +1,15 @@
 User-agent: *
 Allow: /
+Allow: /about-us
+Allow: /programs
+Allow: /staff-directory
+
+# Block access to admin routes
+Disallow: /admin/
+Disallow: /admin/*
+
+# Crawl-delay
+Crawl-delay: 10
 
 # Sitemaps
 Sitemap: https://kuppam-mpdo.gov.in/sitemap.xml
