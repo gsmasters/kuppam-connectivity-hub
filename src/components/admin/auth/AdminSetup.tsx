@@ -13,33 +13,43 @@ export const AdminSetup = () => {
 
   const handleSetup = async () => {
     setLoading(true);
+    console.log('Starting admin setup...');
 
     try {
       // First check if password already exists
-      const { data: existingSettings } = await supabase
+      const { data: existingSettings, error: checkError } = await supabase
         .from('admin_settings')
-        .select('*')
-        .single();
+        .select('*');
 
-      if (existingSettings) {
+      if (checkError) {
+        console.error('Error checking existing settings:', checkError);
+        throw new Error('Failed to check existing settings');
+      }
+
+      if (existingSettings && existingSettings.length > 0) {
         toast.error('Admin password is already set');
         navigate('/admin/login');
         return;
       }
 
       const hashedPassword = await bcrypt.hash('Admin@2024', 10);
+      console.log('Password hashed successfully');
       
-      const { error } = await supabase
+      const { error: insertError } = await supabase
         .from('admin_settings')
         .insert([{ password_hash: hashedPassword }]);
 
-      if (error) throw error;
+      if (insertError) {
+        console.error('Insert error:', insertError);
+        throw new Error('Failed to insert admin password');
+      }
 
+      console.log('Admin password set successfully');
       toast.success('Admin password set successfully');
       navigate('/admin/login');
     } catch (error) {
       console.error('Setup error:', error);
-      toast.error('Failed to set admin password');
+      toast.error('Failed to set admin password. Please try again.');
     } finally {
       setLoading(false);
     }
