@@ -9,23 +9,14 @@ import { Loader2 } from "lucide-react";
 import * as bcrypt from 'bcryptjs';
 
 export const AdminSetup = () => {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSetup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-
+  const handleSetup = async () => {
     setLoading(true);
 
     try {
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash('Admin@2024', 10);
       
       const { error } = await supabase
         .from('admin_settings')
@@ -51,42 +42,24 @@ export const AdminSetup = () => {
             Admin Setup
           </CardTitle>
           <CardDescription className="text-center">
-            Set up your admin password
+            Set up admin password: Admin@2024
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSetup} className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="Enter new password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <Input
-                type="password"
-                placeholder="Confirm password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
-            <Button 
-              type="submit" 
-              className="w-full"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Setting up...
-                </>
-              ) : (
-                'Set Password'
-              )}
-            </Button>
-          </form>
+          <Button 
+            onClick={handleSetup}
+            className="w-full"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Setting up...
+              </>
+            ) : (
+              'Set Password'
+            )}
+          </Button>
         </CardContent>
       </Card>
     </div>
