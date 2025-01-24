@@ -16,13 +16,13 @@ export const Header = () => {
   const MobileNav = () => (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="sm:hidden">
+        <Button variant="ghost" size="icon" className="sm:hidden" aria-label="Open navigation menu">
           <Menu className="h-6 w-6" />
           <span className="sr-only">Toggle menu</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-[250px] sm:hidden">
-        <nav aria-label="Mobile navigation">
+        <nav aria-label="Mobile navigation" role="navigation">
           <div className="flex flex-col space-y-3 mt-8">
             {navigation.map((item) => (
               <Link
@@ -41,12 +41,12 @@ export const Header = () => {
   );
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-100">
+    <header className="bg-white shadow-sm border-b border-gray-100" role="banner">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center space-x-8">
             <div className="flex-shrink-0 flex items-center">
-              <Link to="/" className="flex items-center space-x-2" aria-label="Home">
+              <Link to="/" className="flex items-center space-x-2" aria-label="MPDO Office Kuppam - Home">
                 <img
                   src="/lovable-uploads/0ca6e276-4d20-48ee-8b76-4e09222c5632.png"
                   alt="Panchayati Raj Logo"
@@ -56,7 +56,7 @@ export const Header = () => {
                 />
               </Link>
             </div>
-            <nav className="hidden sm:flex items-center space-x-1" aria-label="Main navigation">
+            <nav className="hidden sm:flex items-center space-x-1" aria-label="Main navigation" role="navigation">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
